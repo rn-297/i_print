@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:i_print/print_features/sticker_view/sticker_view.dart';
 import 'draggable_resizable.dart';
 import 'sticker_view_controller.dart';
 
 class DraggableStickers extends StatefulWidget {
-
-
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
 }
 
-String? selectedAssetId;
+
 
 class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
@@ -22,104 +21,107 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => StickerViewController());
-    return GetBuilder<StickerViewController>(builder: (stickerViewController) {
-      var stickers = stickerViewController.stickers;
-      var initialStickerScale = stickerViewController.initialStickerScale;
-      return stickers.isNotEmpty && stickers != []
-          ? Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned.fill(
-                  child: GestureDetector(
-                    key: const Key('stickersView_background_gestureDetector'),
-                    onTap: () {},
-                  ),
+    final StickerViewController stickerViewController = Get.find();
+
+    // Update the sticker view height if the max height changes
+
+    return Obx(() => stickerViewController.stickers.isNotEmpty &&
+            stickerViewController.stickers != []
+        ? Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  key: const Key('stickersView_background_gestureDetector'),
+                  onTap: () {
+                    stickerViewController.selectedAssetId.value = "0";
+                    setState(() {});
+                  },
                 ),
-                for (final sticker in stickers)
+              ),
+              for (final sticker in stickerViewController.stickers)
 
-                  // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
-                  DraggableResizable(
-                    key: Key(
-                        'stickerPage_${sticker.id}_draggableResizable_asset'),
-                    canTransform: selectedAssetId == sticker.id ? true : false
+                // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
+                DraggableResizable(
+                  key:
+                      Key('stickerPage_${sticker.id}_draggableResizable_asset'),
+                  canTransform: stickerViewController.selectedAssetId == sticker.id ? true : false
 
-                    //  true
-                    /*sticker.id == state.selectedAssetId*/,
-                    onUpdate: (update) => {
+                  //  true
+                  /*sticker.id == state.selectedAssetId*/,
+                  onUpdate: (update) => {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      sticker.position = update.position;
+                      sticker.size=update.size;
+                      stickerViewController.calculateMaxBottomPosition(sticker);
+                    })
+                  },
 
-                    },
+                  // To update the layer (manage position of widget in stack)
+                  onLayerTapped: () {
+                    var listLength = stickerViewController.stickers.length;
+                    var ind = stickerViewController.stickers.indexOf(sticker);
+                    stickerViewController.stickers.remove(sticker);
+                    if (ind == listLength - 1) {
+                      stickerViewController.stickers.insert(0, sticker);
+                    } else {
+                      stickerViewController.stickers
+                          .insert(listLength - 1, sticker);
+                    }
 
-                    // To update the layer (manage position of widget in stack)
-                    onLayerTapped: () {
-                      var listLength = stickers.length;
-                      var ind = stickers.indexOf(sticker);
-                      stickers.remove(sticker);
-                      if (ind == listLength - 1) {
-                        stickers.insert(0, sticker);
-                      } else {
-                        stickers.insert(listLength - 1, sticker);
-                      }
+                    stickerViewController.selectedAssetId.value = sticker.id;
+                    setState(() {});
+                  },
 
-                      selectedAssetId = sticker.id;
+                  // To edit (Not implemented yet)
+                  onEdit: () {
+                    stickerViewController.editTextSticker(sticker, context);
+                  },
+                  isText: sticker.isText ?? false,
+
+                  // To Delete the sticker
+                  onDelete: () async {
+                    {
+                      stickerViewController.stickers.remove(sticker);
+                      setState(() {});
+                    }
+                  },
+
+                  // Size of the sticker
+                  size:
+                      sticker.isText == true ? Size(200, 100) : Size(100, 100),
+
+                  // Constraints of the sticker
+                  constraints: sticker.isText == true
+                      ? BoxConstraints.tight(
+                          Size(200, 100),
+                        )
+                      : BoxConstraints.tight(
+                          Size(
+                            64 * stickerViewController.initialStickerScale,
+                            64 * stickerViewController.initialStickerScale,
+                          ),
+                        ),
+
+                  // Child widget in which sticker is passed
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      // To update the selected widget
+                      stickerViewController.selectedAssetId.value = sticker.id;
                       setState(() {});
                     },
-
-                    // To edit (Not implemented yet)
-                    onEdit: () {
-                      stickerViewController.editTextSticker(sticker,context);
-                    },
-
-                    // To Delete the sticker
-                    onDelete: () async {
-                      {
-                        stickers.remove(sticker);
-                        setState(() {});
-                      }
-                    },
-
-                    // Size of the sticker
-                    size: sticker.isText == true
-                        ? Size(64 * initialStickerScale / 3,
-                            64 * initialStickerScale / 3)
-                        : Size(
-                            64 * initialStickerScale, 64 * initialStickerScale),
-
-                    // Constraints of the sticker
-                    constraints: sticker.isText == true
-                        ? BoxConstraints.tight(
-                            Size(
-                              64 * initialStickerScale / 3,
-                              64 * initialStickerScale / 3,
-                            ),
-                          )
-                        : BoxConstraints.tight(
-                            Size(
-                              64 * initialStickerScale,
-                              64 * initialStickerScale,
-                            ),
-                          ),
-
-                    // Child widget in which sticker is passed
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      onTap: () {
-                        // To update the selected widget
-                        selectedAssetId = sticker.id;
-                        setState(() {});
-                      },
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: sticker.isText == true
-                            ? FittedBox(child: sticker)
-                            : sticker,
-                      ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: sticker.isText == true
+                          ? FittedBox(child: sticker)
+                          : sticker,
                     ),
                   ),
-              ],
-            )
-          : Container();
-    });
+                ),
+            ],
+          )
+        : Container());
   }
 }

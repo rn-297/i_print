@@ -1,7 +1,9 @@
 import 'dart:typed_data';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:i_print/helper/print_images.dart';
 import 'dart:ui' as ui;
 import 'draggable_sticker.dart';
 import 'sticker_view_controller.dart';
@@ -10,36 +12,11 @@ enum ImageQuality { low, medium, high }
 
 class StickerView extends StatefulWidget {
 
-
-  static Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
-    try {
-      Uint8List? pngBytes;
-      double pixelRatio = 1;
-      if (imageQuality == ImageQuality.high) {
-        pixelRatio = 2;
-      } else if (imageQuality == ImageQuality.low) {
-        pixelRatio = 0.5;
-      }
-      await Future.delayed(const Duration(milliseconds: 700))
-          .then((value) async {
-        RenderRepaintBoundary boundary = stickGlobalKey.currentContext
-            ?.findRenderObject() as RenderRepaintBoundary;
-        ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-        ByteData? byteData =
-            await image.toByteData(format: ui.ImageByteFormat.png);
-        pngBytes = byteData?.buffer.asUint8List();
-      });
-      return pngBytes;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   @override
   StickerViewState createState() => StickerViewState();
 }
 
-final GlobalKey stickGlobalKey = GlobalKey();
+
 
 class StickerViewState extends State<StickerView> {
   @override
@@ -49,25 +26,28 @@ class StickerViewState extends State<StickerView> {
 
   @override
   Widget build(BuildContext context) {
-
-    return GetBuilder<StickerViewController>(builder: (stickerViewController) {
-      return Column(
-        children: [
-          RepaintBoundary(
-            key: stickGlobalKey,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
+    final StickerViewController stickerViewController = Get.find();
+    return Column(
+      children: [
+        Obx(() => RepaintBoundary(
+              key: stickerViewController.stickGlobalKey,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    image: stickerViewController.selectedBorder.value.isNotEmpty
+                        ? DecorationImage(
+                            image: AssetImage(
+                                stickerViewController.selectedBorder.value),
+                            fit: BoxFit.fill,
+                          )
+                        : null),
+                height: stickerViewController.stickerViewHeight.value,
+                width: MediaQuery.of(context).size.width,
+                child: DraggableStickers(),
               ),
-              height:
-              MediaQuery.of(context).size.height * 0.7,
-              width:  MediaQuery.of(context).size.width,
-              child: DraggableStickers(),
-            ),
-          ),
-        ],
-      );
-    });
+            )),
+      ],
+    );
   }
 }
 
@@ -75,7 +55,8 @@ class Sticker extends StatefulWidget {
   final Widget? child;
   final bool? isText;
   final String id;
-  final Size size;
+  Size size;
+  Offset position;
   late TextStyle textStyle; // Added textStyle property
 
   Sticker({
@@ -84,6 +65,7 @@ class Sticker extends StatefulWidget {
     this.isText,
     required this.id,
     required this.size,
+    required this.position,
     required this.textStyle, // Added textStyle property
   }) : super(key: key);
 

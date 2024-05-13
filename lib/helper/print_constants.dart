@@ -26,8 +26,16 @@ class AppConstants {
   static const String aboutUs = "About Us";
   static const String finishing = "Finishing";
   static const String image = "Image";
+  static const String icon = "Icon";
+  static const String border = "Border";
+  static const String qrCode = "QR Code";
+  static const String qrCodeHint = "Enter here to generate QR Code";
+  static const String graffiti = "Graffiti";
   static const String sticker = "Sticker";
+  static const String barcode = "Barcode";
+  static const String barcodeHint = "Enter here to generate a barcode";
   static const String text = "Text";
+  static const String done = "Done";
   static const String photo = "Photo";
   static const String photoAlbum = "Photo Album";
   static const String example = "Example";
@@ -44,4 +52,8 @@ class AppConstants {
   static const String graffitiPracticeText =
       "Select an image and I will automatically generate an outline drawing for you for easy copying and doodling.";
   static const String selectTemplate = "Select A Template";
+  static const String noInternetConnection =
+      "Connection to API server failed due to internet connection";
+  static const String aiPaintingText =
+      "Hello, I am an Artificial Intelligence (AI) painter. Please enter a keyword description and I can help you paint it";
 }

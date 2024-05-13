@@ -4,6 +4,7 @@ import 'package:i_print/views/bottom_navigator/material_page.dart';
 import 'package:i_print/views/bottom_navigator/my_page.dart';
 import 'package:i_print/views/bottom_navigator/print_page.dart';
 import 'package:i_print/views/bottom_navigator/templates_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BottomNavigationController extends GetxController implements GetxService{
   int selectedIndex=0;
@@ -21,6 +22,14 @@ class BottomNavigationController extends GetxController implements GetxService{
     return navigatorPages.elementAt(selectedIndex);
   }
 
+  requestPermission()async {
+    Map<Permission, PermissionStatus> statuses = await [
+
+        Permission.storage,
+
+    ].request();
+    print(statuses[Permission.storage]);
+  }
 
 
 }

@@ -47,11 +47,14 @@ class DraggableResizable extends StatefulWidget {
     this.onEdit,
     this.onDelete,
     this.canTransform = false,
+    this.position = Offset.zero,
+    this.isText = false,
   })  : constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
 
   /// The child which will be draggable/resizable.
   final Widget child;
+  final Offset position;
 
   // final VoidCallback? onTap;
 
@@ -66,6 +69,7 @@ class DraggableResizable extends StatefulWidget {
   /// Whether or not the asset can be dragged or resized.
   /// Defaults to false.
   final bool canTransform;
+  final bool isText;
 
   /// The child's original size.
   final Size size;
@@ -93,6 +97,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
   void initState() {
     super.initState();
     size = widget.size;
+    position = widget.position;
     constraints = const BoxConstraints.expand(width: 1, height: 1);
     angle = 0;
     baseAngle = 0;
@@ -106,13 +111,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
       builder: (context, constraints) {
         position = position == Offset.zero
             ? Offset(
-          constraints.maxWidth / 2 - (size.width / 2),
-          constraints.maxHeight / 2 - (size.height / 2),
-        )
+                constraints.maxWidth / 2 - (size.width / 2),
+                constraints.maxHeight / 2 - (size.height / 2),
+              )
             : position;
 
         final normalizedWidth = size.width;
-        final normalizedHeight = normalizedWidth / aspectRatio;
+        // final normalizedHeight = normalizedWidth / aspectRatio;
+        final normalizedHeight = size.height;
         final newSize = Size(normalizedWidth, normalizedHeight);
 
         if (widget.constraints.isSatisfiedBy(newSize)) size = newSize;
@@ -304,7 +310,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
             final offsetFromCenter = details.localFocalPoint - center;
 
             setState(
-                  () {
+              () {
                 angle = offsetFromCenter.direction + angleDelta * 0.5;
               },
             );
@@ -374,7 +380,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                         Positioned(
                           top: _floatingActionPadding / 2,
                           left: _floatingActionPadding / 2,
-                          child: topLeftCorner,
+                          child: widget.isText ? topLeftCorner : Container(),
                         ),
                         Positioned(
                           right: (normalizedWidth / 2) -
@@ -428,10 +434,10 @@ const _cursorLookup = <_ResizePointType, MouseCursor>{
 class _ResizePoint extends StatelessWidget {
   const _ResizePoint(
       {Key? key,
-        required this.onDrag,
-        required this.type,
-        this.onScale,
-        this.iconData})
+      required this.onDrag,
+      required this.type,
+      this.onScale,
+      this.iconData})
       : super(key: key);
 
   final ValueSetter<Offset> onDrag;
@@ -465,10 +471,10 @@ class _ResizePoint extends StatelessWidget {
             ),
             child: iconData != null
                 ? Icon(
-              iconData,
-              size: 12,
-              color: Colors.grey,
-            )
+                    iconData,
+                    size: 12,
+                    color: Colors.grey,
+                  )
                 : Container(),
           ),
         ),
