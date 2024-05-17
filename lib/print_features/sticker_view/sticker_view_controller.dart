@@ -60,6 +60,11 @@ class StickerViewController extends GetxController implements GetxService {
   late Uint8List capturedSS;
   final GlobalKey webScreen = GlobalKey();
 
+  //Banner print
+  bool isHorizontal = true;
+  double bannerTextSize = 30;
+  TextEditingController bannerTextController = TextEditingController();
+
   DrawingController drawingController = DrawingController();
   Color drawingColor = Colors.black;
   double drawingWidth = 2.5;
@@ -948,8 +953,6 @@ class StickerViewController extends GetxController implements GetxService {
         Get.back();
       }
     }
-
-
   }
 
   void saveImageDrawing() async {
