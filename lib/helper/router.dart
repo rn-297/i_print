@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
 import 'package:i_print/helper/print_constants.dart';
+import 'package:i_print/print_features/scan_printer/scan_printer.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/drawing_board/drawing_board.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/ImageEditorPage.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/image_crop_page.dart';
@@ -9,7 +10,10 @@ import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart
 import 'package:i_print/views/ai_toolbox/ai_image_preview.dart';
 import 'package:i_print/views/ai_toolbox/ai_painting/ai_painting_page.dart';
 import 'package:i_print/views/ai_toolbox/creative_painting/creative_painting_page.dart';
-import 'package:i_print/views/ai_toolbox/graffiti_cartoon_line_page.dart';
+import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/graffiti_cartoon_line_page.dart';
+import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/graffiti_cartoon_line_preview.dart';
+import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/grafftti_preview.dart';
+import 'package:i_print/views/ai_toolbox/line_drawing_page.dart';
 import 'package:i_print/views/ai_toolbox/various_page/various_page.dart';
 import 'package:i_print/views/graphic_editing/graphiic_editing.dart';
 import 'package:i_print/views/print_preview/print_preview_page.dart';
@@ -40,6 +44,10 @@ abstract class RouteHelper {
   static const String printWebPagesPage = '/i_print_print_web_pages';
   static const String bannerPrintPage = '/i_print_banner_print';
   static const String aiImagePreviewPage = '/i_print_image_preview';
+  static const String graffitiCartoonLinePreviewPage = '/i_print_graffiti_cartoon_line_preview';
+  static const String lineDrawing = '/i_print_line_drawing';
+  static const String printScanningPage = '/i_print_print_scanning';
+  static const String graffitiPreviewPage = '/i_print_graffiti_preview';
 
   static List<GetPage> route = [
     GetPage(name: initial, page: () => SplashScreen()),
@@ -59,6 +67,10 @@ abstract class RouteHelper {
     GetPage(name: printWebPagesPage, page: () => PrintWebPage()),
     GetPage(name: bannerPrintPage, page: () => BannerPrintPage()),
     GetPage(name: aiImagePreviewPage, page: () => AIImagePreviewPage()),
+    GetPage(name: graffitiCartoonLinePreviewPage, page: () => GraffitiCartoonLinePreviewPage()),
+    GetPage(name: lineDrawing, page: () => LineDrawingPage()),
+    GetPage(name: printScanningPage, page: () => ScanPrinterPage()),
+    GetPage(name: graffitiPreviewPage, page: () => GraffitiPracticePage()),
   ];
 
   static void goToNextPage(String label) {

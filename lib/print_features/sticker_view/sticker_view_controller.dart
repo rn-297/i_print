@@ -1,16 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:barcode/barcode.dart';
 import 'package:crop_image/crop_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,14 +20,11 @@ import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/print_images.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/icon_tab.dart';
-import 'package:i_print/views/ai_toolbox/graffiti_cartoon_line_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:screenshot/screenshot.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-import '../../controller/graffiti_cartoon_line_controller.dart';
 import 'sticker_view.dart';
+import 'package:image/image.dart' as img;
 
 class StickerViewController extends GetxController implements GetxService {
   final GlobalKey stickGlobalKey = GlobalKey();
@@ -64,6 +58,10 @@ class StickerViewController extends GetxController implements GetxService {
   bool isHorizontal = true;
   double bannerTextSize = 30;
   TextEditingController bannerTextController = TextEditingController();
+  double verticalTextSize = 150;
+  double horizontalTextSize = 50;
+  final GlobalKey horizontalTextKey = GlobalKey();
+  final GlobalKey verticalTextKey = GlobalKey();
 
   DrawingController drawingController = DrawingController();
   Color drawingColor = Colors.black;
@@ -942,9 +940,13 @@ class StickerViewController extends GetxController implements GetxService {
       final String img64 = base64Encode(data);
 
       if (currentPage == AppConstants.creativePainting) {
+        Uint8List imageData = base64Decode(img64);
+        String filename = await getPath("png");
+        File('$filename').writeAsBytes(imageData);
         AICreationController aiCreationController =
             Get.put(AICreationController());
-        aiCreationController.setBase64(data);
+        aiCreationController.setBase64(imageData);
+        aiCreationController.setInitImageName(filename);
       } else {
         Uint8List imageData = base64Decode(img64);
         String filename = await getPath("png");
@@ -981,7 +983,9 @@ class StickerViewController extends GetxController implements GetxService {
     ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = data!.buffer.asUint8List();
     if (photoPrint) {
-      capturedSS = bytes;
+      final originalImage = img.decodeImage(bytes);
+      final grayscaleImage = img.grayscale(originalImage!);
+      capturedSS = img.encodePng(grayscaleImage);
       Get.toNamed(RouteHelper.printPreviewPage);
     } else {
       String filePath = await getPath("png");
@@ -1113,26 +1117,51 @@ class StickerViewController extends GetxController implements GetxService {
     return Colors.grey.shade300;
   }
 
-  void captureCurrentPage() {
-    screenshotController.capture().then((value) {
-      capturedSS = value!;
-      Get.toNamed(RouteHelper.printPreviewPage);
-    });
+  void captureCurrentPage() async {
+    Uint8List? bytes = await webViewController!.takeScreenshot();
+    setCapturedSS(bytes!);
+    Get.toNamed(RouteHelper.printPreviewPage);
   }
 
-  void captureFullPage() async {
-    // Uint8List? bytes = await webViewController!.takeScreenshot();
-    RenderRepaintBoundary boundary =
-        webScreen.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image =
-        await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
-    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List? uint8List = byteData?.buffer.asUint8List();
-    await boundary!.toImage();
+  void captureFullPage(BuildContext context) async {
+    final FlutterView? view = View.maybeOf(context);
+    final Size? viewSize =
+        view == null ? null : view.physicalSize / view.devicePixelRatio;
+    final Size? targetSizeVertical =
+        viewSize == null ? null : Size(viewSize.width, 9999);
 
-    if (uint8List != null && uint8List.length > 0) {
-      capturedSS = uint8List;
-      Get.toNamed(RouteHelper.printPreviewPage);
+    if (webViewController != null) {
+      var url = await webViewController!.getUrl();
+      webViewController!.isLoading().then((isLoading) {
+        if (!isLoading) {
+          screenshotController
+              .captureFromWidget(
+            targetSize: targetSizeVertical,
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: PrintColors.mainColor.withOpacity(.5),
+              ),
+              child: InAppWebView(
+                initialUrlRequest: URLRequest(url: url),
+              ),
+            ),
+            context: context,
+          )
+              .then((capturedImage) {
+            // Here you will get the captured image object
+            setCapturedSS(capturedImage);
+            Get.toNamed(RouteHelper.printPreviewPage);
+          });
+        } else {
+          // Web page is still loading, wait and try again
+          webViewController!.addJavaScriptHandler(
+              handlerName: 'onLoad',
+              callback: (_) {
+                captureFullPage(context);
+              });
+        }
+      });
     }
   }
 
@@ -1153,13 +1182,121 @@ class StickerViewController extends GetxController implements GetxService {
         ByteData? byteData =
             await image.toByteData(format: ui.ImageByteFormat.png);
         pngBytes = byteData?.buffer.asUint8List();
-        capturedSS = pngBytes!;
+        final originalImage = img.decodeImage(pngBytes!);
+        final grayscaleImage = img.grayscale(originalImage!);
+        capturedSS = img.encodePng(grayscaleImage);
+        // capturedSS = pngBytes!;
         Get.toNamed(RouteHelper.printPreviewPage);
       });
       return pngBytes;
     } catch (e) {
       rethrow;
     }
+  }
+
+  void setCapturedSS(Uint8List previewImage) {
+    final originalImage = img.decodeImage(previewImage!);
+    final grayscaleImage = img.grayscale(originalImage!);
+    capturedSS = img.encodePng(grayscaleImage);
+  }
+
+  assetImageToUint8List(String assetPath) async {
+    ByteData? imageData = await rootBundle.load(assetPath);
+    if (imageData == null) return null;
+
+    List<int> bytes = Uint8List.view(imageData.buffer);
+    setCapturedSS(Uint8List.fromList(bytes));
+
+    Get.toNamed(RouteHelper.printPreviewPage);
+  }
+
+  void setBannerTextSize(int i) {
+    if (isHorizontal) {
+      if ((i < 0 && horizontalTextSize > 50) ||
+          (i > 0 && horizontalTextSize < 150)) {
+        horizontalTextSize += i;
+      }
+    } else {
+      if ((i < 0 && verticalTextSize > 150) ||
+          (i > 0 && verticalTextSize < 250)) {
+        verticalTextSize += i;
+      }
+    }
+    update();
+  }
+
+  Future<void> bannerSaveImage(BuildContext context) async {
+    final FlutterView? view = View.maybeOf(context);
+    final Size? viewSize =
+        view == null ? null : view.physicalSize / view.devicePixelRatio;
+    final Size? targetSizeVertical =
+        viewSize == null ? null : Size(viewSize.width, 9999);
+
+    if (isHorizontal) {
+      screenshotController
+          .captureFromWidget(
+              targetSize: targetSizeVertical,
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: PrintColors.background.withOpacity(.5)),
+                child: RepaintBoundary(
+                  key: horizontalTextKey,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Center(
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Text(
+                          bannerTextController.text,
+                          style: TextStyle(
+                              fontSize: horizontalTextSize,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              context: context)
+          .then((capturedImage) {
+        // Here you will get image object
+
+        setCapturedSS(capturedImage);
+        Get.toNamed(RouteHelper.printPreviewPage);
+      });
+    } else {
+      screenshotController
+          .captureFromWidget(
+              targetSize: targetSizeVertical,
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: PrintColors.background.withOpacity(.5)),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: bannerTextController.text.split('').map((char) {
+                      return Text(
+                        char,
+                        style: TextStyle(
+                            fontSize: verticalTextSize,
+                            fontWeight: FontWeight.bold),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              context: context)
+          .then((capturedImage) {
+        // Here you will get image object
+        setCapturedSS(capturedImage);
+        Get.toNamed(RouteHelper.printPreviewPage);
+      });
+    }
+    // capturedSS = byteData!.buffer.asUint8List();
   }
 }
 

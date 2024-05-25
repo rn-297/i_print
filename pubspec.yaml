@@ -48,13 +48,21 @@ dependencies:
   flutter_drawing_board: ^0.7.0+2
   google_mlkit_text_recognition: ^0.13.0
   webview_flutter: ^4.7.0
+  flutter_vision: ^1.1.4
   screenshot: ^2.3.0
   flutter_inappwebview: ^6.0.0
-  flutter_image_filters: ^0.0.18
+  image: ^4.1.7
+  flutter_simple_bluetooth_printer: ^0.1.4
+  tflite: ^1.1.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  url_launcher: ^6.2.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^2.0.0
+  build_runner: ^2.3.3
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -80,6 +88,7 @@ flutter:
       - assets/svg/border/
       - assets/svg/icon/
       - assets/models/
+      - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:i_print/helper/router.dart';
+import 'package:i_print/local_db/api_key.dart';
 
-void main() {
+Future<void> main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(ApiKeyModelAdapter());
+  Hive.openBox<ApiKeyModel>('api_key');
   runApp(const MyApp());
 }
 

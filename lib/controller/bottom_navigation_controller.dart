@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:i_print/views/bottom_navigator/material_page.dart';
+import 'package:i_print/views/bottom_navigator/materials/material_page.dart';
 import 'package:i_print/views/bottom_navigator/my_page.dart';
 import 'package:i_print/views/bottom_navigator/print_page.dart';
 import 'package:i_print/views/bottom_navigator/templates_page.dart';

@@ -34,7 +34,7 @@ class PrintWebPage extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  controller.captureFullPage();
+                  controller.captureFullPage(context);
                 },
                 child: Row(
                   children: [Icon(Icons.print), Text("Print Full Page")],
@@ -48,20 +48,17 @@ class PrintWebPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-                child: Screenshot(
-              controller: controller.screenshotController,
-              child: RepaintBoundary(
-                key: controller.webScreen,
-                child: InAppWebView(
-                  initialUrlRequest:
-                      URLRequest(url: WebUri('https://www.google.com')),
-                  onWebViewCreated: (controller1) {
+                child: RepaintBoundary(
+                  key: controller.webScreen,
+                  child: InAppWebView(
+                    initialUrlRequest:
+                        URLRequest(url: WebUri('https://www.google.com')),
+                    onWebViewCreated: (controller1) {
 
-                    controller.webViewController = controller1;
-                  },
-                ),
-              ),
-            )),
+                      controller.webViewController = controller1;
+                    },
+                  ),
+                )),
           ],
         ),
       );

@@ -94,12 +94,13 @@ abstract class ApiClient extends GetxService {
     }
   }
 
-  static Future<dynamic> postHeaderData(String uri, dynamic body) async {
+  static Future<dynamic> postHeaderData(String uri, dynamic body,String apiKey) async {
     try {
       // print(AppConstants.BASE_URL + uri);
       // print(body);
       Map<String, String> headers = {
-        "Authorization": "Bearer $replicateApiToken",
+        "Authorization": "Bearer $apiKey",
+        'Accept': 'application/json',
         "Content-Type": "application/json",
       };
 
@@ -107,22 +108,27 @@ abstract class ApiClient extends GetxService {
           .post(Uri.parse(uri), body: json.encode(body), headers: headers)
           .timeout(Duration(seconds: timeoutInSeconds));
       print(_response.body);
-      if (_response.statusCode == 201) {
-        // Parse the response JSON
-        Map<String, dynamic> responseData = json.decode(_response.body);
-
-        // Extract relevant information
-        String id = responseData['id'];
 
 
-        // Handle other relevant data as needed
+      return _response;
+    } catch (ex) {
+      print(ex);
+      return Response(
+          statusCode: 1, statusText: AppConstants.noInternetConnection);
+    }
+  }
 
-      } else {
-        // Request failed
-        print("Request failed with status: ${_response.statusCode}");
-      }
+  static Future<dynamic> postHeaderMultipartData(Http.MultipartRequest request, String apiKey) async {
+    try {
+      // print(AppConstants.BASE_URL + uri);
+      // print(body);
+      request=request..headers['Authorization'] = 'Bearer $apiKey'
+        ..headers['Accept'] = 'application/json';
+      print(request.fields);
+      final Http.StreamedResponse streamedResponse = await request.send();
+      print(streamedResponse.statusCode);
 
-      return _response.body;
+      return streamedResponse;
     } catch (ex) {
       print(ex);
       return Response(
