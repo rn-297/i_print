@@ -5,6 +5,7 @@ import 'package:http/http.dart' as Http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:i_print/api_service/response_model.dart';
 import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:i_print/print_features/bottom_sheet/stability_ai_api.dart';
@@ -91,21 +92,20 @@ class AICreationController extends GetxController {
     withImage = true;
     update();
     Get.toNamed(RouteHelper.aiImagePreviewPage);
-    Uri url=Uri.parse("https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image");
+    Uri url=Uri.parse("https://api.stability.ai/v2beta/stable-image/generate/sd3");
     final Http.MultipartRequest request = Http.MultipartRequest('POST', url
     )
 
-      ..fields['init_image_mode'] = 'IMAGE_STRENGTH'
-      ..fields['image_strength'] = '1'
-      ..fields['text_prompts[0][text]'] = "crayon drawing of ${aiPaintController.text} "
-      ..fields['cfg_scale'] = '7'
-      ..fields['samples'] = '1'
-      ..fields['sampler'] = 'K_DPM_2_ANCESTRAL'
-      ..fields['clip_guidance_preset'] = 'FAST_BLUE'
-      ..fields['steps'] = '30'
+      ..fields['strength'] = '0.65'
+      ..fields['prompt'] = "Colorful scenery of ${aiPaintController.text} "
+      ..fields['model'] = 'sd3-turbo'
+      ..fields['mode'] = 'image-to-image'
+      ..fields['strength'] = '0.8'
       ..fields['style_preset'] = selectedStyle
+
+      // ..fields['aspect_ratio'] = '16:9'
       ..files.add(await Http.MultipartFile.fromPath(
-        'init_image',
+        'image',
         initImageFile,
 
       ));
@@ -113,21 +113,28 @@ class AICreationController extends GetxController {
     final response = await ApiClient.postHeaderMultipartData( request, apiKey);
     ////
 
-    final String responseBody = await response.stream.bytesToString();
-    final Map<String, dynamic> responseJSON = jsonDecode(responseBody);
 
-    if (responseJSON.containsKey('artifacts')) {
-      List<dynamic> artifacts = responseJSON['artifacts'];
-      print(artifacts.length);
-      for (int i = 0; i < artifacts.length; i++) {
-        var image = artifacts[i];
-        String base64String = image['base64'];
-        generatedImage = base64Decode(base64String);
+
+    if (response.statusCode == 200) {
+      final String responseBody = await response.stream.bytesToString();
+      final Map<String, dynamic> responseJSON = jsonDecode(responseBody);
+
+      if (responseJSON.containsKey('image')) {
+        ResponseModel apiResponse = ResponseModel.fromJson(responseJSON);
+
+          generatedImage = base64Decode(apiResponse.image!);
+
+        print('Image generated and saved successfully.');
+      } else {
+
+        print('No image found in response.');
       }
-      print('Images generated and saved successfully.');
     } else {
-      print('No artifacts found in response.${responseJSON['message']}');
+      final String responseBody = await response.stream.bytesToString();
+      final Map<String, dynamic> responseJSON = jsonDecode(responseBody);
+      print('Failed to load image: ${response.statusCode} ${responseJSON["errors"]}');
     }
+
 
     isProcessing = false;
     update();
@@ -140,13 +147,13 @@ class AICreationController extends GetxController {
     graffitiCartoonLineController.isLoading=true;
     update();
     Get.toNamed(RouteHelper.graffitiCartoonLinePreviewPage);
-    Uri url=Uri.parse("https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image");
+    Uri url=Uri.parse("https://api.stability.ai/v2beta/stable-image/generate/core");
     final Http.MultipartRequest request = Http.MultipartRequest('POST', url
     )
 
       ..fields['init_image_mode'] = 'IMAGE_STRENGTH'
       ..fields['image_strength'] = '1'
-      ..fields['text_prompts[0][text]'] = "crayon drawing of my image"
+      ..fields['prompt'] = aiPaintController.text
       ..fields['cfg_scale'] = '7'
       ..fields['samples'] = '1'
       ..fields['sampler'] = 'K_DPM_2_ANCESTRAL'

@@ -31,5 +31,12 @@ class BottomNavigationController extends GetxController implements GetxService{
     print(statuses[Permission.storage]);
   }
 
+  instanceSegmentation()async{
+
+
+    
+
+  }
+
 
 }

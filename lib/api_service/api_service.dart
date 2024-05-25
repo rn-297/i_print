@@ -123,7 +123,9 @@ abstract class ApiClient extends GetxService {
       // print(AppConstants.BASE_URL + uri);
       // print(body);
       request=request..headers['Authorization'] = 'Bearer $apiKey'
-        ..headers['Accept'] = 'application/json';
+        ..headers['Accept'] = 'application/json'
+        ..headers['Content-type'] = 'multipart/form-data'
+      ;
       print(request.fields);
       final Http.StreamedResponse streamedResponse = await request.send();
       print(streamedResponse.statusCode);
