@@ -137,6 +137,25 @@ abstract class ApiClient extends GetxService {
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
+  static Future<dynamic> postHeaderMultipartData1(Http.MultipartRequest request, String apiKey) async {
+    try {
+      // print(AppConstants.BASE_URL + uri);
+      // print(body);
+      request=request..headers['Authorization'] = 'Bearer $apiKey'
+        ..headers['Accept'] = 'application/json'
+        ..headers['Content-type'] = 'application/json'
+      ;
+      print(request.fields);
+      final Http.StreamedResponse streamedResponse = await request.send();
+      print(streamedResponse.statusCode);
+
+      return streamedResponse;
+    } catch (ex) {
+      print(ex);
+      return Response(
+          statusCode: 1, statusText: AppConstants.noInternetConnection);
+    }
+  }
 
   static Future<dynamic> postListData(String uri, dynamic body) async {
     try {

@@ -28,6 +28,7 @@ import 'package:image/image.dart' as img;
 
 class StickerViewController extends GetxController implements GetxService {
   final GlobalKey stickGlobalKey = GlobalKey();
+  final GlobalKey stickGlobalKey1 = GlobalKey();
   final initialStickerScale = 5.0;
   double sliderValue = 24.0;
   String selectedOption = "";
@@ -1177,6 +1178,34 @@ class StickerViewController extends GetxController implements GetxService {
       await Future.delayed(const Duration(milliseconds: 700))
           .then((value) async {
         RenderRepaintBoundary boundary = stickGlobalKey.currentContext
+            ?.findRenderObject() as RenderRepaintBoundary;
+        ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+        ByteData? byteData =
+            await image.toByteData(format: ui.ImageByteFormat.png);
+        pngBytes = byteData?.buffer.asUint8List();
+        final originalImage = img.decodeImage(pngBytes!);
+        final grayscaleImage = img.grayscale(originalImage!);
+        capturedSS = img.encodePng(grayscaleImage);
+        // capturedSS = pngBytes!;
+        Get.toNamed(RouteHelper.printPreviewPage);
+      });
+      return pngBytes;
+    } catch (e) {
+      rethrow;
+    }
+  }
+  Future<Uint8List?> saveAsUint8List1(ImageQuality imageQuality) async {
+    try {
+      Uint8List? pngBytes;
+      double pixelRatio = 1;
+      if (imageQuality == ImageQuality.high) {
+        pixelRatio = 2;
+      } else if (imageQuality == ImageQuality.low) {
+        pixelRatio = 0.5;
+      }
+      await Future.delayed(const Duration(milliseconds: 700))
+          .then((value) async {
+        RenderRepaintBoundary boundary = stickGlobalKey1.currentContext
             ?.findRenderObject() as RenderRepaintBoundary;
         ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
         ByteData? byteData =

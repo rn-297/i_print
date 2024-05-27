@@ -18,7 +18,7 @@ class NavigatorPage extends StatelessWidget {
           navigatorController.requestPermission();
       return SafeArea(
         child: Scaffold(
-          backgroundColor: PrintColors.mainColor,
+          backgroundColor: PrintColors.mainColor1,
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: navigatorController.getSelectedIndex(),
             showSelectedLabels: false,

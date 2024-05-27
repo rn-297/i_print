@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:i_print/views/bottom_navigator/materials/material_page.dart';
 import 'package:i_print/views/bottom_navigator/my_page.dart';
 import 'package:i_print/views/bottom_navigator/print_page.dart';
-import 'package:i_print/views/bottom_navigator/templates_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/templates_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BottomNavigationController extends GetxController implements GetxService{

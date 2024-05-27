@@ -15,6 +15,12 @@ import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/graffiti_cartoon
 import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/grafftti_preview.dart';
 import 'package:i_print/views/ai_toolbox/line_drawing_page.dart';
 import 'package:i_print/views/ai_toolbox/various_page/various_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/label_edit_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/label_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/sticky_note_edit_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/sticky_note_page.dart';
+import 'package:i_print/views/bottom_navigator/templates/to_do_list_edit.dart';
+import 'package:i_print/views/bottom_navigator/templates/to_do_list_page.dart';
 import 'package:i_print/views/graphic_editing/graphiic_editing.dart';
 import 'package:i_print/views/print_preview/print_preview_page.dart';
 import 'package:i_print/views/toolbox/banner_print_page.dart';
@@ -48,6 +54,12 @@ abstract class RouteHelper {
   static const String lineDrawing = '/i_print_line_drawing';
   static const String printScanningPage = '/i_print_print_scanning';
   static const String graffitiPreviewPage = '/i_print_graffiti_preview';
+  static const String stickyNotePage = '/i_print_sticky_note';
+  static const String toDoListPage = '/i_print_to_do_list';
+  static const String labelPage = '/i_print_label_page';
+  static const String stickyNoteEditPage = '/i_print_sticky_note_edit';
+  static const String toDoListEditPage = '/i_print_to_do_list_edit';
+  static const String labelEditPage = '/i_print_label_page_edit';
 
   static List<GetPage> route = [
     GetPage(name: initial, page: () => SplashScreen()),
@@ -71,6 +83,12 @@ abstract class RouteHelper {
     GetPage(name: lineDrawing, page: () => LineDrawingPage()),
     GetPage(name: printScanningPage, page: () => ScanPrinterPage()),
     GetPage(name: graffitiPreviewPage, page: () => GraffitiPracticePage()),
+    GetPage(name: stickyNotePage, page: () => StickyNotePage()),
+    GetPage(name: toDoListPage, page: () => ToDoListPage()),
+    GetPage(name: labelPage, page: () => LabelPage()),
+    GetPage(name: stickyNoteEditPage, page: () => StickyNoteEditPage()),
+    GetPage(name: toDoListEditPage, page: () => ToDoListEditPage()),
+    GetPage(name: labelEditPage, page: () => LabelEditPage()),
   ];
 
   static void goToNextPage(String label) {
@@ -84,15 +102,7 @@ abstract class RouteHelper {
       case AppConstants.aboutUs:
         print(label);
         break;
-      case AppConstants.stickyNote:
-        print(label);
-        break;
-      case AppConstants.toDoList:
-        print(label);
-        break;
-      case AppConstants.label:
-        print(label);
-        break;
+    
       case AppConstants.photoPrinting:
         StickerViewController controller = Get.put(StickerViewController());
         controller.selectImage();
@@ -158,6 +168,18 @@ abstract class RouteHelper {
         break;
       case AppConstants.bannerPrint:
         Get.toNamed(bannerPrintPage);
+        print(label);
+        break;
+        case AppConstants.stickyNote:
+        Get.toNamed(stickyNotePage);
+        print(label);
+        break;
+        case AppConstants.toDoList:
+        Get.toNamed(toDoListPage);
+        print("11$label");
+        break;
+        case AppConstants.label:
+        Get.toNamed(labelPage);
         print(label);
         break;
     }

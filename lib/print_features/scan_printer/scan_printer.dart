@@ -3,8 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_bluetooth_printer/flutter_simple_bluetooth_printer.dart';
+import 'package:flutter_simple_bluetooth_printer/models/connect_state.dart';
+
+
+import 'package:flutter_simple_bluetooth_printer/models/printer_devices.dart';
 import 'package:get/get.dart';
-import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
+
+import '../sticker_view/sticker_view_controller.dart';
+
+
+
 
 class ScanPrinterPage extends StatefulWidget {
   const ScanPrinterPage({super.key});
@@ -125,6 +133,7 @@ class _MyAppState extends State<MyApp> {
       await _connectDevice();
       if (!_isConnected) return;
       final isSuccess = await bluetoothManager.writeRawData(stickerViewController.capturedSS);
+      // _printImage(stickerViewController.capturedSS);
       if (isSuccess) {
         await bluetoothManager.disconnect();
       }
@@ -132,6 +141,8 @@ class _MyAppState extends State<MyApp> {
       print(e);
     }
   }
+
+
 
   _connectDevice() async {
     if (selectedPrinter == null) return;
@@ -252,3 +263,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+

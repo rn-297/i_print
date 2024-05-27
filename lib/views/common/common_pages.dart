@@ -13,7 +13,9 @@ class CommonPages {
       padding: EdgeInsets.all(8.h),
       decoration: PrintDecoration.mainDecoration,
       child: InkWell(
-        onTap: (){RouteHelper.goToNextPage(label);},
+        onTap: () {
+          RouteHelper.goToNextPage(label);
+        },
         child: Container(
           decoration: PrintDecoration.itemDecoration,
           padding: EdgeInsets.all(16.h),
