@@ -51,6 +51,7 @@ dependencies:
   flutter_vision: ^1.1.4
   screenshot: ^2.3.0
   flutter_inappwebview: ^6.0.0
+  webcontent_converter: ^0.0.8+3
   image: ^4.1.7
   flutter_simple_bluetooth_printer: ^0.1.4
   tflite: ^1.1.2

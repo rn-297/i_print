@@ -7,6 +7,7 @@ import 'package:i_print/helper/router.dart';
 import 'package:i_print/local_db/api_key.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(ApiKeyModelAdapter());
   Hive.openBox<ApiKeyModel>('api_key');

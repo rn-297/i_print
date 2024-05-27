@@ -209,6 +209,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      sha256: "7d328c4d898a61efc3cd93655a0955858e29a0aa647f0f9e02d59b3bb275e2e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.6"
+  easy_logger:
+    dependency: transitive
+    description:
+      name: easy_logger
+      sha256: c764a6e024846f33405a2342caf91c62e357c24b02c04dbc712ef232bf30ffb7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -864,6 +880,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  puppeteer:
+    dependency: transitive
+    description:
+      name: puppeteer
+      sha256: cc2475f3945c68596c59d3cc2da9f7d0b0279ddf7d593bcc218a164b51c27aab
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.25.0"
   qr:
     dependency: transitive
     description:
@@ -1141,6 +1165,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
+  webcontent_converter:
+    dependency: "direct main"
+    description:
+      name: webcontent_converter
+      sha256: "4c554be37a56fc8b5d5d70ee78ffe902bb7126ecd036e204c19f3cc05d417850"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.8+3"
   webview_flutter:
     dependency: "direct main"
     description:

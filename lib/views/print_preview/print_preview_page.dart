@@ -24,7 +24,8 @@ class PrintPreviewPage extends StatelessWidget {
                 child: Container(
                     margin:
                         EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-                    child: SingleChildScrollView(child: Image.memory(controller.capturedSS)))),
+
+                    child: SingleChildScrollView(child: Image.memory(controller.capturedSS,fit: BoxFit.fitWidth,)))),
             InkWell(
               onTap: () {
                 Get.toNamed(RouteHelper.printScanningPage);

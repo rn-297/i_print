@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:barcode/barcode.dart';
 import 'package:crop_image/crop_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ import 'package:i_print/print_features/sticker_view/icon_tab/icon_tab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:screenshot/screenshot.dart';
+import 'package:webcontent_converter/webcontent_converter.dart';
 import 'sticker_view.dart';
 import 'package:image/image.dart' as img;
 
@@ -1125,28 +1127,38 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void captureFullPage(BuildContext context) async {
+    bool _isLoading=true;
+    var url = await webViewController!.getUrl();
+    /*Widget retrievedWidget = Container(
+      width: Get.size.width,
+
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: InAppWebView(
+              initialUrlRequest: URLRequest(url: url),
+
+              onWebViewCreated: (val){
+                _isLoading=false;
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
     final FlutterView? view = View.maybeOf(context);
     final Size? viewSize =
         view == null ? null : view.physicalSize / view.devicePixelRatio;
     final Size? targetSizeVertical =
-        viewSize == null ? null : Size(viewSize.width, 9999);
+        viewSize == null ? null : Size(viewSize.width, 2000);
 
-    if (webViewController != null) {
-      var url = await webViewController!.getUrl();
-      webViewController!.isLoading().then((isLoading) {
-        if (!isLoading) {
+
           screenshotController
               .captureFromWidget(
             targetSize: targetSizeVertical,
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: PrintColors.mainColor.withOpacity(.5),
-              ),
-              child: InAppWebView(
-                initialUrlRequest: URLRequest(url: url),
-              ),
-            ),
+            retrievedWidget,
             context: context,
           )
               .then((capturedImage) {
@@ -1154,16 +1166,13 @@ class StickerViewController extends GetxController implements GetxService {
             setCapturedSS(capturedImage);
             Get.toNamed(RouteHelper.printPreviewPage);
           });
-        } else {
-          // Web page is still loading, wait and try again
-          webViewController!.addJavaScriptHandler(
-              handlerName: 'onLoad',
-              callback: (_) {
-                captureFullPage(context);
-              });
-        }
-      });
-    }
+*/
+    String content = await webViewController!.evaluateJavascript(source: "document.documentElement.outerHTML");
+
+    var bytes = await WebcontentConverter.contentToImage(content: content);
+
+    setCapturedSS(bytes);
+    Get.toNamed(RouteHelper.printPreviewPage);
   }
 
   Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {

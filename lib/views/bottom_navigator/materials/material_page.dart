@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/views/bottom_navigator/materials/sub_category_tabs.dart';
 
 import 'material_controller.dart';
@@ -30,9 +31,9 @@ class _MaterialsPageState extends State<MaterialsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:PrintColors.mainColor1,
         elevation: 0,
-        title: Text('Statistics'),
+        title: Text('Materials'),
         bottom: TabBar(
           controller: materialController.tabController,
 

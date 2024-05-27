@@ -26,7 +26,7 @@ class TemplatesPage extends StatelessWidget {
           itemBuilder: (context, index) {
             return StickyHeader(
                 header: Container(
-                  color: PrintColors.mainColor,
+                  color: PrintColors.mainColor1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

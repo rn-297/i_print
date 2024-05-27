@@ -66,7 +66,7 @@ class PrintPage extends StatelessWidget {
                             AppConstants.graphicEditing, PrintColors.mainColor),
                       ],
                     ),
-                    SizedBox(
+                    /*SizedBox(
                       height: 24.h,
                     ),
                     Container(
@@ -135,7 +135,7 @@ class PrintPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
                     SizedBox(
                       height: 24.h,
                     ),
