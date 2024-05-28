@@ -24,7 +24,7 @@ import 'package:i_print/views/bottom_navigator/templates/to_do_list_page.dart';
 import 'package:i_print/views/graphic_editing/graphiic_editing.dart';
 import 'package:i_print/views/print_preview/print_preview_page.dart';
 import 'package:i_print/views/toolbox/banner_print_page.dart';
-import 'package:i_print/views/toolbox/document_print_page.dart';
+import 'package:i_print/views/toolbox/document_print/document_print_page.dart';
 import 'package:i_print/views/toolbox/print_web_page.dart';
 import 'package:i_print/views/toolbox/text_extraction_page.dart';
 

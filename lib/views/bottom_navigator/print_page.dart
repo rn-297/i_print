@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -66,7 +64,7 @@ class PrintPage extends StatelessWidget {
                             AppConstants.graphicEditing, PrintColors.mainColor),
                       ],
                     ),
-                    SizedBox(
+                    /*SizedBox(
                       height: 24.h,
                     ),
                     Container(
@@ -135,7 +133,7 @@ class PrintPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
                     SizedBox(
                       height: 24.h,
                     ),
