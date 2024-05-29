@@ -18,7 +18,8 @@ class TemplatesController extends GetxController {
     ],
     'assets/images/to_do_list/img_2.jpg': [
       'assets/images/to_do_list/img_2_1.jpg',
-      'assets/images/to_do_list/img_2_2.jpg'
+      'assets/images/to_do_list/img_2_2.jpg',
+      'assets/images/to_do_list/img_2_3.jpg'
     ],
     'assets/images/to_do_list/img_3.jpg': [
       'assets/images/to_do_list/img_3_1.jpg',
@@ -39,19 +40,24 @@ class TemplatesController extends GetxController {
 
   List<String> selectedToDoList = [];
   List<TextEditingController> toDoListEditingControllers = [
-    TextEditingController()
+
   ];
   GlobalKey toDoListGlobalKey = GlobalKey();
   ScreenshotController screenshotController = ScreenshotController();
 
   void setSelectedToDo(String selected) {
+    print(selected);
     selectedToDoList = images[selected]!;
-    toDoListEditingControllers = [TextEditingController()];
+    print(selectedToDoList);
+    toDoListEditingControllers.clear();
+    addToDoTextField();
     Get.toNamed(RouteHelper.toDoListEditPage);
   }
 
   void addToDoTextField() {
-    toDoListEditingControllers.add(TextEditingController());
+    TextEditingController temp=TextEditingController();
+    toDoListEditingControllers.add(temp);
+
     update();
   }
 
@@ -62,6 +68,9 @@ class TemplatesController extends GetxController {
   }
 
   Future<void> getImageFromUI(BuildContext context) async {
+    update();
+    toDoListEditingControllers.map((controller) {
+      print("controller.text ${controller.text}");});
     Widget retrievedWidget = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -71,7 +80,6 @@ class TemplatesController extends GetxController {
         ),
         Column(
           children: toDoListEditingControllers.map((controller) {
-
             return Container(
               height: 60.h,
               width: double.infinity,

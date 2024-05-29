@@ -15,42 +15,41 @@ class ToDoListEditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(TemplatesController());
-    final StickerViewController stickerViewController = Get.put(StickerViewController());
+    TemplatesController templatesController = Get.put(TemplatesController());
     return GetBuilder<TemplatesController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Edit To Do List'),
-          actions: [InkWell(
-            onTap: () {
-
-              controller.getImageFromUI(context);
-            },
-            child: Container(
-              padding: EdgeInsets.all(4),
-              margin: EdgeInsets.only(right: 16.w),
-              decoration: BoxDecoration(
-                  color: PrintColors.mainColor.withOpacity(.3),
-                  borderRadius: BorderRadius.circular(4.r)),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    PrintImages.selectedPrint,
-                    height: 25.h,
-                    width: 25.h,
-                  ),
-                  SizedBox(
-                    width: 8.w,
-                  ),
-                  Text(
-                    "Print",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-
-                ],
+          actions: [
+            InkWell(
+              onTap: () {
+                controller.getImageFromUI(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(4),
+                margin: EdgeInsets.only(right: 16.w),
+                decoration: BoxDecoration(
+                    color: PrintColors.mainColor.withOpacity(.3),
+                    borderRadius: BorderRadius.circular(4.r)),
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      PrintImages.selectedPrint,
+                      height: 25.h,
+                      width: 25.h,
+                    ),
+                    SizedBox(
+                      width: 8.w,
+                    ),
+                    Text(
+                      "Print",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )],
+            )
+          ],
         ),
         bottomNavigationBar: Container(
           height: 48.h,
@@ -64,91 +63,100 @@ class ToDoListEditPage extends StatelessWidget {
                   Icons.add_circle_outline,
                   size: 25,
                 ),
-                Text("Add Entry",style: TextStyle(fontWeight: FontWeight.bold),)
+                Text(
+                  "Add Entry",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
               ],
             ),
           ),
         ),
-        body: RepaintBoundary(
-          key: stickerViewController.stickGlobalKey1,
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
             key: controller.toDoListGlobalKey,
-              child: Column(
-            children: [
-              Image.asset(
-                controller.selectedToDoList[0],
-              ),
-              ListView.builder(
-                  itemCount: controller.toDoListEditingControllers.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return controller.toDoListEditingControllers.length==1?
-                    Container(
-                        height: 60.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage(
-                                  controller.selectedToDoList[1],
-                                ))),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 80.w),
-                          child: TextField(
-                            controller: controller.toDoListEditingControllers[index],
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            style: TextStyle(
-                                fontSize: 22.sp, fontWeight: FontWeight.bold),
-                          ),
-                        )):
-                    Container(
-                        height: 60.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage(
-                                  controller.selectedToDoList[1],
-                                ))),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 80.w),
-                          child: Dismissible(
-                            key: Key(controller
-                                .toDoListEditingControllers[index].hashCode
-                                .toString()),
-                            direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              controller.removeToDoTextField(index);
-                            },
-                            background: Container(
-                              color: Colors.red,
-                              alignment: Alignment.centerRight,
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
-                            child: TextField(
-                              // controller: controller.toDoListTextFieldControllers[index],
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
-                                  fontSize: 22.sp, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ));
-                  }),
-              Image.asset(
-                controller.selectedToDoList[2],
-              ),
-            ],
-          )),
-        ),
+            child: Column(
+              children: [
+                Image.asset(
+                  controller.selectedToDoList[0],
+                ),
+                ListView.builder(
+                    itemCount: controller.toDoListEditingControllers.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return controller.toDoListEditingControllers.length == 1
+                          ? Container(
+                              height: 60.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                        controller.selectedToDoList[1],
+                                      ))),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 80.w),
+                                child: TextField(
+                                  controller: controller
+                                      .toDoListEditingControllers[index],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.bold),
+                                  // onChanged: (val) {
+                                  //   controller.toDoListEditingControllers[index]
+                                  //       .text = val;
+                                  // },
+                                ),
+                              ))
+                          : Container(
+                              height: 60.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                        controller.selectedToDoList[1],
+                                      ))),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 80.w),
+                                child: Dismissible(
+                                  key: Key(controller
+                                      .toDoListEditingControllers[index]
+                                      .hashCode
+                                      .toString()),
+                                  direction: DismissDirection.endToStart,
+                                  onDismissed: (direction) {
+                                    controller.removeToDoTextField(index);
+                                  },
+                                  background: Container(
+                                    color: Colors.red,
+                                    alignment: Alignment.centerRight,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  child: TextField(
+                                    controller: controller.toDoListEditingControllers[index],
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                    style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ));
+                    }),
+                Image.asset(
+                  controller.selectedToDoList[2],
+                ),
+              ],
+            )),
       );
     });
   }
