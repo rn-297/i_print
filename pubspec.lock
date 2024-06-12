@@ -9,6 +9,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "67.0.0"
+  adstringo_plugin:
+    dependency: "direct main"
+    description:
+      path: adstringo_plugin
+      relative: true
+    source: path
+    version: "0.0.1"
   analyzer:
     dependency: transitive
     description:

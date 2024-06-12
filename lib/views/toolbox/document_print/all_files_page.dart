@@ -12,7 +12,7 @@ class AllFilesPage extends StatelessWidget {
       body: Obx(() => ListView.builder(
         itemCount: documentController.allFiles.length,
         itemBuilder: (context,index){
-        return (Text(documentController.allFiles[index].name));
+        return (Text(documentController.allFiles[index]));
       },))
     );
   }

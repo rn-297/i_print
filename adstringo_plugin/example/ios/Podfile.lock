@@ -1,0 +1,22 @@
+PODS:
+  - adstringo_plugin (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - adstringo_plugin (from `.symlinks/plugins/adstringo_plugin/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  adstringo_plugin:
+    :path: ".symlinks/plugins/adstringo_plugin/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  adstringo_plugin: 9093c7547ad52d1a8d76fb80b0250d85da17028b
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+
+COCOAPODS: 1.11.3
