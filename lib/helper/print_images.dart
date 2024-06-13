@@ -104,4 +104,6 @@ class PrintImages {
 
   static const String done1 = "assets/svg/done1.svg";
   static const String draw = "assets/svg/draw.svg";
+  static const String pdf = "assets/svg/pdf.svg";
+  static const String word = "assets/svg/docs.svg";
 }

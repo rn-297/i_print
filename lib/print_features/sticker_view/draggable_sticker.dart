@@ -56,6 +56,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       stickerViewController.calculateMaxBottomPosition(sticker);
                     })
                   },
+                  isDeletable: stickerViewController.isChangeableHeight,
 
                   // To update the layer (manage position of widget in stack)
                   onLayerTapped: () {
@@ -114,9 +115,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     child: SizedBox(
                       width: double.infinity,
                       height: double.infinity,
-                      child: sticker.isText == true
+                      child: /*sticker.isText == true
                           ? FittedBox(child: sticker)
-                          : sticker,
+                          :*/ sticker,
                     ),
                   ),
                 ),

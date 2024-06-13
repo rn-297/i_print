@@ -94,6 +94,7 @@ flutter:
       - assets/models/
       - assets/images/
       - assets/images/to_do_list/
+      - assets/images/sticky_note/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

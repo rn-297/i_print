@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class DocumentController extends GetxController {
-  RxList<PlatformFile> pdfFiles = <PlatformFile>[].obs;
+  RxList<String> pdfFiles = <String>[].obs;
   RxList<String> allFiles = <String>[].obs;
-  RxList<PlatformFile> wordFiles = <PlatformFile>[].obs;
+  RxList<String> wordFiles = <String>[].obs;
   static const platform = MethodChannel('iPrintFilePicker');
 
   @override
@@ -37,8 +37,11 @@ class DocumentController extends GetxController {
       final _imagePickerPlugin = MethodChannelAdstringoPlugin();
 
 
-      var data = await _imagePickerPlugin.getPdfFile("");
+      var data = await _imagePickerPlugin.getAllFile();
       print(data);
+      allFiles.value = data;
+      update();
+
 
     } on PlatformException catch (e) {
       print("Failed to get PDF files: '${e.message}'.");
@@ -54,6 +57,14 @@ class DocumentController extends GetxController {
     //   allowedExtensions: [ 'doc'],
     // );
     // wordFiles.value=result!.files;
+
+    final _imagePickerPlugin = MethodChannelAdstringoPlugin();
+
+
+    var data = await _imagePickerPlugin.getWordFile();
+    print(data);
+    wordFiles.value = data;
+    update();
   }
 
   Future<void> fetchPdfFiles() async {
@@ -62,5 +73,11 @@ class DocumentController extends GetxController {
     //   allowedExtensions: [ 'pdf', ],
     // );
     // pdfFiles.value=result!.files;
+    final _imagePickerPlugin = MethodChannelAdstringoPlugin();
+
+
+    var data = await _imagePickerPlugin.getPdfFile();
+    print(data);
+    pdfFiles.value = data;
   }
 }

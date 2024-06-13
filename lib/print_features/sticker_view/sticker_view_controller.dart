@@ -44,6 +44,7 @@ class StickerViewController extends GetxController implements GetxService {
 
   //text Extraction
 
+  bool isChangeableHeight=true;
   bool extractingText = false;
   FontWeight extractedTextFontWeight = FontWeight.normal;
   FontStyle extractedTextFontStyle = FontStyle.normal;
@@ -905,20 +906,23 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void calculateMaxBottomPosition(Sticker sticker) {
-    double maxBottom = 0;
 
-    for (final sticker in stickers) {
-      final stickerBottom = sticker.position.dy + sticker.size.height + 50;
-      if (stickerBottom > maxBottom) {
-        maxBottom = stickerBottom;
+    if (isChangeableHeight) {
+      double maxBottom = 0;
+
+      for (final sticker in stickers) {
+        final stickerBottom = sticker.position.dy + sticker.size.height + 50;
+        if (stickerBottom > maxBottom) {
+          maxBottom = stickerBottom;
+        }
       }
-    }
 
-    if (maxBottom > Get.size.height * 0.4) {
-      stickerViewHeight.value = maxBottom;
+      if (maxBottom > Get.size.height * 0.4) {
+        stickerViewHeight.value = maxBottom;
+      }
+      print("$maxBottom,${stickerViewHeight.value}");
+      update();
     }
-    print("$maxBottom,${stickerViewHeight.value}");
-    update();
   }
 
   void setDrawingColor(Color color) {

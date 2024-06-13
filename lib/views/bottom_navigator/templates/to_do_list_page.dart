@@ -17,11 +17,11 @@ class ToDoListPage extends StatelessWidget {
           children: [
             GridView.builder(
                 shrinkWrap: true,
-                itemCount: controller.images.length,
+                itemCount: controller.toDoListImages.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  List<String> mainImages = controller.images.keys.toList();
+                  List<String> mainImages = controller.toDoListImages.keys.toList();
                   return InkWell(
                       onTap: () {
                         controller.setSelectedToDo(mainImages[index]);

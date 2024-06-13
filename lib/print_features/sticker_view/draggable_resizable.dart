@@ -49,6 +49,7 @@ class DraggableResizable extends StatefulWidget {
     this.canTransform = false,
     this.position = Offset.zero,
     this.isText = false,
+    this.isDeletable = true,
   })  : constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
 
@@ -70,6 +71,7 @@ class DraggableResizable extends StatefulWidget {
   /// Defaults to false.
   final bool canTransform;
   final bool isText;
+  final bool isDeletable;
 
   /// The child's original size.
   final Size size;
@@ -206,7 +208,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onUpdate();
         }
 
-        void onDragBottomRight(Offset details) {
+        /*void onDragBottomRight(Offset details) {
           final mid = (details.dx + details.dy) / 2;
           final newHeight = math.max(size.height + (2 * mid), 0.0);
           final newWidth = math.max(size.width + (2 * mid), 0.0);
@@ -222,6 +224,19 @@ class _DraggableResizableState extends State<DraggableResizable> {
               position = updatedPosition;
             });
           }
+
+          onUpdate();
+        }*/
+        void onDragBottomRight(Offset details) {
+          final dx = details.dx;
+          final dy = details.dy;
+          final newWidth = math.max(size.width + dx, 50.0);
+          final newHeight = math.max(size.height + dy, 50.0);
+
+          setState(() {
+            size = Size(newWidth, newHeight);
+            position = Offset(position.dx + dx / 2, position.dy + dy / 2);
+          });
 
           onUpdate();
         }
@@ -392,7 +407,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
                         Positioned(
                           bottom: _floatingActionPadding / 2,
                           left: _floatingActionPadding / 2,
-                          child: deleteButton,
+                          child:
+                              widget.isDeletable ? deleteButton : Container(),
                         ),
                         Positioned(
                           top: normalizedHeight + _floatingActionPadding / 2,

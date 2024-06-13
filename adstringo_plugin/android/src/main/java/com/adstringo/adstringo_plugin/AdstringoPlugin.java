@@ -34,14 +34,14 @@ public class AdstringoPlugin implements FlutterPlugin, MethodCallHandler {
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
-    } else if (call.method.equals("getPdfFiles")) {
-      result.success(getPdfFiles());
+    } else if (call.method.equals("getFiles")) {
+      result.success(getFiles(call.argument("type")));
     } else {
       result.notImplemented();
     }
   }
 
-  private List<String> getPdfFiles() {
+  private List<String> getFiles(String type) {
     List<String> pdfPaths = new ArrayList<>();
     final File[] appsDir = context.getExternalFilesDirs(null);
 
@@ -51,7 +51,7 @@ public class AdstringoPlugin implements FlutterPlugin, MethodCallHandler {
       File dir = new File(a.split("/Android/")[0]);
 //      Log.d("My Data", dir.getPath());
       List<String>emptyList=new ArrayList<>();
-      List<String> pdfPathsFromDir = walkDir(dir,emptyList); // Get PDF paths from the directory
+      List<String> pdfPathsFromDir = walkDir(dir,emptyList,type); // Get PDF paths from the directory
       pdfPaths.addAll(pdfPathsFromDir);
     }
 
@@ -70,17 +70,22 @@ public class AdstringoPlugin implements FlutterPlugin, MethodCallHandler {
   }
 
 
-  private List<String> walkDir(File dir,List<String> filepath) {
+  private List<String> walkDir(File dir,List<String> filepath,String type) {
     File[] listFile = dir.listFiles();
 
     if (listFile != null) {
       for (int i=0;i< listFile.length;i++) {
         File file=listFile[i];
         if (file.isDirectory()) {
-          walkDir(file,filepath);
+          walkDir(file,filepath,type);
         } else {
 //          Log.d("my_file", file.getPath());
-          if (!file.getPath().contains("com.adstringo.shrinkman") && file.getAbsolutePath().endsWith(".pdf")) {
+          if (type.equals("All")&&(file.getAbsolutePath().endsWith(".pdf")||file.getAbsolutePath().endsWith(".docx"))){
+            filepath.add(file.getAbsolutePath());
+          }else if (type.equals("pdf")&&file.getAbsolutePath().endsWith(".pdf")) {
+//            Log.d("my_file_pdf", file.getAbsolutePath());
+            filepath.add(file.getAbsolutePath());
+          }else if (type.equals("word")&&file.getAbsolutePath().endsWith(".docx")||file.getAbsolutePath().endsWith(".doc")) {
 //            Log.d("my_file_pdf", file.getAbsolutePath());
             filepath.add(file.getAbsolutePath());
           }
