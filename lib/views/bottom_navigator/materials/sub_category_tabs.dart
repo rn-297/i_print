@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
-import 'package:i_print/views/bottom_navigator/materials/material_controller.dart';
+import 'package:i_print/controller/material_controller.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NestedTabBar extends StatefulWidget {
   @override
@@ -20,9 +21,17 @@ class _NestedTabBarState extends State<NestedTabBar>
     super.initState();
     materialController.nestedTabController = new TabController(
         length: materialController
-            .nestedTabs[materialController.tabController.index].length,
+            .categoriesList[materialController.tabController.index]
+            .subCategories!
+            .length,
         vsync: this);
     materialController.nestedTabController.addListener(() {
+      print("here");
+      int id = int.parse(materialController
+          .categoriesList[materialController.tabController.index]
+          .subCategories![materialController.nestedTabController.index]
+          .subcatId!);
+      materialController.getSubCategoryImagesList(id);
       materialController.update();
     });
   }
@@ -36,12 +45,12 @@ class _NestedTabBarState extends State<NestedTabBar>
         children: <Widget>[
           TabBar(
               controller: materialController.nestedTabController,
-
               unselectedLabelColor: Colors.black54,
               isScrollable: true,
               tabs: materialController
-                  .nestedTabs[materialController.tabController.index]
-                  .map((tab) => Tab(text: "$tab "))
+                  .categoriesList[materialController.tabController.index]
+                  .subCategories!
+                  .map((tab) => Tab(text: "${tab.subcatName} "))
                   .toList()),
           Expanded(
             child: Container(
@@ -49,41 +58,68 @@ class _NestedTabBarState extends State<NestedTabBar>
                 child: TabBarView(
                   controller: materialController.nestedTabController,
                   children: materialController
-                      .nestedTabs[materialController.tabController.index]
+                      .categoriesList[materialController.tabController.index]
+                      .subCategories!
                       .map((tab) {
-                    print(materialController
-                        .images[materialController.tabController.index * 3 +
-                            materialController.nestedTabController.index]
-                        .length);
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
-                      itemBuilder: (_, index) => InkWell(
-                        onTap: () {
-                          StickerViewController stickerViewController =
-                              Get.put(StickerViewController());
-                          stickerViewController.assetImageToUint8List(
-                              materialController.images[
-                                  materialController.tabController.index * 3 +
-                                      materialController
-                                          .nestedTabController.index][index]);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(8.h),
-                          margin: EdgeInsets.all(4.h),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 2)),
-                          child: Image.asset(materialController.images[
-                              materialController.tabController.index * 3 +
-                                  materialController
-                                      .nestedTabController.index][index]),
-                        ),
-                      ),
-                      itemCount: materialController
-                          .images[materialController.tabController.index * 3 +
-                              materialController.nestedTabController.index]
-                          .length,
-                    );
+                    return materialController.isLoading
+                        ? GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemCount: 4,
+                            itemBuilder: (_, index) => Container(
+                                padding: EdgeInsets.all(8.h),
+                                margin: EdgeInsets.all(4.h),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 2)),
+                                child: Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey,
+                                    enabled: true,
+                                    child: const SingleChildScrollView(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+
+                                          SizedBox(height: 16.0),
+
+                                          SizedBox(height: 16.0),
+                                          SizedBox(height: 16.0),
+
+                                          SizedBox(height: 16.0),
+                                          SizedBox(height: 16.0),
+
+                                        ],
+                                      ),
+                                    )),))
+                        : GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemBuilder: (_, index) => InkWell(
+                              onTap: () {
+                                StickerViewController stickerViewController =
+                                    Get.put(StickerViewController());
+                                stickerViewController.networkImageToUint8List(
+                                    materialController.subCategoriesList[index]
+                                        .subcatImgUrl!);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(8.h),
+                                margin: EdgeInsets.all(4.h),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 2)),
+                                child: Image.network(materialController
+                                    .subCategoriesList[index]!.subcatImgUrl!),
+                              ),
+                            ),
+                            itemCount:
+                                materialController.subCategoriesList.length,
+                          );
                   }).toList(),
                 )),
           )

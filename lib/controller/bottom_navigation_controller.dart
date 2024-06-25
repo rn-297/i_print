@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:i_print/controller/material_controller.dart';
 import 'package:i_print/views/bottom_navigator/materials/material_page.dart';
 import 'package:i_print/views/bottom_navigator/my_page.dart';
 import 'package:i_print/views/bottom_navigator/print_page.dart';
@@ -11,6 +12,12 @@ class BottomNavigationController extends GetxController implements GetxService{
   List<Widget> navigatorPages=<Widget>[PrintPage(),MaterialsPage(),TemplatesPage(),MyPage()];
   getSelectedIndex() {
     return selectedIndex;
+  }
+  @override
+  onInit(){
+    super.onInit();
+    MaterialController materialController=Get.put(MaterialController());
+    materialController.getCategoryList();
   }
 
   setSelectedIndex( int index){
@@ -28,7 +35,7 @@ class BottomNavigationController extends GetxController implements GetxService{
         Permission.storage,
 
     ].request();
-    print(statuses[Permission.storage]);
+    // print(statuses[Permission.storage]);
   }
 
   instanceSegmentation()async{

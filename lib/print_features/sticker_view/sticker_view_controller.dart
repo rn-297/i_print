@@ -16,6 +16,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:i_print/controller/ai_creation_controller.dart';
+import 'package:http/http.dart' as Http;
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/print_images.dart';
@@ -56,6 +57,7 @@ class StickerViewController extends GetxController implements GetxService {
   InAppWebViewController? webViewController;
   ScreenshotController screenshotController = ScreenshotController();
   late Uint8List capturedSS;
+  late List<int> capturedSS1;
   final GlobalKey webScreen = GlobalKey();
 
   //Banner print
@@ -950,10 +952,10 @@ class StickerViewController extends GetxController implements GetxService {
         Uint8List imageData = base64Decode(img64);
         String filename = await getPath("png");
         File('$filename').writeAsBytes(imageData);
-        AICreationController aiCreationController =
-            Get.put(AICreationController());
-        aiCreationController.setBase64(imageData);
-        aiCreationController.setInitImageName(filename);
+        // AICreationController aiCreationController =
+        //     Get.put(AICreationController());
+        // aiCreationController.setBase64(imageData);
+        // aiCreationController.setInitImageName(filename);
       } else {
         Uint8List imageData = base64Decode(img64);
         String filename = await getPath("png");
@@ -987,12 +989,14 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void saveBitmap(ui.Image bitmap) async {
+
     ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = data!.buffer.asUint8List();
     if (photoPrint) {
-      final originalImage = img.decodeImage(bytes);
+      final originalImage = img.decodePng(bytes);
       final grayscaleImage = img.grayscale(originalImage!);
-      capturedSS = img.encodePng(grayscaleImage);
+      final grayBytes=Uint8List.fromList(img.encodePng(grayscaleImage));
+      capturedSS = grayBytes.buffer.asUint8List(grayBytes.offsetInBytes,grayBytes.lengthInBytes);
       Get.toNamed(RouteHelper.printPreviewPage);
     } else {
       String filePath = await getPath("png");
@@ -1178,32 +1182,63 @@ class StickerViewController extends GetxController implements GetxService {
     setCapturedSS(bytes);
     Get.toNamed(RouteHelper.printPreviewPage);
   }
-
   Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
     try {
       Uint8List? pngBytes;
-      double pixelRatio = 1;
+      double pixelRatio = 1.0;
+
+      // Adjust pixelRatio based on image quality
       if (imageQuality == ImageQuality.high) {
-        pixelRatio = 2;
+        pixelRatio = 2.0;
       } else if (imageQuality == ImageQuality.low) {
         pixelRatio = 0.5;
       }
-      await Future.delayed(const Duration(milliseconds: 700))
-          .then((value) async {
-        RenderRepaintBoundary boundary = stickGlobalKey.currentContext
-            ?.findRenderObject() as RenderRepaintBoundary;
-        ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-        ByteData? byteData =
-            await image.toByteData(format: ui.ImageByteFormat.png);
-        pngBytes = byteData?.buffer.asUint8List();
-        final originalImage = img.decodeImage(pngBytes!);
-        final grayscaleImage = img.grayscale(originalImage!);
-        capturedSS = img.encodePng(grayscaleImage);
-        // capturedSS = pngBytes!;
-        Get.toNamed(RouteHelper.printPreviewPage);
-      });
-      return pngBytes;
+
+      // Delay for ensuring the widget rendering
+      await Future.delayed(const Duration(milliseconds: 700));
+
+      // Accessing the render boundary
+      final boundary = stickGlobalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) {
+        throw Exception("Render boundary not found");
+      }
+
+      // Capturing the image from the boundary
+      final uiImage = await boundary.toImage(pixelRatio: pixelRatio);
+      final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        throw Exception("Failed to convert image to byte data");
+      }
+
+      pngBytes = byteData.buffer.asUint8List();
+
+      // Decoding the original image using the 'image' package
+      final originalImage = img.decodeImage(pngBytes);
+      if (originalImage == null) {
+        throw Exception("Failed to decode image");
+      }
+
+      // Resize the image to fit an 80mm POS printer while maintaining the aspect ratio
+      const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
+      final resizedImage = img.copyResize(
+        originalImage,
+        width: posPrinterWidthPixels,
+        height: (originalImage.height * posPrinterWidthPixels / originalImage.width).round(),
+      );
+
+      // Converting to grayscale
+      final grayscaleImage = img.grayscale(resizedImage);
+
+      // Updating the captured screenshot variable
+      final grayBytes=Uint8List.fromList(img.encodePng(grayscaleImage));
+      capturedSS = grayBytes.buffer.asUint8List(grayBytes.offsetInBytes,grayBytes.lengthInBytes);
+
+      // Navigating to the print preview page
+      Get.toNamed(RouteHelper.printPreviewPage, arguments: capturedSS);
+
+      return capturedSS; // Return the grayscale image bytes
     } catch (e) {
+      print("Error: $e");
       rethrow;
     }
   }
@@ -1226,7 +1261,7 @@ class StickerViewController extends GetxController implements GetxService {
         pngBytes = byteData?.buffer.asUint8List();
         final originalImage = img.decodeImage(pngBytes!);
         final grayscaleImage = img.grayscale(originalImage!);
-        capturedSS = img.encodePng(grayscaleImage);
+        capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
         // capturedSS = pngBytes!;
         Get.toNamed(RouteHelper.printPreviewPage);
       });
@@ -1238,8 +1273,14 @@ class StickerViewController extends GetxController implements GetxService {
 
   void setCapturedSS(Uint8List previewImage) {
     final originalImage = img.decodeImage(previewImage!);
-    final grayscaleImage = img.grayscale(originalImage!);
-    capturedSS = img.encodePng(grayscaleImage);
+    const int posPrinterWidthPixels = 384;
+    final resizedImage = img.copyResize(
+      originalImage!,
+      width: posPrinterWidthPixels,
+      height: (originalImage.height * posPrinterWidthPixels / originalImage.width).round(),
+    );
+    final grayscaleImage = img.grayscale(resizedImage!);
+    capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
   }
 
   assetImageToUint8List(String assetPath) async {
@@ -1249,6 +1290,15 @@ class StickerViewController extends GetxController implements GetxService {
     List<int> bytes = Uint8List.view(imageData.buffer);
     setCapturedSS(Uint8List.fromList(bytes));
 
+    Get.toNamed(RouteHelper.printPreviewPage);
+  }
+  networkImageToUint8List(String networkPath) async {
+    Http.Response response = await Http.get(
+      Uri.parse(networkPath),
+    );
+    Uint8List bytesNetwork = response.bodyBytes;
+    setCapturedSS(bytesNetwork.buffer
+        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes));
     Get.toNamed(RouteHelper.printPreviewPage);
   }
 

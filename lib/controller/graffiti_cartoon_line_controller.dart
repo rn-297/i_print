@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -11,7 +12,7 @@ import 'package:i_print/helper/print_images.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
-import 'package:tflite/tflite.dart';
+// import 'package:tflite/tflite.dart';
 
 class GraffitiCartoonLineController extends GetxController
     implements GetxService {
@@ -78,42 +79,42 @@ class GraffitiCartoonLineController extends GetxController
   }
 
   Future<bool> lineDraw() async {
-    Uint8List bytes = await selectedPhoto.readAsBytes();
-    final originalImage = img.decodeImage(bytes);
-    final grayscaleImage = img.grayscale(originalImage!);
-
-    final lineArtImage1 = img.sobel(grayscaleImage);
-    final quantizeImage = img.edgeGlow(lineArtImage1);
-    final invertedImage = img.invert(quantizeImage);
-
-    previewImage = img.encodePng(invertedImage);
-    isLoading = false;
-    update();
+    // Uint8List bytes = await selectedPhoto.readAsBytes();
+    // final originalImage = img.decodeImage(bytes);
+    // final grayscaleImage = img.grayscale(originalImage!);
+    //
+    // final lineArtImage1 = img.sobel(grayscaleImage);
+    // final quantizeImage = img.edgeGlow(lineArtImage1);
+    // final invertedImage = img.invert(quantizeImage);
+    //
+    // previewImage = img.encodePng(invertedImage);
+    // isLoading = false;
+    // update();
     return true;
   }
 
   loadVision() async {
-    Tflite.close();
+    // Tflite.close();
 
-    String? res = await Tflite.loadModel(
-      model: "assets/models/yolov2_tiny.tflite",
-      labels: "assets/models/yolov2_tiny.txt",
-      // useGpuDelegate: true,
-    );
-    print(res);
+    // String? res = await Tflite.loadModel(
+    //   model: "assets/models/yolov2_tiny.tflite",
+    //   labels: "assets/models/yolov2_tiny.txt",
+    //   // useGpuDelegate: true,
+    // );
+    // print(res);
     Uint8List bytes = await selectedPhoto.readAsBytes();
     selectedImage1=bytes;
 
-    var recognitions = await Tflite.detectObjectOnImage(
-      path: selectedPhoto.path,
-      model: "YOLO",
-      threshold: 0.3,
-      imageMean: 0.0,
-      imageStd: 255.0,
-      numResultsPerClass: 10,
-    );
-    print(recognitions);
-    rectRecognitions=recognitions!;
+    // var recognitions = await Tflite.detectObjectOnImage(
+    //   path: selectedPhoto.path,
+    //   model: "YOLO",
+    //   threshold: 0.3,
+    //   imageMean: 0.0,
+    //   imageStd: 255.0,
+    //   numResultsPerClass: 10,
+    // );
+    // print(recognitions);
+    // rectRecognitions=recognitions!;
     isLoading=false;
     update();
 
@@ -137,7 +138,8 @@ class GraffitiCartoonLineController extends GetxController
   }
 
   Future<bool> cartoonImage(BuildContext context) async {
-    /*print("cartoon");
+    */
+/*print("cartoon");
     Uint8List bytes = await selectedPhoto.readAsBytes();
     final originalImage = img.decodeImage(bytes);
 
@@ -145,7 +147,8 @@ class GraffitiCartoonLineController extends GetxController
     final quantizeImage = img.quantize(lineArtImage1);
 
     previewImage = img.encodePng(quantizeImage);
-    isLoading = false;*/
+    isLoading = false;*//*
+
     AICreationController controller=Get.put(AICreationController());
     controller.currentPage=AppConstants.cartoonishPortraits;
     controller.getApiKey(context);
@@ -158,3 +161,4 @@ class GraffitiCartoonLineController extends GetxController
 
 
 }
+*/

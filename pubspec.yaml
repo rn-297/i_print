@@ -48,19 +48,25 @@ dependencies:
   flutter_drawing_board: ^0.7.0+2
   google_mlkit_text_recognition: ^0.13.0
   webview_flutter: ^4.7.0
-  flutter_vision: ^1.1.4
+#  flutter_vision: ^1.1.4
   screenshot: ^2.3.0
   flutter_inappwebview: ^6.0.0
   webcontent_converter: ^0.0.8+3
-  image: ^4.1.7
-  flutter_simple_bluetooth_printer: ^0.1.4
-  tflite: ^1.1.2
+  image: ^3.3.0
+#  flutter_simple_bluetooth_printer: ^0.1.4
+#  tflite: ^1.1.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   url_launcher: ^6.2.6
   file_picker: ^8.0.3
+  shimmer: ^3.0.0
   adstringo_plugin:
     path: ./adstringo_plugin
+  esc_pos_bluetooth: ^0.4.1
+  blue_thermal_printer: ^1.2.3
+  esc_pos_utils: ^1.1.0
+#  fp_bt_printer: ^0.0.3
+
 
 dev_dependencies:
   flutter_test:
@@ -94,7 +100,7 @@ flutter:
       - assets/models/
       - assets/images/
       - assets/images/to_do_list/
-      - assets/images/sticky_note/
+#      - assets/images/sticky_note/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

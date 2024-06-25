@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -133,7 +134,8 @@ class AICreationController extends GetxController {
     update();
   }
 
-  /*void getDataImage() async {
+  */
+/*void getDataImage() async {
     isProcessing = true;
     withImage = true;
     update();
@@ -184,9 +186,11 @@ class AICreationController extends GetxController {
 
     isProcessing = false;
     update();
-  }*/
+  }*//*
 
- /* void getImageFiltered() async {
+
+ */
+/* void getImageFiltered() async {
 
     GraffitiCartoonLineController graffitiCartoonLineController=Get.put(GraffitiCartoonLineController());
     String inputPath= graffitiCartoonLineController.selectedPhoto.path;
@@ -237,7 +241,8 @@ class AICreationController extends GetxController {
     graffitiCartoonLineController.isLoading = false;
     update();
   }
-*/
+*//*
+
 
   void getImageFiltered() async {
 
@@ -303,3 +308,4 @@ class AICreationController extends GetxController {
     Get.toNamed(RouteHelper.creativePaintingPage);
   }
 }
+*/

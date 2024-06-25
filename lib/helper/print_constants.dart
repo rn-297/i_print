@@ -1,4 +1,12 @@
 class AppConstants {
+
+  //API
+  static const String baseUrl="https://shreyansprint.microlanpos.com/Api/";
+  static const String getCategories="getCategory";
+  static const String getSubCategoriesImages="getSubCategoryImages";
+  static const String getStickyNotes="getStickynotes";
+  static const String getToDoList="getTodoList";
+  //Strings
   static const String print = "Print";
   static const String connecting = "Connecting";
   static const String photoPrinting = "Photo Printing";

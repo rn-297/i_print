@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/views/bottom_navigator/materials/sub_category_tabs.dart';
 
-import 'material_controller.dart';
+import '../../../controller/material_controller.dart';
 
 class MaterialsPage extends StatefulWidget {
   @override
@@ -18,7 +18,16 @@ class _MaterialsPageState extends State<MaterialsPage>
   void initState() {
     super.initState();
     materialController.tabController = new TabController(
-        length: materialController.outerTabs.length, vsync: this);
+        length: materialController.categoriesList.length, vsync: this);
+    materialController.tabController.addListener(() {
+      print("here");
+      int id = int.parse(materialController
+          .categoriesList[materialController.tabController.index]
+          .subCategories![materialController.nestedTabController.index]
+          .subcatId!);
+      materialController.getSubCategoryImagesList(id);
+      materialController.update();
+    });
   }
 
   @override
@@ -29,25 +38,27 @@ class _MaterialsPageState extends State<MaterialsPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor:PrintColors.mainColor1,
-        elevation: 0,
-        title: Text('Materials'),
-        bottom: TabBar(
-          controller: materialController.tabController,
-
-          unselectedLabelColor: Colors.black54,
-          tabs: materialController.outerTabs
-              .map((tab) => Tab(text: tab))
-              .toList(),
+    return GetBuilder<MaterialController>(builder: (context) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: PrintColors.mainColor1,
+          elevation: 0,
+          title: Text('Materials'),
+          bottom: TabBar(
+            controller: materialController.tabController,
+            unselectedLabelColor: Colors.black54,
+            tabs: materialController.categoriesList
+                .map((tab) => Tab(text: tab.catName))
+                .toList(),
+          ),
         ),
-      ),
-      body: TabBarView(
-        children:
-            materialController.outerTabs.map((tab) => NestedTabBar()).toList(),
-        controller: materialController.tabController,
-      ),
-    );
+        body: TabBarView(
+          children: materialController.categoriesList
+              .map((tab) => NestedTabBar())
+              .toList(),
+          controller: materialController.tabController,
+        ),
+      );
+    });
   }
 }

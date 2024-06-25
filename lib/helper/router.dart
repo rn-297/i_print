@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
+import 'package:i_print/controller/templates_controller.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/print_features/scan_printer/scan_printer.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/drawing_board/drawing_board.dart';
@@ -69,20 +70,20 @@ abstract class RouteHelper {
     GetPage(name: imageCropper, page: () => ImageCropPage()),
     GetPage(name: imageEditor, page: () => ImageEditorPage()),
     GetPage(name: printPreviewPage, page: () => PrintPreviewPage()),
-    GetPage(
-        name: graffitiCartoonLinePage, page: () => GraffitiCartoonLinePage()),
-    GetPage(name: variousScenePage, page: () => VariousScenePage()),
-    GetPage(name: aiPaintingPage, page: () => AiPaintingPage()),
-    GetPage(name: creativePaintingPage, page: () => CreativePaintingPage()),
+    // GetPage(
+    //     name: graffitiCartoonLinePage, page: () => GraffitiCartoonLinePage()),
+    // GetPage(name: variousScenePage, page: () => VariousScenePage()),
+    // GetPage(name: aiPaintingPage, page: () => AiPaintingPage()),
+    // GetPage(name: creativePaintingPage, page: () => CreativePaintingPage()),
     GetPage(name: textExtractionPage, page: () => TextExtractionPage()),
     GetPage(name: documentPrintPage, page: () => DocumentPrintPage()),
     GetPage(name: printWebPagesPage, page: () => PrintWebPage()),
     GetPage(name: bannerPrintPage, page: () => BannerPrintPage()),
-    GetPage(name: aiImagePreviewPage, page: () => AIImagePreviewPage()),
-    GetPage(name: graffitiCartoonLinePreviewPage, page: () => GraffitiCartoonLinePreviewPage()),
-    GetPage(name: lineDrawing, page: () => LineDrawingPage()),
+    // GetPage(name: aiImagePreviewPage, page: () => AIImagePreviewPage()),
+    // GetPage(name: graffitiCartoonLinePreviewPage, page: () => GraffitiCartoonLinePreviewPage()),
+    // GetPage(name: lineDrawing, page: () => LineDrawingPage()),
     GetPage(name: printScanningPage, page: () => ScanPrinterPage()),
-    GetPage(name: graffitiPreviewPage, page: () => GraffitiPracticePage()),
+    // GetPage(name: graffitiPreviewPage, page: () => GraffitiPracticePage()),
     GetPage(name: stickyNotePage, page: () => StickyNotePage()),
     GetPage(name: toDoListPage, page: () => ToDoListPage()),
     GetPage(name: labelPage, page: () => LabelPage()),
@@ -115,24 +116,24 @@ abstract class RouteHelper {
         print(label);
         break;
       case AppConstants.graffitiPractice:
-        GraffitiCartoonLineController controller =
-            Get.put(GraffitiCartoonLineController());
-        controller.setCurrentPage(AppConstants.graffitiPractice);
-        Get.toNamed(graffitiCartoonLinePage);
-        print(label);
+        // GraffitiCartoonLineController controller =
+        //     Get.put(GraffitiCartoonLineController());
+        // controller.setCurrentPage(AppConstants.graffitiPractice);
+        // Get.toNamed(graffitiCartoonLinePage);
+        // print(label);
         break;
       case AppConstants.cartoonishPortraits:
-        GraffitiCartoonLineController controller =
-            Get.put(GraffitiCartoonLineController());
-        controller.setCurrentPage(AppConstants.cartoonishPortraits);
-        Get.toNamed(graffitiCartoonLinePage);
-        print(label);
+        // GraffitiCartoonLineController controller =
+        //     Get.put(GraffitiCartoonLineController());
+        // controller.setCurrentPage(AppConstants.cartoonishPortraits);
+        // Get.toNamed(graffitiCartoonLinePage);
+        // print(label);
         break;
       case AppConstants.lineArt:
-        GraffitiCartoonLineController controller =
-            Get.put(GraffitiCartoonLineController());
-        controller.setCurrentPage(AppConstants.lineArt);
-        Get.toNamed(graffitiCartoonLinePage);
+        // GraffitiCartoonLineController controller =
+        //     Get.put(GraffitiCartoonLineController());
+        // controller.setCurrentPage(AppConstants.lineArt);
+        // Get.toNamed(graffitiCartoonLinePage);
         print(label);
         break;
       case AppConstants.variousScenes:
@@ -171,11 +172,16 @@ abstract class RouteHelper {
         print(label);
         break;
         case AppConstants.stickyNote:
+          TemplatesController templatesController=Get.put(TemplatesController());
+          templatesController.getStickyNotes();
         Get.toNamed(stickyNotePage);
         print(label);
         break;
         case AppConstants.toDoList:
+          TemplatesController templatesController=Get.put(TemplatesController());
+          templatesController.getToDoList();
         Get.toNamed(toDoListPage);
+
         print("11$label");
         break;
         case AppConstants.label:

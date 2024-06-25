@@ -75,8 +75,8 @@ class ToDoListEditPage extends StatelessWidget {
             key: controller.toDoListGlobalKey,
             child: Column(
               children: [
-                Image.asset(
-                  controller.selectedToDoList[0],
+                Image.network(
+                  controller.selectedToDoList.topImage!,
                 ),
                 ListView.builder(
                     itemCount: controller.toDoListEditingControllers.length,
@@ -90,8 +90,8 @@ class ToDoListEditPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: AssetImage(
-                                        controller.selectedToDoList[1],
+                                      image: NetworkImage(
+                                        controller.selectedToDoList.middleImage!,
                                       ))),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 80.w),
@@ -116,8 +116,8 @@ class ToDoListEditPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: AssetImage(
-                                        controller.selectedToDoList[1],
+                                      image: NetworkImage(
+                                        controller.selectedToDoList.middleImage!,
                                       ))),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 80.w),
@@ -152,8 +152,8 @@ class ToDoListEditPage extends StatelessWidget {
                                 ),
                               ));
                     }),
-                Image.asset(
-                  controller.selectedToDoList[2],
+                Image.network(
+                  controller.selectedToDoList.bottomImage!,
                 ),
               ],
             )),

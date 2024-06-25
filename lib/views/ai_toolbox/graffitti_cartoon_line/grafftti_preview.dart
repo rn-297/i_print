@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
@@ -30,7 +31,8 @@ class _GraffitiPracticePageState extends State<GraffitiPracticePage> {
   }
 
 
- /* List<Widget> displayBoxesAroundRecognizedObjects(Size screen, GraffitiCartoonLineController controller) {
+ */
+/* List<Widget> displayBoxesAroundRecognizedObjects(Size screen, GraffitiCartoonLineController controller) {
     if (controller.yoloResults.isEmpty) return [];
 
     double factorX = screen.width / (controller.selectedImageWidth);
@@ -65,7 +67,8 @@ class _GraffitiPracticePageState extends State<GraffitiPracticePage> {
       );
     }).toList();
   }
-*/
+*//*
+
   List<Widget> displayBoxesAroundRecognizedObjects(Size screen,GraffitiCartoonLineController controller) {
     if (controller.yoloResults.isEmpty) return [];
 
@@ -151,3 +154,4 @@ class PolygonPainter extends CustomPainter {
     return false;
   }
 }
+*/

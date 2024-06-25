@@ -21,12 +21,11 @@ class ToDoListPage extends StatelessWidget {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
-                  List<String> mainImages = controller.toDoListImages.keys.toList();
                   return InkWell(
                       onTap: () {
-                        controller.setSelectedToDo(mainImages[index]);
+                        controller.setSelectedToDo(index);
                       },
-                      child: Image.asset(mainImages[index]));
+                      child: Image.network(controller.toDoListImages[index].todoMainImage!));
                 })
           ],
         ),

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 
 class VariousScenePage extends StatelessWidget {
@@ -16,3 +17,4 @@ class VariousScenePage extends StatelessWidget {
     );
   }
 }
+*/

@@ -8,27 +8,28 @@ class StickyNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(TemplatesController());
-    return GetBuilder<TemplatesController>(
-      builder: (controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Sticky Notes"),
-          ),
-          body: GridView.builder(
-              shrinkWrap: true,
-              itemCount: controller.stickyNoteImages.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              itemBuilder: (context, index) {
-                List<String> mainImages = controller.stickyNoteImages.toList();
-                return InkWell(
-                    onTap: () {
-                      controller.setSelectedSticky(mainImages[index]);
-                    },
-                    child: Image.asset(mainImages[index]));
-              }),
-        );
-      }
-    );
+    return GetBuilder<TemplatesController>(builder: (controller) {
+      // controller.getStickyNotes();
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Sticky Notes"),
+        ),
+        body: GridView.builder(
+            shrinkWrap: true,
+            itemCount: controller.stickyNoteImages.length,
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemBuilder: (context, index) {
+              // List<String> mainImages = !;
+              return InkWell(
+                  onTap: () {
+                    controller.setSelectedSticky(
+                        controller.stickyNoteImages[index]!.stickynoteImage!);
+                  },
+                  child: Image.network(
+                      controller.stickyNoteImages[index]!.stickynoteImage!));
+            }),
+      );
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -6,55 +7,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:i_print/api_service/models/sticky_notes_nodel.dart';
+import 'package:i_print/api_service/models/to_do_list_model.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../api_service/api_service.dart';
+import '../helper/print_constants.dart';
 import '../print_features/sticker_view/sticker_view_controller.dart';
+import 'package:http/http.dart' as Http;
 
 class TemplatesController extends GetxController {
-  Map<String, List<String>> toDoListImages = {
-    'assets/images/to_do_list/img_1.jpg': [
-      'assets/images/to_do_list/img_1_1.jpg',
-      'assets/images/to_do_list/img_1_2.jpg',
-      'assets/images/to_do_list/img_1_3.jpg'
-    ],
-    'assets/images/to_do_list/img_2.jpg': [
-      'assets/images/to_do_list/img_2_1.jpg',
-      'assets/images/to_do_list/img_2_2.jpg',
-      'assets/images/to_do_list/img_2_3.jpg'
-    ],
-    'assets/images/to_do_list/img_3.jpg': [
-      'assets/images/to_do_list/img_3_1.jpg',
-      'assets/images/to_do_list/img_3_2.jpg',
-      'assets/images/to_do_list/img_3_3.jpg'
-    ],
-    'assets/images/to_do_list/img_4.jpg': [
-      'assets/images/to_do_list/img_4_1.jpg',
-      'assets/images/to_do_list/img_4_2.jpg',
-      'assets/images/to_do_list/img_4_3.jpg'
-    ],
-    'assets/images/to_do_list/img_5.jpg': [
-      'assets/images/to_do_list/img_5_1.jpg',
-      'assets/images/to_do_list/img_5_2.jpg',
-      'assets/images/to_do_list/img_5_3.jpg'
-    ],
-  };
-  List<String> stickyNoteImages = [
-    "assets/images/sticky_note/sticky_note_1.jpg",
-    "assets/images/sticky_note/sticky_note_2.jpg",
-    "assets/images/sticky_note/sticky_note_3.jpg",
-    "assets/images/sticky_note/sticky_note_4.jpg",
-  ];
+  List<TodoList> toDoListImages = [];
+  List<StickyNotes> stickyNoteImages = [];
 
-  List<String> selectedToDoList = [];
+  late TodoList selectedToDoList ;
   List<TextEditingController> toDoListEditingControllers = [];
   String selectedStickyNote = "";
   GlobalKey toDoListGlobalKey = GlobalKey();
   ScreenshotController screenshotController = ScreenshotController();
 
-  void setSelectedToDo(String selected) {
+  getStickyNotes() async {
+    var response = await ApiClient.getData(
+        AppConstants.baseUrl + AppConstants.getStickyNotes);
+
+    if (response.statusCode == 200) {
+      StickyNotesClass stickyNotesClass =
+          StickyNotesClass.fromJson(jsonDecode(response.body));
+      stickyNoteImages = stickyNotesClass.stickyNotes!;
+    }
+    update();
+  }
+
+  void setSelectedToDo(int selected) {
     print(selected);
-    selectedToDoList = toDoListImages[selected]!;
+    selectedToDoList = toDoListImages[selected];
     print(selectedToDoList);
     toDoListEditingControllers.clear();
     addToDoTextField();
@@ -82,8 +69,8 @@ class TemplatesController extends GetxController {
     Widget retrievedWidget = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          selectedToDoList[0],
+        Image.network(
+          selectedToDoList.topImage!,
           fit: BoxFit.cover,
         ),
         Column(
@@ -94,8 +81,8 @@ class TemplatesController extends GetxController {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: AssetImage(
-                    selectedToDoList[1],
+                  image: NetworkImage(
+                    selectedToDoList.middleImage!,
                   ),
                 ),
               ),
@@ -126,8 +113,8 @@ class TemplatesController extends GetxController {
             );
           }).toList(),
         ),
-        Image.asset(
-          selectedToDoList[2],
+        Image.network(
+          selectedToDoList.bottomImage!,
         ),
       ],
     );
@@ -158,9 +145,11 @@ class TemplatesController extends GetxController {
   }
 
   Future<void> _loadImage() async {
-    final ByteData data = await rootBundle.load(selectedStickyNote);
-    final Uint8List bytes = data.buffer.asUint8List();
-    final Image image = Image.memory(bytes);
+    Http.Response response = await Http.get(
+      Uri.parse(selectedStickyNote),
+    );
+    Uint8List bytesNetwork = response.bodyBytes;
+    final Image image = Image.memory(bytesNetwork);
 
     image.image.resolve(ImageConfiguration()).addListener(
       ImageStreamListener((ImageInfo info, bool _) {
@@ -169,12 +158,28 @@ class TemplatesController extends GetxController {
         double aspectRatio = _imageWidth! / _imageHeight!;
         StickerViewController stickerViewController =
             Get.put(StickerViewController());
-        stickerViewController.selectedBorder.value=selectedStickyNote;
+        stickerViewController.selectedBorder.value = selectedStickyNote;
         stickerViewController.stickers.clear();
         stickerViewController.setTextStickerText("Your Text Here");
         stickerViewController.isChangeableHeight = false;
-        stickerViewController.stickerViewHeight.value=Get.size.width/aspectRatio;
+        stickerViewController.stickerViewHeight.value =
+            Get.size.width / aspectRatio;
       }),
     );
+  }
+
+  Future<void> getToDoList() async {
+    // isLoading=true;
+    var response = await ApiClient.getData(
+        AppConstants.baseUrl + AppConstants.getToDoList);
+
+    if (response.statusCode == 200) {
+      ToDoListClass toDoListClass =
+      ToDoListClass.fromJson(jsonDecode(response.body));
+      toDoListImages = toDoListClass.todoList!;
+    }
+    // getSubCategoryImagesList(
+    //     int.parse(categoriesList[0].subCategories![0].subcatId!));
+    update();
   }
 }
