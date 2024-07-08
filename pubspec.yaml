@@ -49,10 +49,10 @@ dependencies:
   google_mlkit_text_recognition: ^0.13.0
   webview_flutter: ^4.7.0
 #  flutter_vision: ^1.1.4
-  screenshot: ^2.3.0
+  screenshot: ^3.0.0
   flutter_inappwebview: ^6.0.0
   webcontent_converter: ^0.0.8+3
-  image: ^3.3.0
+  image: ^4.2.0
 #  flutter_simple_bluetooth_printer: ^0.1.4
 #  tflite: ^1.1.2
   hive: ^2.2.3
@@ -62,10 +62,15 @@ dependencies:
   shimmer: ^3.0.0
   adstringo_plugin:
     path: ./adstringo_plugin
-  esc_pos_bluetooth: ^0.4.1
+#  esc_pos_bluetooth: ^0.4.1
   blue_thermal_printer: ^1.2.3
-  esc_pos_utils: ^1.1.0
+  esc_pos_utils_plus: ^2.0.3
+  input_quantity: ^2.3.4
+  flutter_pos_printer_platform_image_3_sdt: ^1.1.3
 #  fp_bt_printer: ^0.0.3
+#  esc_pos_bluetooth_updated: ^0.5.0
+  flutter_thermal_printer: ^0.0.12
+
 
 
 dev_dependencies:
@@ -100,6 +105,7 @@ flutter:
       - assets/models/
       - assets/images/
       - assets/images/to_do_list/
+      - assets/images/lable_border/
 #      - assets/images/sticky_note/
 
   # An image asset can refer to one or more resolution-specific "variants", see

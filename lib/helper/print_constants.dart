@@ -9,6 +9,7 @@ class AppConstants {
   //Strings
   static const String print = "Print";
   static const String connecting = "Connecting";
+  static const String connected = "Connected";
   static const String photoPrinting = "Photo Printing";
   static const String graphicEditing = "Graphic Editing";
   static const String aiToolbox = "AI Toolbox";

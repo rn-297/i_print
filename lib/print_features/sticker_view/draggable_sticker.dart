@@ -21,7 +21,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   @override
   Widget build(BuildContext context) {
-    final StickerViewController stickerViewController = Get.find();
+    final StickerViewController stickerViewController = Get.put(StickerViewController());
 
     // Update the sticker view height if the max height changes
 

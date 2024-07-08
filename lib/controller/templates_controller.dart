@@ -159,6 +159,7 @@ class TemplatesController extends GetxController {
         StickerViewController stickerViewController =
             Get.put(StickerViewController());
         stickerViewController.selectedBorder.value = selectedStickyNote;
+        stickerViewController.isNetworkImage=true;
         stickerViewController.stickers.clear();
         stickerViewController.setTextStickerText("Your Text Here");
         stickerViewController.isChangeableHeight = false;

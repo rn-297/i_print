@@ -7,7 +7,7 @@ class ToDoListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(TemplatesController());
+
     return GetBuilder<TemplatesController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(

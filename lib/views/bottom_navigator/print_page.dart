@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/print_decoration.dart';
@@ -29,7 +30,11 @@ class PrintPage extends StatelessWidget {
                     children: [
                       Text(
                         AppConstants.print,
-                        style: PrintTextStyles.headerStyle,
+                        style: TextStyle(
+                          color: PrintColors.textColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
+                        ),
                       ),
                       SizedBox(
                         height: 24.h,
@@ -38,10 +43,22 @@ class PrintPage extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 4.h),
                         decoration: PrintDecoration.subDecoration,
                         child: Center(
-                          child: Text(
-                            AppConstants.connecting,
-                            style: PrintTextStyles.subHeaderStyle,
-                          ),
+                          child: GetBuilder<ScanPrinterController>(
+
+                              builder: (scanController) {
+                                print(scanController.isDeviceConnected);
+
+                            return Text(
+                              scanController.isDeviceConnected
+                                  ? AppConstants.connected
+                                  : AppConstants.connecting,
+                              style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
+                            );
+                          }),
                         ),
                       ),
                       SizedBox(
@@ -75,7 +92,11 @@ class PrintPage extends StatelessWidget {
                         children: [
                           Text(
                             AppConstants.aiToolbox,
-                            style: PrintTextStyles.subHeaderStyle,
+                            style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
                           ),
                           SizedBox(
                             height: 8.h,
@@ -145,7 +166,11 @@ class PrintPage extends StatelessWidget {
                         children: [
                           Text(
                             AppConstants.toolbox,
-                            style: PrintTextStyles.subHeaderStyle,
+                            style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
                           ),
                           SizedBox(
                             height: 8.h,
@@ -220,7 +245,11 @@ class PrintPage extends StatelessWidget {
                 ),
                 Text(
                   title,
-                  style: PrintTextStyles.subHeaderStyle,
+                  style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
                 ),
               ],
             ),
@@ -254,7 +283,11 @@ class PrintPage extends StatelessWidget {
                 ),
                 Text(
                   title,
-                  style: PrintTextStyles.subHeaderStyle,
+                  style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
                 ),
               ],
             ),
@@ -290,7 +323,11 @@ class PrintPage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       title,
-                      style: PrintTextStyles.subHeaderStyle,
+                      style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.normal,
+    fontSize: 18.sp,
+  ),
                       textAlign: TextAlign.center,
                     ),
                   ),

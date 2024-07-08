@@ -24,7 +24,9 @@ class CommonPages {
             children: [
               Expanded(
                   flex: 3,
-                  child: Text(label, style: PrintTextStyles.templateItemText)),
+                  child: Text(label,
+                      style: TextStyle(
+                          fontSize: 20.sp, fontWeight: FontWeight.normal))),
               Expanded(
                   child: SvgPicture.asset(
                 image,

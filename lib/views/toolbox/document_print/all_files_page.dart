@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:i_print/controller/document_controller.dart';
+import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/helper/print_images.dart';
 
 class AllFilesPage extends StatelessWidget {
@@ -10,7 +11,7 @@ class AllFilesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DocumentController documentController = Get.find();
+    DocumentController documentController = Get.put(DocumentController());
     return Scaffold(
         body: Obx(
       () => ListView.builder(

@@ -11,7 +11,7 @@ class PdfFilesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DocumentController documentController = Get.find();
+    DocumentController documentController = Get.put(DocumentController());
     return Scaffold(body: Obx(
           () => ListView.builder(
         itemCount: documentController.pdfFiles.length,

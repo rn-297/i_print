@@ -28,7 +28,11 @@ class MyPage extends StatelessWidget {
                     children: [
                       Text(
                         AppConstants.my,
-                        style: PrintTextStyles.headerStyle,
+                        style: TextStyle(
+    color: PrintColors.textColor,
+    fontWeight: FontWeight.bold,
+    fontSize: 20.sp,
+  ),
                       ),
                       SizedBox(
                         height: 24.h,

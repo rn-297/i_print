@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
+import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/controller/templates_controller.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/print_features/scan_printer/scan_printer.dart';
@@ -51,7 +56,8 @@ abstract class RouteHelper {
   static const String printWebPagesPage = '/i_print_print_web_pages';
   static const String bannerPrintPage = '/i_print_banner_print';
   static const String aiImagePreviewPage = '/i_print_image_preview';
-  static const String graffitiCartoonLinePreviewPage = '/i_print_graffiti_cartoon_line_preview';
+  static const String graffitiCartoonLinePreviewPage =
+      '/i_print_graffiti_cartoon_line_preview';
   static const String lineDrawing = '/i_print_line_drawing';
   static const String printScanningPage = '/i_print_print_scanning';
   static const String graffitiPreviewPage = '/i_print_graffiti_preview';
@@ -96,14 +102,16 @@ abstract class RouteHelper {
     switch (label) {
       case AppConstants.myDevice:
         print(label);
+        Get.toNamed(printScanningPage);
         break;
       case AppConstants.printRecord:
         print(label);
+
         break;
       case AppConstants.aboutUs:
         print(label);
         break;
-    
+
       case AppConstants.photoPrinting:
         StickerViewController controller = Get.put(StickerViewController());
         controller.selectImage();
@@ -171,20 +179,23 @@ abstract class RouteHelper {
         Get.toNamed(bannerPrintPage);
         print(label);
         break;
-        case AppConstants.stickyNote:
-          TemplatesController templatesController=Get.put(TemplatesController());
-          templatesController.getStickyNotes();
+      case AppConstants.stickyNote:
+        TemplatesController templatesController =
+            Get.put(TemplatesController());
+        templatesController.getStickyNotes();
         Get.toNamed(stickyNotePage);
         print(label);
         break;
-        case AppConstants.toDoList:
-          TemplatesController templatesController=Get.put(TemplatesController());
-          templatesController.getToDoList();
+      case AppConstants.toDoList:
+        TemplatesController templatesController =
+            Get.put(TemplatesController());
+        templatesController.getToDoList();
         Get.toNamed(toDoListPage);
 
         print("11$label");
         break;
-        case AppConstants.label:
+      case AppConstants.label:
+
         Get.toNamed(labelPage);
         print(label);
         break;

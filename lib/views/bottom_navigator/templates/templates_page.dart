@@ -32,7 +32,11 @@ class TemplatesPage extends StatelessWidget {
                     children: [
                       Text(
                         AppConstants.materials,
-                        style: PrintTextStyles.headerStyle,
+                        style: TextStyle(
+                          color: PrintColors.textColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.sp,
+                        ),
                       ),
                       SizedBox(
                         height: 24.h,
@@ -43,7 +47,11 @@ class TemplatesPage extends StatelessWidget {
                         child: Center(
                           child: Text(
                             AppConstants.connecting,
-                            style: PrintTextStyles.subHeaderStyle,
+                            style: TextStyle(
+                              color: PrintColors.textColor,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18.sp,
+                            ),
                           ),
                         ),
                       ),

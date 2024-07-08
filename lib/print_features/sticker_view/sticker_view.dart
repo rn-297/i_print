@@ -11,12 +11,9 @@ import 'sticker_view_controller.dart';
 enum ImageQuality { low, medium, high }
 
 class StickerView extends StatefulWidget {
-
   @override
   StickerViewState createState() => StickerViewState();
 }
-
-
 
 class StickerViewState extends State<StickerView> {
   @override
@@ -26,7 +23,7 @@ class StickerViewState extends State<StickerView> {
 
   @override
   Widget build(BuildContext context) {
-    final StickerViewController stickerViewController = Get.find();
+    final StickerViewController stickerViewController = Get.put(StickerViewController());
     return Column(
       children: [
         Obx(() => RepaintBoundary(
@@ -34,13 +31,19 @@ class StickerViewState extends State<StickerView> {
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    image: stickerViewController.selectedBorder.value.isNotEmpty
+                    image: stickerViewController
+                                .selectedBorder.value.isNotEmpty &&
+                            stickerViewController.isNetworkImage
                         ? DecorationImage(
-                            image: AssetImage(
+                            image: NetworkImage(
                                 stickerViewController.selectedBorder.value),
                             fit: BoxFit.fill,
                           )
-                        : null),
+                        : stickerViewController.selectedBorder.value.isNotEmpty
+                            ? DecorationImage(
+                                image: AssetImage(
+                                    stickerViewController.selectedBorder.value,),fit: BoxFit.fill,)
+                            : null),
                 height: stickerViewController.stickerViewHeight.value,
                 width: MediaQuery.of(context).size.width,
                 child: DraggableStickers(),

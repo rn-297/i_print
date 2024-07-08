@@ -11,11 +11,10 @@ class NavigatorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => BottomNavigationController());
 
     return GetBuilder<BottomNavigationController>(
         builder: (navigatorController) {
-          navigatorController.requestPermission();
+
       return SafeArea(
         child: Scaffold(
           backgroundColor: PrintColors.mainColor1,
@@ -49,7 +48,7 @@ class NavigatorPage extends StatelessWidget {
             color: Colors.grey,
           ),
           SizedBox(height: 4.h,),
-          Text(label,style: PrintTextStyles.labelUnselected,)
+          Text(label,style: TextStyle(color: PrintColors.grey),)
         ],
       ),
       label: label,
@@ -61,7 +60,7 @@ class NavigatorPage extends StatelessWidget {
             color: Colors.blue,
           ),
           SizedBox(height: 4.h,),
-          Text(label,style: PrintTextStyles.labelSelected,)
+          Text(label,style: TextStyle(color: PrintColors.blue),)
         ],
       ),
     );

@@ -32,6 +32,7 @@ import 'package:image/image.dart' as img;
 class StickerViewController extends GetxController implements GetxService {
   final GlobalKey stickGlobalKey = GlobalKey();
   final GlobalKey stickGlobalKey1 = GlobalKey();
+  final GlobalKey stickGlobalKey2 = GlobalKey();
   final initialStickerScale = 5.0;
   double sliderValue = 24.0;
   String selectedOption = "";
@@ -40,12 +41,24 @@ class StickerViewController extends GetxController implements GetxService {
   String currentPage = "";
   RxString selectedBorder = "".obs;
   bool photoPrint = false;
+  bool isNetworkImage = false;
+  bool isLabelSticker = false;
 
   RxString selectedAssetId = "".obs;
+  List<Widget> labelList = [];
 
   //text Extraction
 
-  bool isChangeableHeight=true;
+  @override
+  onInit() {
+    super.onInit();
+    Future.delayed(Duration.zero, () {
+      stickerViewHeight.value = (Get.size.height * 0.4);
+      update(); // Notify GetX that the state has changed
+    });
+  }
+
+  bool isChangeableHeight = true;
   bool extractingText = false;
   FontWeight extractedTextFontWeight = FontWeight.normal;
   FontStyle extractedTextFontStyle = FontStyle.normal;
@@ -903,12 +916,12 @@ class StickerViewController extends GetxController implements GetxService {
 
   void setBorder(int index) {
     selectedBorder.value = borderList[index];
+    isNetworkImage = false;
     Get.back();
     update();
   }
 
   void calculateMaxBottomPosition(Sticker sticker) {
-
     if (isChangeableHeight) {
       double maxBottom = 0;
 
@@ -989,14 +1002,23 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void saveBitmap(ui.Image bitmap) async {
-
     ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = data!.buffer.asUint8List();
     if (photoPrint) {
       final originalImage = img.decodePng(bytes);
-      final grayscaleImage = img.grayscale(originalImage!);
-      final grayBytes=Uint8List.fromList(img.encodePng(grayscaleImage));
-      capturedSS = grayBytes.buffer.asUint8List(grayBytes.offsetInBytes,grayBytes.lengthInBytes);
+      const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
+      final resizedImage = img.copyResize(
+        originalImage!,
+        width: posPrinterWidthPixels,
+        height: (originalImage!.height *
+                posPrinterWidthPixels /
+                originalImage.width)
+            .round(),
+      );
+      final grayscaleImage = img.grayscale(resizedImage!);
+      final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
+      capturedSS = grayBytes.buffer
+          .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
       Get.toNamed(RouteHelper.printPreviewPage);
     } else {
       String filePath = await getPath("png");
@@ -1039,6 +1061,7 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void setCurrentPage(String page) {
+    isChangeableHeight = true;
     currentPage = page;
   }
 
@@ -1135,7 +1158,7 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void captureFullPage(BuildContext context) async {
-    bool _isLoading=true;
+    bool _isLoading = true;
     var url = await webViewController!.getUrl();
     /*Widget retrievedWidget = Container(
       width: Get.size.width,
@@ -1175,13 +1198,15 @@ class StickerViewController extends GetxController implements GetxService {
             Get.toNamed(RouteHelper.printPreviewPage);
           });
 */
-    String content = await webViewController!.evaluateJavascript(source: "document.documentElement.outerHTML");
+    String content = await webViewController!
+        .evaluateJavascript(source: "document.documentElement.outerHTML");
 
     var bytes = await WebcontentConverter.contentToImage(content: content);
 
     setCapturedSS(bytes);
     Get.toNamed(RouteHelper.printPreviewPage);
   }
+
   Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
     try {
       Uint8List? pngBytes;
@@ -1198,7 +1223,8 @@ class StickerViewController extends GetxController implements GetxService {
       await Future.delayed(const Duration(milliseconds: 700));
 
       // Accessing the render boundary
-      final boundary = stickGlobalKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary = stickGlobalKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
       if (boundary == null) {
         throw Exception("Render boundary not found");
       }
@@ -1223,15 +1249,18 @@ class StickerViewController extends GetxController implements GetxService {
       final resizedImage = img.copyResize(
         originalImage,
         width: posPrinterWidthPixels,
-        height: (originalImage.height * posPrinterWidthPixels / originalImage.width).round(),
+        height:
+            (originalImage.height * posPrinterWidthPixels / originalImage.width)
+                .round(),
       );
 
       // Converting to grayscale
       final grayscaleImage = img.grayscale(resizedImage);
 
       // Updating the captured screenshot variable
-      final grayBytes=Uint8List.fromList(img.encodePng(grayscaleImage));
-      capturedSS = grayBytes.buffer.asUint8List(grayBytes.offsetInBytes,grayBytes.lengthInBytes);
+      final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
+      capturedSS = grayBytes.buffer
+          .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
 
       // Navigating to the print preview page
       Get.toNamed(RouteHelper.printPreviewPage, arguments: capturedSS);
@@ -1242,6 +1271,7 @@ class StickerViewController extends GetxController implements GetxService {
       rethrow;
     }
   }
+
   Future<Uint8List?> saveAsUint8List1(ImageQuality imageQuality) async {
     try {
       Uint8List? pngBytes;
@@ -1277,7 +1307,9 @@ class StickerViewController extends GetxController implements GetxService {
     final resizedImage = img.copyResize(
       originalImage!,
       width: posPrinterWidthPixels,
-      height: (originalImage.height * posPrinterWidthPixels / originalImage.width).round(),
+      height:
+          (originalImage.height * posPrinterWidthPixels / originalImage.width)
+              .round(),
     );
     final grayscaleImage = img.grayscale(resizedImage!);
     capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
@@ -1292,6 +1324,7 @@ class StickerViewController extends GetxController implements GetxService {
 
     Get.toNamed(RouteHelper.printPreviewPage);
   }
+
   networkImageToUint8List(String networkPath) async {
     Http.Response response = await Http.get(
       Uri.parse(networkPath),

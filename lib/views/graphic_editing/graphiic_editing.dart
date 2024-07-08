@@ -19,6 +19,8 @@ class GraphicEditingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     StickerViewController stickerViewController =
         Get.put(StickerViewController());
+    stickerViewController.stickerViewHeight.value=(Get.size.height*0.4);
+    print(stickerViewController.stickerViewHeight);
     return SafeArea(
       top: true,
       child: Scaffold(

@@ -7,7 +7,6 @@ class StickyNotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(TemplatesController());
     return GetBuilder<TemplatesController>(builder: (controller) {
       // controller.getStickyNotes();
       return Scaffold(

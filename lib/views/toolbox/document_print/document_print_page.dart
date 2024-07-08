@@ -10,7 +10,7 @@ class DocumentPrintPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DocumentController documentController =Get.put(DocumentController());
+    final DocumentController documentController =Get.find();
     return DefaultTabController(
       length: 3,
       child: Scaffold(
