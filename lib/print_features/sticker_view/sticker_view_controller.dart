@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -294,7 +295,9 @@ class StickerViewController extends GetxController implements GetxService {
         fontWeight: textStickerFontWeight,
         color: textStickerColor,
       ),
-      child: Image.file(file),
+      child: Container(
+          decoration:
+              BoxDecoration(image: DecorationImage(image: FileImage(file)))),
       position: Offset(100, 100),
     );
 
@@ -687,7 +690,33 @@ class StickerViewController extends GetxController implements GetxService {
       source: ImageSource.gallery,
     );
     if (photo != null) {
-      image = File(photo.path);
+      int imageSize = await photo.length();
+      double inMB = imageSize / 1024 / 1024;
+      int quality = 96;
+      if (inMB > 2) {
+        quality = 50;
+      } else if (inMB > 5) {
+        quality = 40;
+      } else if (inMB > 10) {
+        quality = 30;
+      } else if (inMB > 15) {
+        quality = 20;
+      } else if (inMB > 20) {
+        quality = 15;
+      }
+
+      String targetPath = await getPath("jpg");
+
+      var result = await FlutterImageCompress.compressAndGetFile(
+        photo.path,
+        targetPath,
+        quality: quality,
+      );
+
+      image = File(targetPath);
+print("file size");
+      print(inMB);
+      print((await image.length()/1024/1024));
       cropController = CropController();
       if (currentPage == AppConstants.textExtraction) {
         Get.toNamed(RouteHelper.textExtractionPage);
@@ -1004,21 +1033,45 @@ class StickerViewController extends GetxController implements GetxService {
   void saveBitmap(ui.Image bitmap) async {
     ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = data!.buffer.asUint8List();
+    print("file size");
+
     if (photoPrint) {
-      final originalImage = img.decodePng(bytes);
-      const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
-      final resizedImage = img.copyResize(
-        originalImage!,
-        width: posPrinterWidthPixels,
-        height: (originalImage!.height *
-                posPrinterWidthPixels /
-                originalImage.width)
-            .round(),
-      );
-      final grayscaleImage = img.grayscale(resizedImage!);
+      img.Image? originalImage =await img.decodePng(bytes);
+      print("originalImage");
+      print(originalImage);
+      // const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
+      // final resizedImage = img.copyResize(
+      //   originalImage!,
+      //   width: posPrinterWidthPixels,
+      //   height: (originalImage!.height *
+      //           posPrinterWidthPixels /
+      //           originalImage.width)
+      //       .round(),
+      // );
+      final grayscaleImage = img.grayscale(originalImage!);
       final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
-      capturedSS = grayBytes.buffer
-          .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
+      double inMB = bytes.length / 1024 / 1024;
+      int quality = 96;
+      if (inMB > 2) {
+        quality = 50;
+      } else if (inMB > 5) {
+        quality = 40;
+      } else if (inMB > 10) {
+        quality = 30;
+      } else if (inMB > 15) {
+        quality = 20;
+      } else if (inMB > 20) {
+        quality = 15;
+      }
+       capturedSS = await FlutterImageCompress.compressWithList(
+         grayBytes.buffer
+             .asUint8List(),
+
+        quality: quality,
+
+      );
+      print(capturedSS.length/1024/1024);
+
       Get.toNamed(RouteHelper.printPreviewPage);
     } else {
       String filePath = await getPath("png");
@@ -1245,17 +1298,17 @@ class StickerViewController extends GetxController implements GetxService {
       }
 
       // Resize the image to fit an 80mm POS printer while maintaining the aspect ratio
-      const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
-      final resizedImage = img.copyResize(
-        originalImage,
-        width: posPrinterWidthPixels,
-        height:
-            (originalImage.height * posPrinterWidthPixels / originalImage.width)
-                .round(),
-      );
+      // const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
+      // final resizedImage = img.copyResize(
+      //   originalImage,
+      //   width: posPrinterWidthPixels,
+      //   height:
+      //       (originalImage.height * posPrinterWidthPixels / originalImage.width)
+      //           .round(),
+      // );
 
       // Converting to grayscale
-      final grayscaleImage = img.grayscale(resizedImage);
+      final grayscaleImage = img.grayscale(originalImage);
 
       // Updating the captured screenshot variable
       final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
@@ -1303,15 +1356,15 @@ class StickerViewController extends GetxController implements GetxService {
 
   void setCapturedSS(Uint8List previewImage) {
     final originalImage = img.decodeImage(previewImage!);
-    const int posPrinterWidthPixels = 384;
-    final resizedImage = img.copyResize(
-      originalImage!,
-      width: posPrinterWidthPixels,
-      height:
-          (originalImage.height * posPrinterWidthPixels / originalImage.width)
-              .round(),
-    );
-    final grayscaleImage = img.grayscale(resizedImage!);
+    // const int posPrinterWidthPixels = 384;
+    // final resizedImage = img.copyResize(
+    //   originalImage!,
+    //   width: posPrinterWidthPixels,
+    //   height:
+    //       (originalImage.height * posPrinterWidthPixels / originalImage.width)
+    //           .round(),
+    // );
+    final grayscaleImage = img.grayscale(originalImage!);
     capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
   }
 

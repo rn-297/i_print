@@ -61,7 +61,7 @@ class PrintPreviewPage extends StatelessWidget {
                     // await scanPrinterController.getSelectedDeviceState();
                     print(scanPrinterController.isDeviceConnected);
                     if (scanPrinterController.isDeviceConnected) {
-                      scanPrinterController.printImage();
+                      scanPrinterController.selectPrinter(scanPrinterController.selectedPrinter!);
                     } else {
                       Get.toNamed(RouteHelper.printScanningPage);
                     }

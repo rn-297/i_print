@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
-  flutter_libserialport
   flutter_pos_printer_platform_image_3_sdt
   flutter_thermal_printer
   network_info_plus

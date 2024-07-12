@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -18,7 +16,8 @@ class ScanPrinterPage extends StatefulWidget {
 class _ScanPrinterPageState extends State<ScanPrinterPage> {
   @override
   Widget build(BuildContext context) {
-    ScanPrinterController scanPrinterController=Get.put(ScanPrinterController());
+    ScanPrinterController scanPrinterController =
+        Get.put(ScanPrinterController());
     scanPrinterController.scanDevices();
 
     return GetBuilder<ScanPrinterController>(builder: (scanController) {
@@ -46,23 +45,25 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
               )
             ],
           ),
-          body: ListView.builder(
-              itemCount: scanController.printers.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    scanController
-                        .selectPrinter(scanController.printers[index]);
-                    // Get.find<ScanPrinterController>(tag: 'scanController')
-                    //     .selectPrinter(scanController.devices[index]);
-                    // scanController.printImage();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(24.h),
-                    child: Text(scanController.printers[index].name!),
-                  ),
-                );
-              }));
+          body: scanController.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  itemCount: scanController.printers.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        scanController
+                            .selectPrinter(scanController.printers[index]);
+                        // Get.find<ScanPrinterController>(tag: 'scanController')
+                        //     .selectPrinter(scanController.devices[index]);
+                        // scanController.printImage();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(24.h),
+                        child: Text(scanController.printers[index].name!),
+                      ),
+                    );
+                  }));
     });
   }
 }

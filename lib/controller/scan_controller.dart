@@ -3,14 +3,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 
-// import 'package:esc_pos_bluetooth_updated/esc_pos_bluetooth_updated.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_pos_printer_platform_image_3_sdt/flutter_pos_printer_platform_image_3_sdt.dart';
+
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart' as bt;
 import 'package:flutter_thermal_printer/utils/printer.dart' as bt1;
 import 'package:get/get.dart';
@@ -22,13 +20,15 @@ class ScanPrinterController extends GetxController {
   // List<PrinterBluetooth> bluetoothPrinter = [];
   // PrinterBluetoothManager printerManager = PrinterBluetoothManager();
   double copies = 1;
-  final StickerViewController stickerViewController = Get.put(StickerViewController());
+  final StickerViewController stickerViewController =
+      Get.put(StickerViewController());
 
   final _flutterThermalPrinterPlugin = bt.FlutterThermalPrinter.instance;
 
   List<bt1.Printer> printers = [];
 
   bt1.Printer? selectedPrinter = null;
+  bool isLoading = false;
 
   late StreamSubscription<List<bt1.Printer>> _devicesStreamSubscription;
 
@@ -103,13 +103,15 @@ class ScanPrinterController extends GetxController {
     bytes += ticket.cut();*/
     List<int> bytes = [];
     final img.Image image = img.decodeImage(stickerViewController.capturedSS)!;
+    img.Image resized = img.copyResize(image, width: 384, maintainAspect: true);
+
 
     // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     final generator = Generator(PaperSize.mm80, profile);
 
-    bytes += generator.imageRaster(image);
+    bytes += generator.imageRaster(resized);
     bytes += generator.emptyLines(3);
     return bytes;
   }
@@ -139,7 +141,8 @@ class ScanPrinterController extends GetxController {
   //   }
   // }
 
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  //BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+
   // List<PrinterDevice> devices = [];
   // PrinterDevice? selectedDevice;
   //
@@ -152,7 +155,7 @@ class ScanPrinterController extends GetxController {
   onInit() {
     super.onInit();
     copies = 1;
-initPlatformState();
+    initPlatformState();
     // requestBluetoothPermissions();
     // getSelectedDeviceState();
     // scanDevices();
@@ -198,21 +201,22 @@ initPlatformState();
       print(event.map((e) => e.name).toList().toString());
       // setState(() {
       printers = event;
-      printers.removeWhere((element) =>
-          element.name == null ||
-          element.name == '' );
+      print(printers);
+      printers
+          .removeWhere((element) => element.name == null || element.name == '');
       update();
-      _flutterThermalPrinterPlugin.stopScan();
-      _devicesStreamSubscription?.cancel();
+      // _flutterThermalPrinterPlugin.stopScan();
+      // _devicesStreamSubscription?.cancel();
       // _devicesStreamSubscription?.cancel();
 
       // });
     });
     // _flutterThermalPrinterPlugin.stopScan();
-
   }
 
   Future<void> scanDevices() async {
+    isLoading = true;
+    Future.delayed(Duration.zero, () => update());
     /*try {
       List<PrinterDevice> devicesList = [];
       printerManager.stateBluetooth.listen((status) {
@@ -253,11 +257,18 @@ initPlatformState();
       print(event.map((e) => e.name).toList().toString());
       // setState(() {
       printers = event;
+      print(printers);
       printers
           .removeWhere((element) => element.name == null || element.name == '');
-      update();
-      _flutterThermalPrinterPlugin.stopScan();
-      _devicesStreamSubscription?.cancel();
+
+
+
+      if(printers.isNotEmpty){
+        isLoading = false;
+        _flutterThermalPrinterPlugin.stopScan();
+        _devicesStreamSubscription?.cancel();
+        update();
+      }
       print(printers);
 
       // });
@@ -267,62 +278,63 @@ initPlatformState();
 
 // }
 
-    bluetooth.onStateChanged().listen((state) {
-      switch (state) {
-        case BlueThermalPrinter.CONNECTED:
-          _connected = true;
-          isDeviceConnected = true;
-          update();
-          print("bluetooth device state: connected");
-
-          break;
-        case BlueThermalPrinter.DISCONNECTED:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: disconnected");
-
-          break;
-        case BlueThermalPrinter.DISCONNECT_REQUESTED:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: disconnect requested");
-
-          break;
-        case BlueThermalPrinter.STATE_TURNING_OFF:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: bluetooth turning off");
-
-          break;
-        case BlueThermalPrinter.STATE_OFF:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: bluetooth off");
-
-          break;
-        case BlueThermalPrinter.STATE_ON:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: bluetooth on");
-
-          break;
-        case BlueThermalPrinter.STATE_TURNING_ON:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: bluetooth turning on");
-
-          break;
-        case BlueThermalPrinter.ERROR:
-          _connected = false;
-          isDeviceConnected = false;
-          print("bluetooth device state: error");
-
-          break;
-        default:
-          print(state);
-          break;
-      }
-    });
+    // bluetooth.onStateChanged().listen((state)
+    // {
+    //   switch (state) {
+    //     case BlueThermalPrinter.CONNECTED:
+    //       _connected = true;
+    //       isDeviceConnected = true;
+    //       update();
+    //       print("bluetooth device state: connected");
+    //
+    //       break;
+    //     case BlueThermalPrinter.DISCONNECTED:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: disconnected");
+    //
+    //       break;
+    //     case BlueThermalPrinter.DISCONNECT_REQUESTED:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: disconnect requested");
+    //
+    //       break;
+    //     case BlueThermalPrinter.STATE_TURNING_OFF:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: bluetooth turning off");
+    //
+    //       break;
+    //     case BlueThermalPrinter.STATE_OFF:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: bluetooth off");
+    //
+    //       break;
+    //     case BlueThermalPrinter.STATE_ON:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: bluetooth on");
+    //
+    //       break;
+    //     case BlueThermalPrinter.STATE_TURNING_ON:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: bluetooth turning on");
+    //
+    //       break;
+    //     case BlueThermalPrinter.ERROR:
+    //       _connected = false;
+    //       isDeviceConnected = false;
+    //       print("bluetooth device state: error");
+    //
+    //       break;
+    //     default:
+    //       print(state);
+    //       break;
+    //   }
+    // });
   }
 
   Future<void> selectPrinter(bt1.Printer printer) async {
@@ -362,6 +374,9 @@ initPlatformState();
       if (isConnected) {
         printImage();
       }
+      else{
+        print("Error Connecting");
+      }
     }
   }
 
@@ -386,6 +401,8 @@ initPlatformState();
     //     interpolation: img.Interpolation.nearest, height: 200);
     final profile = await CapabilityProfile.load();
     List<int> bytes = await demoReceipt(PaperSize.mm80, profile);
+
+    print(bytes.length/1024/1024);
 
     // final generator = Generator(PaperSize.mm80, profile);
     // var bytes = generator.imageRaster(thumbnail, align: PosAlign.center);

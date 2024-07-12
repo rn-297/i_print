@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:crop_image/crop_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -73,7 +74,7 @@ class ImageCropPage extends StatelessWidget {
                         stickerViewController.cropController.crop;
                         ui.Image bitmap = await stickerViewController
                             .cropController
-                            .croppedBitmap();
+                            .croppedBitmap(quality: FilterQuality.low);
                         stickerViewController.saveBitmap(bitmap);
 
                       },

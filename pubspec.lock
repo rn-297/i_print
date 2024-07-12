@@ -256,14 +256,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.6"
-  dylib:
-    dependency: transitive
-    description:
-      name: dylib
-      sha256: bf609b3eb6492a3309b3d1dbe8f83a4031de5535dd7686be33487051cc760bb0
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.3"
   easy_logger:
     dependency: transitive
     description:
@@ -381,6 +373,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0+2"
+  flutter_image_compress:
+    dependency: "direct main"
+    description:
+      name: flutter_image_compress
+      sha256: "45a3071868092a61b11044c70422b04d39d4d9f2ef536f3c5b11fb65a1e7dd90"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  flutter_image_compress_common:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_common
+      sha256: "7f79bc6c8a363063620b4e372fa86bc691e1cb28e58048cd38e030692fbd99ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
+  flutter_image_compress_macos:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_macos
+      sha256: "26df6385512e92b3789dc76b613b54b55c457a7f1532e59078b04bf189782d47"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  flutter_image_compress_ohos:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_ohos
+      sha256: e76b92bbc830ee08f5b05962fc78a532011fcd2041f620b5400a593e96da3f51
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
+  flutter_image_compress_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_platform_interface
+      sha256: "579cb3947fd4309103afe6442a01ca01e1e6f93dc53bb4cbd090e8ce34a41889"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
+  flutter_image_compress_web:
+    dependency: transitive
+    description:
+      name: flutter_image_compress_web
+      sha256: f02fe352b17f82b72f481de45add240db062a2585850bea1667e82cc4cd6c311
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4+1"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -437,14 +477,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  flutter_libserialport:
-    dependency: transitive
-    description:
-      name: flutter_libserialport
-      sha256: "20c320dcde8592a16f9badc0cacad61b1fb283dbec647b6ebfc1020f8274c67b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -494,10 +526,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_thermal_printer
-      sha256: "9ebc8aa767f67cc2a4048c042c67d2abbfe1e792a05e6fff843e76cd64597a01"
+      sha256: bec047157a6710b9652e7304eb5c96f19918a81f4e10a647efb13a71d16957ee
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.12"
+    version: "0.0.13"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -775,14 +807,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  libserialport:
-    dependency: transitive
-    description:
-      name: libserialport
-      sha256: "392e1592def65282429832ec66fa25e9e163d3b37716b97691482e2406720727"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.0+1"
   lints:
     dependency: transitive
     description:
@@ -1416,10 +1440,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "0a989dc7ca2bb51eac91e8fd00851297cfffd641aa7538b165c62637ca0eaa4a"
+      sha256: a79dbe579cb51ecd6d30b17e0cae4e0ea15e2c0e66f69ad4198f22a6789e94f4
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.0"
+    version: "5.5.1"
   win_ble:
     dependency: transitive
     description:
@@ -1453,5 +1477,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
+  dart: ">=3.4.0 <4.0.0"
   flutter: ">=3.22.0"
