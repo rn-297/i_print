@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:i_print/controller/material_controller.dart';
@@ -12,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BottomNavigationController extends GetxController implements GetxService{
   int selectedIndex=0;
-  List<Widget> navigatorPages=<Widget>[PrintPage(),MaterialsPage(),TemplatesPage(),MyPage()];
+  List<Widget> navigatorPages=<Widget>[const PrintPage(),const MaterialsPage(),const TemplatesPage(),const MyPage()];
   getSelectedIndex() {
     return selectedIndex;
   }
@@ -39,8 +42,48 @@ class BottomNavigationController extends GetxController implements GetxService{
   }
 
   requestPermission()async {
-    if(await Permission.storage.isDenied){
-      await Permission.storage.request();
+    var storageStatus = await Permission.storage.status;
+    // print(storageStatus);
+    var cameraStatus = await Permission.camera.status;
+    // print(cameraStatus);
+    var mediaLibraryStatus = await Permission.mediaLibrary.status;
+    // print(mediaLibraryStatus);
+    var photosStatus = await Permission.photos.status;
+    // print(photosStatus);
+    var videoStatus = await Permission.videos.status;
+    // print("videoStatus $videoStatus");
+    var extStorageStatus = await Permission.manageExternalStorage.status;
+    // print("extStorageStatus $extStorageStatus");
+    // if (status.isDenied) {
+    // You can request multiple permissions at once.
+    if (storageStatus != PermissionStatus.granted) {
+      storageStatus = await Permission.storage.request();
+    }
+    if (cameraStatus != PermissionStatus.granted) {
+      cameraStatus = await Permission.camera.request();
+    }
+    if (mediaLibraryStatus != PermissionStatus.granted) {
+      mediaLibraryStatus = await Permission.mediaLibrary.request();
+    }
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        /// use [Permissions.storage.status]
+      } else {
+        /// use [Permissions.photos.status]
+        if (photosStatus != PermissionStatus.granted) {
+          photosStatus = await Permission.photos.request();
+        }
+        if (videoStatus != PermissionStatus.granted) {
+          videoStatus = await Permission.videos.request();
+        }
+      }
+      extStorageStatus = await Permission.manageExternalStorage.request();
+    } else {
+      /// use [Permissions.photos.status]
+      if (photosStatus != PermissionStatus.granted) {
+        photosStatus = await Permission.photos.request();
+      }
     }
     if (await Permission.bluetooth.isDenied) {
       print("here");

@@ -20,7 +20,7 @@ class WordFilesPage extends StatelessWidget {
           return Container(
             margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 8.h),
             padding: EdgeInsets.all(8.h),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               boxShadow: [
                 BoxShadow(

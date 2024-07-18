@@ -5,7 +5,6 @@ import 'dart:ui';
 
 import 'package:barcode/barcode.dart';
 import 'package:crop_image/crop_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +15,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:i_print/controller/ai_creation_controller.dart';
 import 'package:http/http.dart' as Http;
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/helper/print_constants.dart';
@@ -33,7 +31,6 @@ import 'package:image/image.dart' as img;
 class StickerViewController extends GetxController implements GetxService {
   final GlobalKey stickGlobalKey = GlobalKey();
   final GlobalKey stickGlobalKey1 = GlobalKey();
-  final GlobalKey stickGlobalKey2 = GlobalKey();
   final initialStickerScale = 5.0;
   double sliderValue = 24.0;
   String selectedOption = "";
@@ -47,6 +44,10 @@ class StickerViewController extends GetxController implements GetxService {
 
   RxString selectedAssetId = "".obs;
   List<Widget> labelList = [];
+  String selectedIcon = "";
+  late BuildContext context;
+
+  int labelListIndex = 0;
 
   //text Extraction
 
@@ -92,6 +93,7 @@ class StickerViewController extends GetxController implements GetxService {
   FontStyle textStickerFontStyle = FontStyle.normal;
   double textStickerFontSize = 24;
   TextAlign textStickerAlign = TextAlign.center;
+  TextAlign labelAlign = TextAlign.center;
   Offset textStickerPosition = Offset.zero;
   FontWeight textStickerFontWeight = FontWeight.normal;
   TextDecoration textStickerDecoration = TextDecoration.none;
@@ -105,6 +107,12 @@ class StickerViewController extends GetxController implements GetxService {
   double memoryImageHeight = 0;
   double memoryImageWidth = 0;
   RxList<Sticker> stickers = <Sticker>[].obs;
+
+  FontWeight labelFontWeight = FontWeight.bold;
+  FontStyle labelFontStyle = FontStyle.normal;
+
+  TextDecoration labelDecoration = TextDecoration.none;
+
   List<Color> textColorList = [
     Colors.black,
     Colors.white,
@@ -246,7 +254,7 @@ class StickerViewController extends GetxController implements GetxService {
     var sticker = Sticker(
       id: textStickerId,
       position: textStickerPosition,
-      size: Size(100, 100),
+      size: const Size(100, 100),
       textStyle: TextStyle(
           fontSize: textStickerFontSize,
           fontWeight: textStickerFontWeight,
@@ -254,6 +262,7 @@ class StickerViewController extends GetxController implements GetxService {
           color: textStickerColor,
           decoration: textStickerDecoration,
           decorationColor: textStickerColor),
+      isText: true,
       child: Text(
         textStickerText,
         style: TextStyle(
@@ -265,7 +274,6 @@ class StickerViewController extends GetxController implements GetxService {
             decorationColor: textStickerColor),
         textAlign: textStickerAlign,
       ),
-      isText: true,
     );
     addSticker(sticker);
   }
@@ -273,14 +281,14 @@ class StickerViewController extends GetxController implements GetxService {
   addSvgSticker(String file) {
     var sticker = Sticker(
       id: textStickerId,
-      size: Size(100, 100),
+      size: const Size(100, 100),
       textStyle: TextStyle(
         fontSize: textStickerFontSize,
         fontWeight: textStickerFontWeight,
         color: textStickerColor,
       ),
+      position: const Offset(100, 100),
       child: SvgPicture.file(File(file)),
-      position: Offset(100, 100),
     );
 
     addSticker(sticker);
@@ -289,16 +297,16 @@ class StickerViewController extends GetxController implements GetxService {
   addImageSticker(File file) {
     var sticker = Sticker(
       id: textStickerId,
-      size: Size(100, 100),
+      size: const Size(100, 100),
       textStyle: TextStyle(
         fontSize: textStickerFontSize,
         fontWeight: textStickerFontWeight,
         color: textStickerColor,
       ),
+      position: const Offset(100, 100),
       child: Container(
           decoration:
               BoxDecoration(image: DecorationImage(image: FileImage(file)))),
-      position: Offset(100, 100),
     );
 
     addSticker(sticker);
@@ -307,18 +315,18 @@ class StickerViewController extends GetxController implements GetxService {
   addAssetSvgSticker(String file) {
     var sticker = Sticker(
       id: textStickerId,
-      size: Size(100, 100),
+      size: const Size(100, 100),
       textStyle: TextStyle(
         fontSize: textStickerFontSize,
         fontWeight: textStickerFontWeight,
         color: textStickerColor,
       ),
+      position: const Offset(100, 100),
       child: SvgPicture.asset(
         file,
         height: 100,
         width: 100,
       ),
-      position: Offset(100, 100),
     );
 
     addSticker(sticker);
@@ -370,7 +378,7 @@ class StickerViewController extends GetxController implements GetxService {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(4.0))),
         builder: (BuildContext ctx) {
           return LayoutBuilder(builder: (context, _) {
@@ -394,19 +402,26 @@ class StickerViewController extends GetxController implements GetxService {
                                 controller: stickerTextController,
                                 maxLength: 20,
                                 // autofocus: true,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "Enter Text",
                                     counterText: "",
                                     border: OutlineInputBorder()),
                                 onChanged: (text) {
-                                  stickerViewController
-                                      .setTextStickerText(text);
+                                  if (currentPage == AppConstants.label) {
+                                    setLabelText();
+                                  } else {
+                                    stickerViewController
+                                        .setTextStickerText(text);
+                                  }
                                 },
                               ),
                             ),
                             Expanded(
                                 child: InkWell(
                               onTap: () {
+                                if (currentPage == AppConstants.label) {
+                                  update();
+                                }
                                 Get.back();
                               },
                               child: SvgPicture.asset(
@@ -417,92 +432,108 @@ class StickerViewController extends GetxController implements GetxService {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16,
                       ),
-                      SizedBox(
-                        height: 48,
-                        child: ListView.separated(
-                            separatorBuilder: (_, __) {
-                              return Divider();
-                            },
-                            itemCount:
-                                stickerViewController.getColorListCount(),
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctxx, index) {
-                              return InkWell(
-                                onTap: () {
-                                  stickerViewController
-                                      .setStickerTextColor(index);
-                                },
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  margin: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: stickerViewController
-                                          .getColor(index)),
+                      stickerViewController.currentPage == AppConstants.label
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 48,
+                                  child: ListView.separated(
+                                      separatorBuilder: (_, __) {
+                                        return const Divider();
+                                      },
+                                      itemCount: stickerViewController
+                                          .getColorListCount(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (ctxx, index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            stickerViewController
+                                                .setStickerTextColor(index);
+                                          },
+                                          child: Container(
+                                            height: 30,
+                                            width: 30,
+                                            margin: const EdgeInsets.all(8.0),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: stickerViewController
+                                                    .getColor(index)),
+                                          ),
+                                        );
+                                      }),
                                 ),
-                              );
-                            }),
-                      ),
-                      Text("Font Size: ${stickerViewController.sliderValue}"),
-                      Row(
-                        children: [
-                          Expanded(
-                              child: Center(
-                            child: InkWell(
-                              onTap: () {
-                                stickerViewController.decreaseTextSize();
-                              },
-                              child: Text("A-"),
-                            ),
-                          )),
-                          Expanded(
-                            flex: 7,
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                  trackShape: RoundedRectSliderTrackShape(),
-                                  trackHeight: 6,
-                                  thumbShape: RoundSliderThumbShape(
-                                      enabledThumbRadius: 12, elevation: 2),
+                                Text(
+                                    "Font Size: ${stickerViewController.sliderValue}"),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: Center(
+                                      child: InkWell(
+                                        onTap: () {
+                                          stickerViewController
+                                              .decreaseTextSize();
+                                        },
+                                        child: const Text("A-"),
+                                      ),
+                                    )),
+                                    Expanded(
+                                      flex: 7,
+                                      child: SliderTheme(
+                                        data: SliderTheme.of(context).copyWith(
+                                            trackShape:
+                                                const RoundedRectSliderTrackShape(),
+                                            trackHeight: 6,
+                                            thumbShape: const RoundSliderThumbShape(
+                                                enabledThumbRadius: 12,
+                                                elevation: 2),
 
-                                  // disabledInactiveTickMarkColor: blue25,
-                                  // overlayColor: Colors.red.withAlpha(32),
-                                  // overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
-                                  // tickMarkShape: RoundSliderTickMarkShape(),
+                                            // disabledInactiveTickMarkColor: blue25,
+                                            // overlayColor: Colors.red.withAlpha(32),
+                                            // overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+                                            // tickMarkShape: RoundSliderTickMarkShape(),
 
-                                  inactiveTickMarkColor: Colors.transparent,
-                                  // valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                                  // valueIndicatorColor: Colors.redAccent,
-                                  showValueIndicator: ShowValueIndicator.never),
-                              child: Slider(
-                                min: 20,
-                                max: 100,
-                                divisions: 80,
-                                onChanged: (value) {
-                                  // setState(
-                                  //   () {
-                                  stickerViewController.setSliderValue(value);
-                                  //   },
-                                  // );
-                                },
-                                value: stickerViewController.getSliderValue(),
-                              ),
+                                            inactiveTickMarkColor:
+                                                Colors.transparent,
+                                            // valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                                            // valueIndicatorColor: Colors.redAccent,
+                                            showValueIndicator:
+                                                ShowValueIndicator.never),
+                                        child: Slider(
+                                          min: 20,
+                                          max: 100,
+                                          divisions: 80,
+                                          onChanged: (value) {
+                                            // setState(
+                                            //   () {
+                                            stickerViewController
+                                                .setSliderValue(value);
+                                            //   },
+                                            // );
+                                          },
+                                          value: stickerViewController
+                                              .getSliderValue(),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: Center(
+                                      child: InkWell(
+                                        onTap: () {
+                                          stickerViewController
+                                              .increaseTextSize();
+                                        },
+                                        child: const Text("A+"),
+                                      ),
+                                    ))
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
-                          Expanded(
-                              child: Center(
-                            child: InkWell(
-                              onTap: () {
-                                stickerViewController.increaseTextSize();
-                              },
-                              child: Text("A+"),
-                            ),
-                          ))
-                        ],
-                      ),
                       SizedBox(
                         height: 48,
                         child: ListView.separated(
@@ -521,8 +552,8 @@ class StickerViewController extends GetxController implements GetxService {
                                   child: Container(
                                     height: 25.0,
                                     width: 25.0,
-                                    margin: EdgeInsets.all(4.0),
-                                    padding: EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.all(4.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.grey.shade300),
@@ -534,7 +565,7 @@ class StickerViewController extends GetxController implements GetxService {
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
-                            return Divider();
+                            return const Divider();
                           },
                         ),
                       )
@@ -714,9 +745,9 @@ class StickerViewController extends GetxController implements GetxService {
       );
 
       image = File(targetPath);
-print("file size");
+      print("file size");
       print(inMB);
-      print((await image.length()/1024/1024));
+      print((await image.length() / 1024 / 1024));
       cropController = CropController();
       if (currentPage == AppConstants.textExtraction) {
         Get.toNamed(RouteHelper.textExtractionPage);
@@ -732,7 +763,7 @@ print("file size");
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(4.0))),
         builder: (BuildContext ctx) {
           return LayoutBuilder(builder: (context, _) {
@@ -744,7 +775,7 @@ print("file size");
                 return Container(
                     height: 150,
                     padding: const EdgeInsets.all(8.0),
-                    child: MainWidget());
+                    child: const MainWidget());
               }),
             );
           });
@@ -755,7 +786,7 @@ print("file size");
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(4.0))),
         builder: (BuildContext ctx) {
           return LayoutBuilder(builder: (context, _) {
@@ -773,7 +804,7 @@ print("file size");
                         height: 116,
                         child: ListView.separated(
                             separatorBuilder: (_, __) {
-                              return Divider();
+                              return const Divider();
                             },
                             itemCount:
                                 stickerViewController.getBorderListCount(),
@@ -814,7 +845,7 @@ print("file size");
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(4.0))),
         builder: (BuildContext ctx) {
           return LayoutBuilder(builder: (context, _) {
@@ -842,7 +873,7 @@ print("file size");
                                         print(index);
                                         qrIndex = index;
                                       },
-                                      tabs: <Widget>[
+                                      tabs: const <Widget>[
                                         Tab(
                                           child: Text(AppConstants.qrCode),
                                         ),
@@ -857,11 +888,11 @@ print("file size");
                                     onTap: () {
                                       generateQrBarcode();
                                     },
-                                    child: Text(AppConstants.done),
+                                    child: const Text(AppConstants.done),
                                   ))
                                 ],
                               ),
-                              Container(
+                              SizedBox(
                                 height: 100,
                                 //I want to use dynamic height instead of fixed height
                                 child: TabBarView(
@@ -870,7 +901,7 @@ print("file size");
                                       children: <Widget>[
                                         TextField(
                                           controller: qrCodeTextController,
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                               hintText:
                                                   AppConstants.qrCodeHint),
                                         ),
@@ -880,7 +911,7 @@ print("file size");
                                       children: <Widget>[
                                         TextField(
                                           controller: barcodeTextController,
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                               hintText:
                                                   AppConstants.barcodeHint),
                                         ),
@@ -911,7 +942,7 @@ print("file size");
         fontHeight: 18.h,
       );
       String filename = await getPath("svg");
-      File('$filename').writeAsStringSync(svg);
+      File(filename).writeAsStringSync(svg);
       addSvgSticker(filename);
     } else if (qrIndex == 1) {
       Barcode bc = Barcode.pdf417();
@@ -923,7 +954,7 @@ print("file size");
         fontHeight: 18.h,
       );
       String filename = await getPath("svg");
-      File('$filename').writeAsStringSync(svg);
+      File(filename).writeAsStringSync(svg);
       addSvgSticker(filename);
     }
     Get.back();
@@ -932,7 +963,7 @@ print("file size");
   Future<String> getPath(String extension) async {
     final dir = await path_provider.getApplicationDocumentsDirectory();
     String imageName =
-        '${DateTime.now().microsecondsSinceEpoch}_iPrint.${extension}';
+        '${DateTime.now().microsecondsSinceEpoch}_iPrint.$extension';
     final targetPath = '${dir.absolute.path}/iPrint Images/$imageName';
     if (!await Directory('${dir.absolute.path}/iPrint Images/').exists()) {
       Directory('${dir.absolute.path}/iPrint Images/').create();
@@ -993,7 +1024,7 @@ print("file size");
       if (currentPage == AppConstants.creativePainting) {
         Uint8List imageData = base64Decode(img64);
         String filename = await getPath("png");
-        File('$filename').writeAsBytes(imageData);
+        File(filename).writeAsBytes(imageData);
         // AICreationController aiCreationController =
         //     Get.put(AICreationController());
         // aiCreationController.setBase64(imageData);
@@ -1001,7 +1032,7 @@ print("file size");
       } else {
         Uint8List imageData = base64Decode(img64);
         String filename = await getPath("png");
-        File('$filename').writeAsBytes(imageData);
+        File(filename).writeAsBytes(imageData);
         addImageSticker(File(filename));
         Get.back();
       }
@@ -1015,7 +1046,7 @@ print("file size");
       final String img64 = base64Encode(data);
       Uint8List imageData = base64Decode(img64);
       String filename = await getPath("png");
-      File('$filename').writeAsBytes(imageData);
+      File(filename).writeAsBytes(imageData);
 
       image = File(filename);
       update();
@@ -1036,7 +1067,7 @@ print("file size");
     print("file size");
 
     if (photoPrint) {
-      img.Image? originalImage =await img.decodePng(bytes);
+      img.Image? originalImage = img.decodePng(bytes);
       print("originalImage");
       print(originalImage);
       // const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
@@ -1063,14 +1094,14 @@ print("file size");
       } else if (inMB > 20) {
         quality = 15;
       }
-       capturedSS = await FlutterImageCompress.compressWithList(
-         grayBytes.buffer
-             .asUint8List(),
 
+      var result = await FlutterImageCompress.compressWithList(
+        grayBytes.buffer.asUint8List(),
         quality: quality,
-
       );
-      print(capturedSS.length/1024/1024);
+      img.Image? tempImage =await img.decodeImage(result);
+      capturedSS = Uint8List.fromList(img.encodePng(tempImage!));
+      print(capturedSS.length / 1024 / 1024);
 
       Get.toNamed(RouteHelper.printPreviewPage);
     } else {
@@ -1083,34 +1114,64 @@ print("file size");
   }
 
   void onStyleItemClick(int index) {
-    switch (index) {
-      case 0:
-        textStickerFontWeight = textStickerFontWeight == FontWeight.bold
-            ? FontWeight.normal
-            : FontWeight.bold;
-        break;
-      case 1:
-        textStickerFontStyle = textStickerFontStyle == FontStyle.italic
-            ? FontStyle.normal
-            : FontStyle.italic;
-        break;
-      case 2:
-        textStickerDecoration =
-            textStickerDecoration == TextDecoration.underline
-                ? TextDecoration.none
-                : TextDecoration.underline;
-        break;
-      case 3:
-        textStickerAlign = TextAlign.left;
-        break;
-      case 4:
-        textStickerAlign = TextAlign.center;
-        break;
-      case 5:
-        textStickerAlign = TextAlign.right;
-        break;
+    if (currentPage == AppConstants.label) {
+      switch (index) {
+        case 0:
+          labelFontWeight = labelFontWeight == FontWeight.bold
+              ? FontWeight.normal
+              : FontWeight.bold;
+          break;
+        case 1:
+          labelFontStyle = labelFontStyle == FontStyle.italic
+              ? FontStyle.normal
+              : FontStyle.italic;
+          break;
+        case 2:
+          labelDecoration = labelDecoration == TextDecoration.underline
+              ? TextDecoration.none
+              : TextDecoration.underline;
+          break;
+        case 3:
+          labelAlign = TextAlign.left;
+          break;
+        case 4:
+          labelAlign = TextAlign.center;
+          break;
+        case 5:
+          labelAlign = TextAlign.right;
+          break;
+      }
+      setLabelText();
+    } else {
+      switch (index) {
+        case 0:
+          textStickerFontWeight = textStickerFontWeight == FontWeight.bold
+              ? FontWeight.normal
+              : FontWeight.bold;
+          break;
+        case 1:
+          textStickerFontStyle = textStickerFontStyle == FontStyle.italic
+              ? FontStyle.normal
+              : FontStyle.italic;
+          break;
+        case 2:
+          textStickerDecoration =
+              textStickerDecoration == TextDecoration.underline
+                  ? TextDecoration.none
+                  : TextDecoration.underline;
+          break;
+        case 3:
+          textStickerAlign = TextAlign.left;
+          break;
+        case 4:
+          textStickerAlign = TextAlign.center;
+          break;
+        case 5:
+          textStickerAlign = TextAlign.right;
+          break;
+      }
+      changeTextStickerData();
     }
-    changeTextStickerData();
   }
 
   void setCurrentPage(String page) {
@@ -1211,7 +1272,7 @@ print("file size");
   }
 
   void captureFullPage(BuildContext context) async {
-    bool _isLoading = true;
+    bool isLoading = true;
     var url = await webViewController!.getUrl();
     /*Widget retrievedWidget = Container(
       width: Get.size.width,
@@ -1276,8 +1337,11 @@ print("file size");
       await Future.delayed(const Duration(milliseconds: 700));
 
       // Accessing the render boundary
-      final boundary = stickGlobalKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary = currentPage == AppConstants.label
+          ? stickGlobalKey1.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?
+          : stickGlobalKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) {
         throw Exception("Render boundary not found");
       }
@@ -1355,7 +1419,7 @@ print("file size");
   }
 
   void setCapturedSS(Uint8List previewImage) {
-    final originalImage = img.decodeImage(previewImage!);
+    final originalImage = img.decodeImage(previewImage);
     // const int posPrinterWidthPixels = 384;
     // final resizedImage = img.copyResize(
     //   originalImage!,
@@ -1370,7 +1434,6 @@ print("file size");
 
   assetImageToUint8List(String assetPath) async {
     ByteData? imageData = await rootBundle.load(assetPath);
-    if (imageData == null) return null;
 
     List<int> bytes = Uint8List.view(imageData.buffer);
     setCapturedSS(Uint8List.fromList(bytes));
@@ -1475,6 +1538,77 @@ print("file size");
       });
     }
     // capturedSS = byteData!.buffer.asUint8List();
+  }
+
+  void setLabelIcon(String icon) {
+    selectedIcon = icon;
+    labelList = [
+      InkWell(
+        onTap: () {
+          setIconBottomSheet(context);
+          labelListIndex = 0;
+        },
+        child: SvgPicture.asset(
+          selectedIcon,
+          height: 100,
+          fit: BoxFit.fill,
+        ),
+      ),
+      Expanded(
+          child: InkWell(
+        onTap: () {
+          labelListIndex = 2;
+
+          showTextEditBottomSheet(context);
+        },
+        child: Text(
+          stickerTextController.text,
+          textAlign: labelAlign,
+          style: TextStyle(
+            fontSize: 30.sp,
+            fontWeight: labelFontWeight,
+            fontStyle: labelFontStyle,
+            decoration: labelDecoration,
+          ),
+        ),
+      ))
+    ];
+    update();
+  }
+
+  void setLabelText() {
+    labelList = [
+      InkWell(
+        onTap: () {
+          setIconBottomSheet(context);
+          labelListIndex = 0;
+        },
+        child: SvgPicture.asset(
+          selectedIcon,
+          height: 100,
+          fit: BoxFit.fill,
+        ),
+      ),
+      Expanded(
+          child: InkWell(
+        onTap: () {
+          labelListIndex = 2;
+
+          showTextEditBottomSheet(context);
+        },
+        child: Text(
+          stickerTextController.text,
+          textAlign: labelAlign,
+          style: TextStyle(
+            fontSize: 30.sp,
+            fontWeight: labelFontWeight,
+            fontStyle: labelFontStyle,
+            decoration: labelDecoration,
+          ),
+        ),
+      ))
+    ];
+    update();
   }
 }
 

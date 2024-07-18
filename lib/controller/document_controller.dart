@@ -1,5 +1,4 @@
 import 'package:adstringo_plugin/adstringo_plugin_method_channel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -34,10 +33,10 @@ class DocumentController extends GetxController {
       // print(pdfFiles);
       // allFiles.value = pdfFiles;
 
-      final _imagePickerPlugin = MethodChannelAdstringoPlugin();
+      final imagePickerPlugin = MethodChannelAdstringoPlugin();
 
 
-      var data = await _imagePickerPlugin.getAllFile();
+      var data = await imagePickerPlugin.getAllFile();
       print(data);
       allFiles.value = data;
       update();
@@ -58,10 +57,10 @@ class DocumentController extends GetxController {
     // );
     // wordFiles.value=result!.files;
 
-    final _imagePickerPlugin = MethodChannelAdstringoPlugin();
+    final imagePickerPlugin = MethodChannelAdstringoPlugin();
 
 
-    var data = await _imagePickerPlugin.getWordFile();
+    var data = await imagePickerPlugin.getWordFile();
     print(data);
     wordFiles.value = data;
     update();
@@ -73,10 +72,10 @@ class DocumentController extends GetxController {
     //   allowedExtensions: [ 'pdf', ],
     // );
     // pdfFiles.value=result!.files;
-    final _imagePickerPlugin = MethodChannelAdstringoPlugin();
+    final imagePickerPlugin = MethodChannelAdstringoPlugin();
 
 
-    var data = await _imagePickerPlugin.getPdfFile();
+    var data = await imagePickerPlugin.getPdfFile();
     print(data);
     pdfFiles.value = data;
   }

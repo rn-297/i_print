@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +9,7 @@ import 'package:i_print/helper/print_images.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 
 class DrawingPage extends StatelessWidget {
-  DrawingPage({super.key});
+  const DrawingPage({super.key});
 
   @override
   Widget build(BuildContext context) {

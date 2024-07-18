@@ -15,8 +15,8 @@ class DocumentPrintPage extends StatelessWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Document Print'),
-          bottom: TabBar(
+          title: const Text('Document Print'),
+          bottom: const TabBar(
             tabs: [
               Tab(text: 'All'),
               Tab(text: 'Word'),
@@ -24,7 +24,7 @@ class DocumentPrintPage extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             AllFilesPage(),
             WordFilesPage(),

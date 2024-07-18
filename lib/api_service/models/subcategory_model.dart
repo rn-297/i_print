@@ -9,7 +9,7 @@ class SubCategoryClass {
     if (json['sub_categories'] != null) {
       subCategories = <SubCategories>[];
       json['sub_categories'].forEach((v) {
-        subCategories!.add(new SubCategories.fromJson(v));
+        subCategories!.add(SubCategories.fromJson(v));
       });
     }
     status = json['status'];
@@ -17,13 +17,13 @@ class SubCategoryClass {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.subCategories != null) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (subCategories != null) {
       data['sub_categories'] =
-          this.subCategories!.map((v) => v.toJson()).toList();
+          subCategories!.map((v) => v.toJson()).toList();
     }
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['status'] = status;
+    data['message'] = message;
     return data;
   }
 }
@@ -41,17 +41,17 @@ class SubCategories {
     if (json['image_list'] != null) {
       imageList = <ImageList>[];
       json['image_list'].forEach((v) {
-        imageList!.add(new ImageList.fromJson(v));
+        imageList!.add(ImageList.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['subcat_id'] = this.subcatId;
-    data['subcat_name'] = this.subcatName;
-    if (this.imageList != null) {
-      data['image_list'] = this.imageList!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['subcat_id'] = subcatId;
+    data['subcat_name'] = subcatName;
+    if (imageList != null) {
+      data['image_list'] = imageList!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -71,10 +71,10 @@ class ImageList {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['print_count'] = this.printCount;
-    data['subcat_img_url'] = this.subcatImgUrl;
-    data['subcat_img_id'] = this.subcatImgId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['print_count'] = printCount;
+    data['subcat_img_url'] = subcatImgUrl;
+    data['subcat_img_id'] = subcatImgId;
     return data;
   }
 }

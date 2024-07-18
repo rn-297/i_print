@@ -6,6 +6,8 @@ import 'package:i_print/views/bottom_navigator/materials/sub_category_tabs.dart'
 import '../../../controller/material_controller.dart';
 
 class MaterialsPage extends StatefulWidget {
+  const MaterialsPage({super.key});
+
   @override
   _MaterialsPageState createState() => _MaterialsPageState();
 }
@@ -17,7 +19,7 @@ class _MaterialsPageState extends State<MaterialsPage>
   @override
   void initState() {
     super.initState();
-    materialController.tabController = new TabController(
+    materialController.tabController = TabController(
         length: materialController.categoriesList.length, vsync: this);
     materialController.tabController.addListener(() {
       print("here");
@@ -43,7 +45,7 @@ class _MaterialsPageState extends State<MaterialsPage>
         appBar: AppBar(
           backgroundColor: PrintColors.mainColor1,
           elevation: 0,
-          title: Text('Materials'),
+          title: const Text('Materials'),
           bottom: TabBar(
             controller: materialController.tabController,
             unselectedLabelColor: Colors.black54,
@@ -53,10 +55,10 @@ class _MaterialsPageState extends State<MaterialsPage>
           ),
         ),
         body: TabBarView(
-          children: materialController.categoriesList
-              .map((tab) => NestedTabBar())
-              .toList(),
           controller: materialController.tabController,
+          children: materialController.categoriesList
+              .map((tab) => const NestedTabBar())
+              .toList(),
         ),
       );
     });

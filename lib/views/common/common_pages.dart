@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:i_print/helper/router.dart';
-import 'package:i_print/helper/text_styles.dart';
 
 import '../../helper/print_decoration.dart';
 

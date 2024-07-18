@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:i_print/controller/bottom_navigation_controller.dart';
 import 'package:i_print/controller/material_controller.dart';
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: Size(414, 782),
+        designSize: const Size(414, 782),
         builder: (context, Widget? child) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,

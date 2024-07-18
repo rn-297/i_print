@@ -1,11 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:crop_image/crop_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:i_print/helper/print_color.dart';
@@ -20,7 +16,7 @@ class ImageCropPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crop"),
+        title: const Text("Crop"),
       ),
       body: GetBuilder<StickerViewController>(builder: (stickerViewController) {
         return Column(
@@ -34,7 +30,7 @@ class ImageCropPage extends StatelessWidget {
               ),
             )),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -47,7 +43,7 @@ class ImageCropPage extends StatelessWidget {
                         stickerViewController.setDrawingColor(Colors.white);
                         stickerViewController.drawingController.clear();
                         stickerViewController.memoryImage.image
-                            .resolve(ImageConfiguration())
+                            .resolve(const ImageConfiguration())
                             .addListener(
                           ImageStreamListener((ImageInfo info, bool _) async {
                             int width = info.image.width;
@@ -79,7 +75,7 @@ class ImageCropPage extends StatelessWidget {
 
                       },
                       child: stickerViewController.photoPrint
-                          ? Icon(Icons.print,size: 30,)
+                          ? const Icon(Icons.print,size: 30,)
                           : SvgPicture.asset(PrintImages.done1)),
                   InkWell(
                       onTap: () {

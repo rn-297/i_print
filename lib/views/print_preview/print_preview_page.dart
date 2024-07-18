@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,7 @@ class PrintPreviewPage extends StatelessWidget {
     return GetBuilder<StickerViewController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Preview"),
+          title: const Text("Preview"),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,25 +29,27 @@ class PrintPreviewPage extends StatelessWidget {
                         EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
                     child: SingleChildScrollView(
                         child: Image.memory(
+
                       controller.capturedSS,
                       fit: BoxFit.fitWidth,
+                          width: Get.size.width,
                     )))),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Column(
                   children: [
-                    Text("Quantity to print"),
+                    const Text("Quantity to print"),
                     InputQty(
                       maxVal: 10.0,
                       initVal: 1.0,
                       minVal: 1.0,
                       steps: 1.0,
-      decoration: QtyDecorationProps(
+      decoration: const QtyDecorationProps(
       isBordered: false,
       borderShape: BorderShapeBtn.circle,
       width: 12),
-                      qtyFormProps: QtyFormProps(enableTyping: false),
+                      qtyFormProps: const QtyFormProps(enableTyping: false),
                       onQtyChanged: (val) {
                         print(val);
                         scanPrinterController.copies = val.toDouble();
@@ -73,7 +74,7 @@ class PrintPreviewPage extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: PrintColors.mainColor,
                           borderRadius: BorderRadius.circular(8.r)),
-                      child: Text("Print")),
+                      child: const Text("Print")),
                 ),
               ],
             )

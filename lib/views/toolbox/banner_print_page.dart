@@ -1,8 +1,5 @@
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -19,7 +16,7 @@ class BannerPrintPage extends StatelessWidget {
     return GetBuilder<StickerViewController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Banner Print"),
+          title: const Text("Banner Print"),
           actions: [
             InkWell(
               onTap: () async {
@@ -91,7 +88,7 @@ class BannerPrintPage extends StatelessWidget {
               TextField(
                 controller: controller.bannerTextController,
                 maxLength: 20,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Please Input Content",
                 ),
                 onChanged: (va) {

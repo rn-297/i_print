@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:i_print/controller/bottom_navigation_controller.dart';
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/helper/print_constants.dart';
-import 'package:i_print/helper/text_styles.dart';
 
 class NavigatorPage extends StatelessWidget {
   const NavigatorPage({super.key});

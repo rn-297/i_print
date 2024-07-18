@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,7 +96,7 @@ class TemplatesController extends GetxController {
                     color: Colors.transparent,
                     child: TextField(
                       controller: controller,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         fillColor: Colors.transparent,
                       ),
@@ -151,11 +149,11 @@ class TemplatesController extends GetxController {
     Uint8List bytesNetwork = response.bodyBytes;
     final Image image = Image.memory(bytesNetwork);
 
-    image.image.resolve(ImageConfiguration()).addListener(
+    image.image.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener((ImageInfo info, bool _) {
-        double _imageWidth = info.image.width.toDouble();
-        double _imageHeight = info.image.height.toDouble();
-        double aspectRatio = _imageWidth! / _imageHeight!;
+        double imageWidth = info.image.width.toDouble();
+        double imageHeight = info.image.height.toDouble();
+        double aspectRatio = imageWidth / imageHeight;
         StickerViewController stickerViewController =
             Get.put(StickerViewController());
         stickerViewController.selectedBorder.value = selectedStickyNote;

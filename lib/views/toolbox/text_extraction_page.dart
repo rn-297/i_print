@@ -22,7 +22,7 @@ class TextExtractionPage extends StatelessWidget {
     return GetBuilder<StickerViewController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppConstants.textExtraction),
+          title: const Text(AppConstants.textExtraction),
           actions: [
             InkWell(
               onTap: () async {
@@ -55,7 +55,7 @@ class TextExtractionPage extends StatelessWidget {
           children: [
             Expanded(
               child: controller.extractingText
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : RepaintBoundary(
                       key: _globalKey,
                       child: SingleChildScrollView(
@@ -63,7 +63,7 @@ class TextExtractionPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
                               decoration:
-                                  InputDecoration(border: InputBorder.none),
+                                  const InputDecoration(border: InputBorder.none),
 
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
@@ -97,8 +97,8 @@ class TextExtractionPage extends StatelessWidget {
                         child: Container(
                           height: 25.0,
                           width: 25.0,
-                          margin: EdgeInsets.all(4.0),
-                          padding: EdgeInsets.all(8.0),
+                          margin: const EdgeInsets.all(4.0),
+                          padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: controller.getSelectedColor(index)),
@@ -110,7 +110,7 @@ class TextExtractionPage extends StatelessWidget {
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {
-                  return Divider();
+                  return const Divider();
                 },
               ),
             )

@@ -3,10 +3,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart' as bt;
@@ -27,7 +25,7 @@ class ScanPrinterController extends GetxController {
 
   List<bt1.Printer> printers = [];
 
-  bt1.Printer? selectedPrinter = null;
+  bt1.Printer? selectedPrinter;
   bool isLoading = false;
 
   late StreamSubscription<List<bt1.Printer>> _devicesStreamSubscription;
@@ -82,7 +80,7 @@ class ScanPrinterController extends GetxController {
     print("imageBytesList$imageBytesList");
     final generator = Generator(PaperSize.mm80, profile);
     final List<int> bytes = [];
-    img.Image? image = await img.decodeImage(imageBytesList);
+    img.Image? image = img.decodeImage(imageBytesList);
     if (image != null) {
       bytes.addAll(generator.imageRaster(image, imageFn: PosImageFn.graphics));
       bytes.addAll(generator.cut());
@@ -91,8 +89,9 @@ class ScanPrinterController extends GetxController {
     return bytes;
   }
 
-  Future<List<int>> demoReceipt(
-      PaperSize paper, CapabilityProfile profile) async {
+  Future<List<int>> demoReceipt() async {
+    // Future.delayed(Duration(seconds: 5));
+    // _flutterThermalPrinterPlugin.connect(selectedPrinter!);
     /*StickerViewController stickerViewController = Get.find();
     final Generator ticket = Generator(paper, profile);
     List<int> bytes = [];
@@ -104,16 +103,47 @@ class ScanPrinterController extends GetxController {
     List<int> bytes = [];
     final img.Image image = img.decodeImage(stickerViewController.capturedSS)!;
     img.Image resized = img.copyResize(image, width: 384, maintainAspect: true);
+    int resizedHeight = resized.height;
+    int partHeight = 384;
+    int numberOfParts = (resizedHeight / partHeight).ceil();
 
+    List<img.Image> imageParts = [];
+
+    // Divide the image into parts of 400 pixels each
+    for (int i = 0; i < numberOfParts; i++) {
+      int y = i * partHeight;
+      int height =
+          (y + partHeight > resizedHeight) ? resizedHeight - y : partHeight;
+
+      img.Image part =
+          img.copyCrop(resized, x: 0, y: y, width: 384, height: height);
+      imageParts.add(part);
+    }
 
     // Xprinter XP-N160I
     final profile = await CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
     final generator = Generator(PaperSize.mm80, profile);
 
+    // for (int i = 0; i < imageParts.length; i++) {
+    //   bytes += generator.imageRaster(imageParts[i]);
+    //   if (i == imageParts.length - 1) {
+    //     bytes += generator.emptyLines(3);
+    //   }
+    //
+    //   // Future.delayed(Duration(seconds: 10));
+    //   // _flutterThermalPrinterPlugin.disconnect(selectedPrinter!);
+    //   // Future.delayed(Duration(seconds: 5));
+    //   // _flutterThermalPrinterPlugin.connect(selectedPrinter!);
+    // }
+
     bytes += generator.imageRaster(resized);
-    bytes += generator.emptyLines(3);
+    // bytes += generator.emptyLines(3);
+    bytes += generator.cut();
     return bytes;
+
+    // Future.delayed(Duration(seconds: 10));
+    // _flutterThermalPrinterPlugin.disconnect(selectedPrinter!);
   }
 
   // Future<void> printLineCut() async {
@@ -148,7 +178,7 @@ class ScanPrinterController extends GetxController {
   //
   // PrinterManager printerManager = PrinterManager.instance;
 
-  bool _connected = false;
+  final bool _connected = false;
   bool isDeviceConnected = false;
 
   @override
@@ -196,6 +226,9 @@ class ScanPrinterController extends GetxController {
 
   Future<void> initPlatformState() async {
     print("here");
+
+    final profiles = await CapabilityProfile.getAvailableProfiles();
+    print(profiles);
     _devicesStreamSubscription = _flutterThermalPrinterPlugin.devicesStream
         .listen((List<bt1.Printer> event) {
       print(event.map((e) => e.name).toList().toString());
@@ -250,7 +283,7 @@ class ScanPrinterController extends GetxController {
 //         address: device.address ?? "",
 //       ));
 //     }
-    _devicesStreamSubscription?.cancel();
+    _devicesStreamSubscription.cancel();
     await _flutterThermalPrinterPlugin.getPrinters();
     _devicesStreamSubscription = _flutterThermalPrinterPlugin.devicesStream
         .listen((List<bt1.Printer> event) {
@@ -261,12 +294,10 @@ class ScanPrinterController extends GetxController {
       printers
           .removeWhere((element) => element.name == null || element.name == '');
 
-
-
-      if(printers.isNotEmpty){
+      if (printers.isNotEmpty) {
         isLoading = false;
         _flutterThermalPrinterPlugin.stopScan();
-        _devicesStreamSubscription?.cancel();
+        _devicesStreamSubscription.cancel();
         update();
       }
       print(printers);
@@ -373,8 +404,7 @@ class ScanPrinterController extends GetxController {
       isDeviceConnected = isConnected;
       if (isConnected) {
         printImage();
-      }
-      else{
+      } else {
         print("Error Connecting");
       }
     }
@@ -399,10 +429,7 @@ class ScanPrinterController extends GetxController {
     // resize
     // var thumbnail = img.copyResize(image!,
     //     interpolation: img.Interpolation.nearest, height: 200);
-    final profile = await CapabilityProfile.load();
-    List<int> bytes = await demoReceipt(PaperSize.mm80, profile);
-
-    print(bytes.length/1024/1024);
+    List<int> bytes = await demoReceipt();
 
     // final generator = Generator(PaperSize.mm80, profile);
     // var bytes = generator.imageRaster(thumbnail, align: PosAlign.center);
@@ -414,12 +441,14 @@ class ScanPrinterController extends GetxController {
         // var result = await printerManager1.printTicket(
         //      bytes,chunkSizeBytes: 150);
         // print("here done $result");
-
-        await _flutterThermalPrinterPlugin.printData(
+        bytes = await demoReceipt();
+         _flutterThermalPrinterPlugin.printData(
           selectedPrinter!,
           bytes,
           longData: true,
         );
+        // Future.delayed(const Duration(seconds: 15));
+
         /* var result =
             await bluetooth.printImageBytes(stickerViewController.capturedSS);
         await  Future.delayed(new Duration(seconds: 10));
@@ -495,6 +524,11 @@ class ScanPrinterController extends GetxController {
         print("result cut $result");
 */
       }
+      await _flutterThermalPrinterPlugin.printData(
+        selectedPrinter!,
+        bytes,
+        longData: true,
+      );
     }
     // bluetooth.printNewLine();
     // bluetooth.printNewLine();

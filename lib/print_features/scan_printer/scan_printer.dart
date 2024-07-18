@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/helper/print_color.dart';
 
-import '../sticker_view/sticker_view_controller.dart';
 
 class ScanPrinterPage extends StatefulWidget {
   const ScanPrinterPage({super.key});
@@ -23,7 +22,7 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
     return GetBuilder<ScanPrinterController>(builder: (scanController) {
       return Scaffold(
           appBar: AppBar(
-            title: Text("Printers"),
+            title: const Text("Printers"),
             actions: [
               InkWell(
                 onTap: () {
@@ -35,7 +34,7 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
                     decoration: BoxDecoration(
                         color: PrintColors.mainColor1,
                         borderRadius: BorderRadius.circular(4.h)),
-                    child: Text(
+                    child: const Text(
                       "Scan",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     )),
@@ -46,7 +45,7 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
             ],
           ),
           body: scanController.isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : ListView.builder(
                   itemCount: scanController.printers.length,
                   itemBuilder: (context, index) {

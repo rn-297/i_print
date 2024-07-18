@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:i_print/controller/document_controller.dart';
-import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/helper/print_images.dart';
 
 class AllFilesPage extends StatelessWidget {
@@ -20,7 +19,7 @@ class AllFilesPage extends StatelessWidget {
           return Container(
             margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 8.h),
             padding: EdgeInsets.all(8.h),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               boxShadow: [
                 BoxShadow(

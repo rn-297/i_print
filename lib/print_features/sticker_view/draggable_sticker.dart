@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:i_print/print_features/sticker_view/sticker_view.dart';
 import 'draggable_resizable.dart';
 import 'sticker_view_controller.dart';
 
 class DraggableStickers extends StatefulWidget {
+  const DraggableStickers({super.key});
+
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
 }
@@ -90,12 +91,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
                   // Size of the sticker
                   size:
-                      sticker.isText == true ? Size(200, 100) : Size(100, 100),
+                      sticker.isText == true ? const Size(200, 100) : const Size(100, 100),
 
                   // Constraints of the sticker
                   constraints: sticker.isText == true
                       ? BoxConstraints.tight(
-                          Size(200, 100),
+                          const Size(200, 100),
                         )
                       : BoxConstraints.tight(
                           Size(

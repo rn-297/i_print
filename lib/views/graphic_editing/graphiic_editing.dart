@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -25,7 +23,7 @@ class GraphicEditingPage extends StatelessWidget {
       top: true,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppConstants.graphicEditing),
+          title: const Text(AppConstants.graphicEditing),
           actions: [
             InkWell(
               onTap: () {
@@ -34,7 +32,7 @@ class GraphicEditingPage extends StatelessWidget {
                 stickerViewController.saveAsUint8List(ImageQuality.medium);
               },
               child: Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 margin: EdgeInsets.only(right: 16.w),
                 decoration: BoxDecoration(
                     color: PrintColors.mainColor.withOpacity(.3),
@@ -49,7 +47,7 @@ class GraphicEditingPage extends StatelessWidget {
                     SizedBox(
                       width: 8.w,
                     ),
-                    Text(
+                    const Text(
                       "Print",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -60,11 +58,11 @@ class GraphicEditingPage extends StatelessWidget {
             )
           ],
         ),
-        bottomNavigationBar: StickerViewEditOptions(),
+        bottomNavigationBar: const StickerViewEditOptions(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: SingleChildScrollView(child: StickerView())),
+            const Expanded(child: SingleChildScrollView(child: StickerView())),
             SizedBox(
               height: 10.h,
             )

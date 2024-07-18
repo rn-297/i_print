@@ -4,8 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class PrintWebPage extends StatelessWidget {
   const PrintWebPage({super.key});
@@ -15,7 +13,7 @@ class PrintWebPage extends StatelessWidget {
     return GetBuilder<StickerViewController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Print Web Pages"),
+          title: const Text("Print Web Pages"),
         ),
         bottomNavigationBar: Container(
           height: 48.h,
@@ -27,7 +25,7 @@ class PrintWebPage extends StatelessWidget {
                 onTap: () {
                   controller.captureCurrentPage();
                 },
-                child: Row(
+                child: const Row(
                   children: [Icon(Icons.print), Text("Print Current")],
                 ),
               ),
@@ -35,7 +33,7 @@ class PrintWebPage extends StatelessWidget {
                 onTap: () {
                   controller.captureFullPage(context);
                 },
-                child: Row(
+                child: const Row(
                   children: [Icon(Icons.print), Text("Print Full Page")],
                 ),
               ),

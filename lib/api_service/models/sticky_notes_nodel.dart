@@ -9,7 +9,7 @@ class StickyNotesClass {
     if (json['sticky_notes'] != null) {
       stickyNotes = <StickyNotes>[];
       json['sticky_notes'].forEach((v) {
-        stickyNotes!.add(new StickyNotes.fromJson(v));
+        stickyNotes!.add(StickyNotes.fromJson(v));
       });
     }
     status = json['status'];
@@ -17,12 +17,12 @@ class StickyNotesClass {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.stickyNotes != null) {
-      data['sticky_notes'] = this.stickyNotes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (stickyNotes != null) {
+      data['sticky_notes'] = stickyNotes!.map((v) => v.toJson()).toList();
     }
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['status'] = status;
+    data['message'] = message;
     return data;
   }
 }
@@ -41,10 +41,10 @@ class StickyNotes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['stickynote_id'] = this.stickynoteId;
-    data['stickynote_image'] = this.stickynoteImage;
-    data['stickynote_status'] = this.stickynoteStatus;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['stickynote_id'] = stickynoteId;
+    data['stickynote_image'] = stickynoteImage;
+    data['stickynote_status'] = stickynoteStatus;
     return data;
   }
 }

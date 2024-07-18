@@ -63,7 +63,7 @@ dependencies:
   adstringo_plugin:
     path: ./adstringo_plugin
 #  esc_pos_bluetooth: ^0.4.1
-  blue_thermal_printer: ^1.2.3
+#  blue_thermal_printer: ^1.2.3
   esc_pos_utils_plus: ^2.0.3
   input_quantity: ^2.3.4
   flutter_pos_printer_platform_image_3_sdt: ^1.1.3
@@ -71,9 +71,11 @@ dependencies:
 #  esc_pos_bluetooth_updated: ^0.5.0
   flutter_thermal_printer: ^0.0.13
   flutter_image_compress: ^2.3.0
+  device_info_plus: ^10.1.0
 
 
 
+  http: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

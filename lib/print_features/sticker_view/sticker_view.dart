@@ -1,16 +1,13 @@
-import 'dart:typed_data';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:i_print/helper/print_images.dart';
-import 'dart:ui' as ui;
 import 'draggable_sticker.dart';
 import 'sticker_view_controller.dart';
 
 enum ImageQuality { low, medium, high }
 
 class StickerView extends StatefulWidget {
+  const StickerView({super.key});
+
   @override
   StickerViewState createState() => StickerViewState();
 }
@@ -46,7 +43,7 @@ class StickerViewState extends State<StickerView> {
                             : null),
                 height: stickerViewController.stickerViewHeight.value,
                 width: MediaQuery.of(context).size.width,
-                child: DraggableStickers(),
+                child: const DraggableStickers(),
               ),
             )),
       ],
@@ -63,14 +60,14 @@ class Sticker extends StatefulWidget {
   late TextStyle textStyle; // Added textStyle property
 
   Sticker({
-    Key? key,
+    super.key,
     this.child,
     this.isText,
     required this.id,
     required this.size,
     required this.position,
     required this.textStyle, // Added textStyle property
-  }) : super(key: key);
+  });
 
   @override
   _StickerState createState() => _StickerState();

@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:i_print/helper/print_images.dart';
 import 'package:i_print/views/common/common_pages.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -11,7 +9,6 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../../helper/print_color.dart';
 import '../../../helper/print_constants.dart';
 import '../../../helper/print_decoration.dart';
-import '../../../helper/text_styles.dart';
 
 class TemplatesPage extends StatelessWidget {
   const TemplatesPage({super.key});

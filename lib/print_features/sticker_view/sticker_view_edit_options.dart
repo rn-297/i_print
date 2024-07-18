@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -15,7 +13,7 @@ class StickerViewEditOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StickerViewController stickerViewController =
-        Get.put(new StickerViewController());
+        Get.put(StickerViewController());
     return Container(
       height: 54.h,
       color: PrintColors.mainColor,
@@ -48,7 +46,7 @@ class StickerViewEditOptions extends StatelessWidget {
           );
         },
         separatorBuilder: (BuildContext context, int index) {
-          return Divider();
+          return const Divider();
         },
       ),
     );

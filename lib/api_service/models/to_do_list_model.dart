@@ -9,7 +9,7 @@ class ToDoListClass {
     if (json['todo_list'] != null) {
       todoList = <TodoList>[];
       json['todo_list'].forEach((v) {
-        todoList!.add(new TodoList.fromJson(v));
+        todoList!.add(TodoList.fromJson(v));
       });
     }
     status = json['status'];
@@ -17,12 +17,12 @@ class ToDoListClass {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.todoList != null) {
-      data['todo_list'] = this.todoList!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (todoList != null) {
+      data['todo_list'] = todoList!.map((v) => v.toJson()).toList();
     }
-    data['status'] = this.status;
-    data['message'] = this.message;
+    data['status'] = status;
+    data['message'] = message;
     return data;
   }
 }
@@ -53,13 +53,13 @@ class TodoList {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['todo_main_image'] = this.todoMainImage;
-    data['todo_id'] = this.todoId;
-    data['todo_status'] = this.todoStatus;
-    data['top_image'] = this.topImage;
-    data['middle_image'] = this.middleImage;
-    data['bottom_image'] = this.bottomImage;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['todo_main_image'] = todoMainImage;
+    data['todo_id'] = todoId;
+    data['todo_status'] = todoStatus;
+    data['top_image'] = topImage;
+    data['middle_image'] = middleImage;
+    data['bottom_image'] = bottomImage;
     return data;
   }
 }

@@ -16,7 +16,7 @@ class StickyNoteEditPage extends StatelessWidget {
     StickerViewController stickerViewController =
     Get.put(StickerViewController());
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Sticky Notes"),actions: [
+      appBar: AppBar(title: const Text("Edit Sticky Notes"),actions: [
         InkWell(
           onTap: () {
             stickerViewController.selectedAssetId.value = "0";
@@ -24,7 +24,7 @@ class StickyNoteEditPage extends StatelessWidget {
             stickerViewController.saveAsUint8List(ImageQuality.high);
           },
           child: Container(
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             margin: EdgeInsets.only(right: 16.w),
             decoration: BoxDecoration(
                 color: PrintColors.mainColor.withOpacity(.3),
@@ -39,7 +39,7 @@ class StickyNoteEditPage extends StatelessWidget {
                 SizedBox(
                   width: 8.w,
                 ),
-                Text(
+                const Text(
                   "Print",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -50,7 +50,7 @@ class StickyNoteEditPage extends StatelessWidget {
         )
       ],),
 
-      body: Center(child: StickerView()),
+      body: const Center(child: StickerView()),
     );
   }
 }

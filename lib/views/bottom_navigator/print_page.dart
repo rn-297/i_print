@@ -8,7 +8,6 @@ import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/print_decoration.dart';
 import 'package:i_print/helper/print_images.dart';
 import 'package:i_print/helper/router.dart';
-import 'package:i_print/helper/text_styles.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class PrintPage extends StatelessWidget {

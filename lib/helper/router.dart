@@ -1,11 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:i_print/controller/graffiti_cartoon_line_controller.dart';
-import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/controller/templates_controller.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/print_features/scan_printer/scan_printer.dart';
@@ -13,14 +6,6 @@ import 'package:i_print/print_features/sticker_view/icon_tab/drawing_board/drawi
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/ImageEditorPage.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/image_crop_page.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
-import 'package:i_print/views/ai_toolbox/ai_image_preview.dart';
-import 'package:i_print/views/ai_toolbox/ai_painting/ai_painting_page.dart';
-import 'package:i_print/views/ai_toolbox/creative_painting/creative_painting_page.dart';
-import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/graffiti_cartoon_line_page.dart';
-import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/graffiti_cartoon_line_preview.dart';
-import 'package:i_print/views/ai_toolbox/graffitti_cartoon_line/grafftti_preview.dart';
-import 'package:i_print/views/ai_toolbox/line_drawing_page.dart';
-import 'package:i_print/views/ai_toolbox/various_page/various_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_edit_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/sticky_note_edit_page.dart';
@@ -69,33 +54,33 @@ abstract class RouteHelper {
   static const String labelEditPage = '/i_print_label_page_edit';
 
   static List<GetPage> route = [
-    GetPage(name: initial, page: () => SplashScreen()),
-    GetPage(name: navigator, page: () => NavigatorPage()),
-    GetPage(name: graphicEditing, page: () => GraphicEditingPage()),
-    GetPage(name: drawingBoard, page: () => DrawingPage()),
-    GetPage(name: imageCropper, page: () => ImageCropPage()),
-    GetPage(name: imageEditor, page: () => ImageEditorPage()),
-    GetPage(name: printPreviewPage, page: () => PrintPreviewPage()),
+    GetPage(name: initial, page: () => const SplashScreen()),
+    GetPage(name: navigator, page: () => const NavigatorPage()),
+    GetPage(name: graphicEditing, page: () => const GraphicEditingPage()),
+    GetPage(name: drawingBoard, page: () => const DrawingPage()),
+    GetPage(name: imageCropper, page: () => const ImageCropPage()),
+    GetPage(name: imageEditor, page: () => const ImageEditorPage()),
+    GetPage(name: printPreviewPage, page: () => const PrintPreviewPage()),
     // GetPage(
     //     name: graffitiCartoonLinePage, page: () => GraffitiCartoonLinePage()),
     // GetPage(name: variousScenePage, page: () => VariousScenePage()),
     // GetPage(name: aiPaintingPage, page: () => AiPaintingPage()),
     // GetPage(name: creativePaintingPage, page: () => CreativePaintingPage()),
     GetPage(name: textExtractionPage, page: () => TextExtractionPage()),
-    GetPage(name: documentPrintPage, page: () => DocumentPrintPage()),
-    GetPage(name: printWebPagesPage, page: () => PrintWebPage()),
-    GetPage(name: bannerPrintPage, page: () => BannerPrintPage()),
+    GetPage(name: documentPrintPage, page: () => const DocumentPrintPage()),
+    GetPage(name: printWebPagesPage, page: () => const PrintWebPage()),
+    GetPage(name: bannerPrintPage, page: () => const BannerPrintPage()),
     // GetPage(name: aiImagePreviewPage, page: () => AIImagePreviewPage()),
     // GetPage(name: graffitiCartoonLinePreviewPage, page: () => GraffitiCartoonLinePreviewPage()),
     // GetPage(name: lineDrawing, page: () => LineDrawingPage()),
-    GetPage(name: printScanningPage, page: () => ScanPrinterPage()),
+    GetPage(name: printScanningPage, page: () => const ScanPrinterPage()),
     // GetPage(name: graffitiPreviewPage, page: () => GraffitiPracticePage()),
-    GetPage(name: stickyNotePage, page: () => StickyNotePage()),
-    GetPage(name: toDoListPage, page: () => ToDoListPage()),
-    GetPage(name: labelPage, page: () => LabelPage()),
-    GetPage(name: stickyNoteEditPage, page: () => StickyNoteEditPage()),
-    GetPage(name: toDoListEditPage, page: () => ToDoListEditPage()),
-    GetPage(name: labelEditPage, page: () => LabelEditPage()),
+    GetPage(name: stickyNotePage, page: () => const StickyNotePage()),
+    GetPage(name: toDoListPage, page: () => const ToDoListPage()),
+    GetPage(name: labelPage, page: () => const LabelPage()),
+    GetPage(name: stickyNoteEditPage, page: () => const StickyNoteEditPage()),
+    GetPage(name: toDoListEditPage, page: () => const ToDoListEditPage()),
+    GetPage(name: labelEditPage, page: () => const LabelEditPage()),
   ];
 
   static void goToNextPage(String label) {

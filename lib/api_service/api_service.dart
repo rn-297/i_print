@@ -12,17 +12,17 @@ abstract class ApiClient extends GetxService {
 
   static Future<Response> getData(String uri) async {
     try {
-      Http.Response _response = await client
+      Http.Response response0 = await client
           .get(Uri.parse(uri))
-          .timeout(Duration(seconds: timeoutInSeconds));
+          .timeout(const Duration(seconds: timeoutInSeconds));
       Response response = Response(
-        body: _response.body,
-        statusCode: _response.statusCode,
+        body: response0.body,
+        statusCode: response0.statusCode,
       );
       print(response.body);
       return response;
     } catch (ex) {
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
@@ -34,19 +34,19 @@ abstract class ApiClient extends GetxService {
         "Content-Type": "application/json",
       };
 
-      Http.Response _response = await client
+      Http.Response response0 = await client
           .get(Uri.parse(uri),
           headers: headers)
-          .timeout(Duration(seconds: timeoutInSeconds));
+          .timeout(const Duration(seconds: timeoutInSeconds));
       Response response = Response(
-        body: _response.body,
-        statusCode: _response.statusCode
+        body: response0.body,
+        statusCode: response0.statusCode
       );
-      print(_response.statusCode);
-      print(json.decode(_response.body)["status"]);
-      if (_response.statusCode == 200) {
+      print(response0.statusCode);
+      print(json.decode(response0.body)["status"]);
+      if (response0.statusCode == 200) {
         // Parse the response JSON
-        Map<String, dynamic> responseData = json.decode(_response.body);
+        Map<String, dynamic> responseData = json.decode(response0.body);
 
         // Extract status
         String status = responseData['status'];
@@ -60,7 +60,7 @@ abstract class ApiClient extends GetxService {
           return output;
         } if(status == "failed"){return "";}else {
           // If status is not "succeeded", wait for 2 seconds and call the function recursively
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 2));
           String output=await getHeaderData(uri);
           return output;
 
@@ -78,18 +78,18 @@ abstract class ApiClient extends GetxService {
       // print(AppConstants.BASE_URL + uri);
       // print(body);
 
-      var _response = await client
+      var response = await client
           .post(
             Uri.parse(uri),
             body: body,
           )
-          .timeout(Duration(seconds: timeoutInSeconds));
+          .timeout(const Duration(seconds: timeoutInSeconds));
       // print(_response.);
 
-      return _response;
+      return response;
     } catch (ex) {
       // print(ex);
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
@@ -104,16 +104,16 @@ abstract class ApiClient extends GetxService {
         "Content-Type": "application/json",
       };
 
-      var _response = await client
+      var response = await client
           .post(Uri.parse(uri), body: json.encode(body), headers: headers)
-          .timeout(Duration(seconds: timeoutInSeconds));
-      print(_response.body);
+          .timeout(const Duration(seconds: timeoutInSeconds));
+      print(response.body);
 
 
-      return _response;
+      return response;
     } catch (ex) {
       print(ex);
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
@@ -133,7 +133,7 @@ abstract class ApiClient extends GetxService {
       return streamedResponse;
     } catch (ex) {
       print(ex);
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
@@ -152,7 +152,7 @@ abstract class ApiClient extends GetxService {
       return streamedResponse;
     } catch (ex) {
       print(ex);
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }
@@ -162,15 +162,15 @@ abstract class ApiClient extends GetxService {
       // print(AppConstants.BASE_URL + uri);
       // print(body);
 
-      var _response = await client.post(Uri.parse(uri), body: body, headers: {
+      var response = await client.post(Uri.parse(uri), body: body, headers: {
         "Accept": "application/json",
         "content-type": "application/json"
-      }).timeout(Duration(seconds: timeoutInSeconds));
+      }).timeout(const Duration(seconds: timeoutInSeconds));
 
-      return _response;
+      return response;
     } catch (ex) {
       // print(ex);
-      return Response(
+      return const Response(
           statusCode: 1, statusText: AppConstants.noInternetConnection);
     }
   }

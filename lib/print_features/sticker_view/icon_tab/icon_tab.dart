@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:i_print/helper/print_constants.dart';
 
 import '../../../helper/print_color.dart';
 import '../sticker_view_controller.dart';
@@ -87,7 +88,7 @@ class TabsConfig {
 }
 
 class MainWidget extends StatefulWidget {
-  const MainWidget({Key? key}) : super(key: key);
+  const MainWidget({super.key});
 
   @override
   State<MainWidget> createState() => MainWidgetState();
@@ -143,7 +144,7 @@ class MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
           tabs: List.generate(
             TabsConfig.tabs.length,
             (index) => SvgPicture.asset(
-              "${TabsConfig.tabs[index]}",
+              TabsConfig.tabs[index],
               height: 30.h,
               width: 30.w,
             ),
@@ -157,7 +158,7 @@ class MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
               (index) => Center(
                 child: ListView.separated(
                     separatorBuilder: (_, __) {
-                      return Divider();
+                      return const Divider();
                     },
                     itemCount: TabsConfig.iconsList[index].length,
                     scrollDirection: Axis.horizontal,
@@ -165,8 +166,13 @@ class MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
                       return InkWell(
                         onTap: () {
                           // setBorder(index);
-                          stickerViewController.addAssetSvgSticker(
-                              TabsConfig.iconsList[index][index1]);
+                          if(stickerViewController.currentPage==AppConstants.label){
+                            stickerViewController.setLabelIcon(
+                                TabsConfig.iconsList[index][index1]);
+                          }else {
+                            stickerViewController.addAssetSvgSticker(
+                                TabsConfig.iconsList[index][index1]);
+                          }
                         },
                         child: Container(
                           height: 60.w,

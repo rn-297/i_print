@@ -11,22 +11,22 @@ class StickyNotePage extends StatelessWidget {
       // controller.getStickyNotes();
       return Scaffold(
         appBar: AppBar(
-          title: Text("Sticky Notes"),
+          title: const Text("Sticky Notes"),
         ),
         body: GridView.builder(
             shrinkWrap: true,
             itemCount: controller.stickyNoteImages.length,
             gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemBuilder: (context, index) {
               // List<String> mainImages = !;
               return InkWell(
                   onTap: () {
                     controller.setSelectedSticky(
-                        controller.stickyNoteImages[index]!.stickynoteImage!);
+                        controller.stickyNoteImages[index].stickynoteImage!);
                   },
                   child: Image.network(
-                      controller.stickyNoteImages[index]!.stickynoteImage!));
+                      controller.stickyNoteImages[index].stickynoteImage!));
             }),
       );
     });

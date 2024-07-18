@@ -12,10 +12,10 @@ class ResponseModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['image'] = this.image;
-    data['finish_reason'] = this.finishReason;
-    data['seed'] = this.seed;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['image'] = image;
+    data['finish_reason'] = finishReason;
+    data['seed'] = seed;
     return data;
   }
 }

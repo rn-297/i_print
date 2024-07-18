@@ -7,7 +7,7 @@ class DynamicTextStyle extends StatefulWidget {
   final String data;
   final TextStyle textStyle;
 
-  const DynamicTextStyle({
+  const DynamicTextStyle({super.key, 
     required this.data,
     required this.textStyle,
   });

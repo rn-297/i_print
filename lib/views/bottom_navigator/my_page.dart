@@ -4,9 +4,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../helper/print_color.dart';
 import '../../helper/print_constants.dart';
-import '../../helper/print_decoration.dart';
 import '../../helper/print_images.dart';
-import '../../helper/text_styles.dart';
 import '../common/common_pages.dart';
 
 class MyPage extends StatelessWidget {

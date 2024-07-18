@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
@@ -8,6 +6,8 @@ import 'package:i_print/controller/material_controller.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NestedTabBar extends StatefulWidget {
+  const NestedTabBar({super.key});
+
   @override
   _NestedTabBarState createState() => _NestedTabBarState();
 }
@@ -19,7 +19,7 @@ class _NestedTabBarState extends State<NestedTabBar>
   @override
   void initState() {
     super.initState();
-    materialController.nestedTabController = new TabController(
+    materialController.nestedTabController = TabController(
         length: materialController
             .categoriesList[materialController.tabController.index]
             .subCategories!
@@ -54,7 +54,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                   .toList()),
           Expanded(
             child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: TabBarView(
                   controller: materialController.nestedTabController,
                   children: materialController
@@ -64,7 +64,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                     return materialController.isLoading
                         ? GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2),
                             itemCount: 4,
                             itemBuilder: (_, index) => Container(
@@ -97,7 +97,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                                     )),))
                         : GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2),
                             itemBuilder: (_, index) => InkWell(
                               onTap: () {
@@ -114,7 +114,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                                     border: Border.all(
                                         color: Colors.grey, width: 2)),
                                 child: Image.network(materialController
-                                    .subCategoriesList[index]!.subcatImgUrl!),
+                                    .subCategoriesList[index].subcatImgUrl!),
                               ),
                             ),
                             itemCount:

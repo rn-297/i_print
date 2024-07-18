@@ -11,14 +11,14 @@ class ToDoListPage extends StatelessWidget {
     return GetBuilder<TemplatesController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("To Do List"),
+          title: const Text("To Do List"),
         ),
         body: Column(
           children: [
             GridView.builder(
                 shrinkWrap: true,
                 itemCount: controller.toDoListImages.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2),
                 itemBuilder: (context, index) {
                   return InkWell(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +6,6 @@ import 'package:i_print/controller/templates_controller.dart';
 
 import '../../../helper/print_color.dart';
 import '../../../helper/print_images.dart';
-import '../../../print_features/sticker_view/sticker_view.dart';
-import '../../../print_features/sticker_view/sticker_view_controller.dart';
 
 class ToDoListEditPage extends StatelessWidget {
   const ToDoListEditPage({super.key});
@@ -19,14 +16,14 @@ class ToDoListEditPage extends StatelessWidget {
     return GetBuilder<TemplatesController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Edit To Do List'),
+          title: const Text('Edit To Do List'),
           actions: [
             InkWell(
               onTap: () {
                 controller.getImageFromUI(context);
               },
               child: Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 margin: EdgeInsets.only(right: 16.w),
                 decoration: BoxDecoration(
                     color: PrintColors.mainColor.withOpacity(.3),
@@ -41,7 +38,7 @@ class ToDoListEditPage extends StatelessWidget {
                     SizedBox(
                       width: 8.w,
                     ),
-                    Text(
+                    const Text(
                       "Print",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -51,13 +48,13 @@ class ToDoListEditPage extends StatelessWidget {
             )
           ],
         ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: SizedBox(
           height: 48.h,
           child: InkWell(
             onTap: () {
               controller.addToDoTextField();
             },
-            child: Column(
+            child: const Column(
               children: [
                 Icon(
                   Icons.add_circle_outline,
@@ -81,7 +78,7 @@ class ToDoListEditPage extends StatelessWidget {
                 ListView.builder(
                     itemCount: controller.toDoListEditingControllers.length,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return controller.toDoListEditingControllers.length == 1
                           ? Container(
@@ -98,7 +95,7 @@ class ToDoListEditPage extends StatelessWidget {
                                 child: TextField(
                                   controller: controller
                                       .toDoListEditingControllers[index],
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: InputBorder.none,
                                   ),
                                   style: TextStyle(
@@ -134,15 +131,15 @@ class ToDoListEditPage extends StatelessWidget {
                                     color: Colors.red,
                                     alignment: Alignment.centerRight,
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: Icon(
+                                        const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: const Icon(
                                       Icons.delete,
                                       color: Colors.white,
                                     ),
                                   ),
                                   child: TextField(
                                     controller: controller.toDoListEditingControllers[index],
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: InputBorder.none,
                                     ),
                                     style: TextStyle(
