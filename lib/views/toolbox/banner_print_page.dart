@@ -87,7 +87,7 @@ class BannerPrintPage extends StatelessWidget {
               ),
               TextField(
                 controller: controller.bannerTextController,
-                maxLength: 20,
+                // maxLength: 20,
                 decoration: const InputDecoration(
                   hintText: "Please Input Content",
                 ),

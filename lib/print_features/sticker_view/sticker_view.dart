@@ -29,18 +29,17 @@ class StickerViewState extends State<StickerView> {
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
                     image: stickerViewController
-                                .selectedBorder.value.isNotEmpty &&
-                            stickerViewController.isNetworkImage
+                                .selectedBorder.value.isNotEmpty
                         ? DecorationImage(
                             image: NetworkImage(
                                 stickerViewController.selectedBorder.value),
                             fit: BoxFit.fill,
-                          )
-                        : stickerViewController.selectedBorder.value.isNotEmpty
+                          ):null),
+                        /*: stickerViewController.selectedBorder.value.isNotEmpty
                             ? DecorationImage(
                                 image: AssetImage(
                                     stickerViewController.selectedBorder.value,),fit: BoxFit.fill,)
-                            : null),
+                            : null),*/
                 height: stickerViewController.stickerViewHeight.value,
                 width: MediaQuery.of(context).size.width,
                 child: const DraggableStickers(),

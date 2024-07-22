@@ -16,6 +16,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:http/http.dart' as Http;
+import 'package:i_print/api_service/models/IconsDataClass.dart';
+import 'package:i_print/api_service/models/borders_data_class.dart';
 import 'package:i_print/helper/print_color.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/print_images.dart';
@@ -25,12 +27,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:screenshot/screenshot.dart';
 import 'package:webcontent_converter/webcontent_converter.dart';
+import '../../api_service/api_service.dart';
+import '../../controller/scan_controller.dart';
 import 'sticker_view.dart';
 import 'package:image/image.dart' as img;
 
 class StickerViewController extends GetxController implements GetxService {
   final GlobalKey stickGlobalKey = GlobalKey();
   final GlobalKey stickGlobalKey1 = GlobalKey();
+  final GlobalKey stickGlobalKey2 = GlobalKey();
   final initialStickerScale = 5.0;
   double sliderValue = 24.0;
   String selectedOption = "";
@@ -39,11 +44,13 @@ class StickerViewController extends GetxController implements GetxService {
   String currentPage = "";
   RxString selectedBorder = "".obs;
   bool photoPrint = false;
-  bool isNetworkImage = false;
   bool isLabelSticker = false;
 
   RxString selectedAssetId = "".obs;
   List<Widget> labelList = [];
+  List<IconsTabs> iconsList = [];
+  List<BordersImages> borderList = [];
+  int selectedIconTabIndex = 0;
   String selectedIcon = "";
   late BuildContext context;
 
@@ -60,6 +67,32 @@ class StickerViewController extends GetxController implements GetxService {
     });
   }
 
+  getIconData() async {
+    var response = await ApiClient.postData(
+        AppConstants.baseUrl + AppConstants.getIconsData, null);
+
+    if (response.statusCode == 200) {
+      IconsDataClass iconsDataClass =
+          IconsDataClass.fromJson(jsonDecode(response.body));
+      // labelImages = stickyNotesClass.images!;
+      iconsList = iconsDataClass.tabs!;
+    }
+    update();
+  }
+
+  getBorderData() async {
+    var response = await ApiClient.postData(
+        AppConstants.baseUrl + AppConstants.getBordersData, null);
+
+    if (response.statusCode == 200) {
+      BordersDataClass bordersDataClass =
+          BordersDataClass.fromJson(jsonDecode(response.body));
+      // labelImages = stickyNotesClass.images!;
+      borderList = bordersDataClass.borders!;
+    }
+    update();
+  }
+
   bool isChangeableHeight = true;
   bool extractingText = false;
   FontWeight extractedTextFontWeight = FontWeight.normal;
@@ -71,8 +104,8 @@ class StickerViewController extends GetxController implements GetxService {
 //Web page print
   InAppWebViewController? webViewController;
   ScreenshotController screenshotController = ScreenshotController();
-  late Uint8List capturedSS;
-  late List<int> capturedSS1;
+  late List<Uint8List> capturedSS;
+  late Uint8List capturedSS1;
   final GlobalKey webScreen = GlobalKey();
 
   //Banner print
@@ -129,14 +162,6 @@ class StickerViewController extends GetxController implements GetxService {
     Colors.yellow,
   ];
 
-  List<String> borderList = [
-    PrintImages.border1,
-    PrintImages.border2,
-    PrintImages.border3,
-    PrintImages.border4,
-    PrintImages.border5,
-    PrintImages.border6,
-  ];
   List<StickerEdit> stickerEditOptions = [
     StickerEdit(
       PrintImages.text,
@@ -322,7 +347,7 @@ class StickerViewController extends GetxController implements GetxService {
         color: textStickerColor,
       ),
       position: const Offset(100, 100),
-      child: SvgPicture.asset(
+      child: SvgPicture.network(
         file,
         height: 100,
         width: 100,
@@ -347,7 +372,11 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   String getFile(int index) {
-    return borderList[index];
+    return borderList[index].borderImage!;
+  }
+
+  bool isBorderSquare(int index) {
+    return borderList[index].type!.toLowerCase() == "square";
   }
 
   void decreaseTextSize() {
@@ -400,7 +429,7 @@ class StickerViewController extends GetxController implements GetxService {
                               flex: 3,
                               child: TextField(
                                 controller: stickerTextController,
-                                maxLength: 20,
+                                // maxLength: 20,
                                 // autofocus: true,
                                 decoration: const InputDecoration(
                                     hintText: "Enter Text",
@@ -488,9 +517,10 @@ class StickerViewController extends GetxController implements GetxService {
                                             trackShape:
                                                 const RoundedRectSliderTrackShape(),
                                             trackHeight: 6,
-                                            thumbShape: const RoundSliderThumbShape(
-                                                enabledThumbRadius: 12,
-                                                elevation: 2),
+                                            thumbShape:
+                                                const RoundSliderThumbShape(
+                                                    enabledThumbRadius: 12,
+                                                    elevation: 2),
 
                                             // disabledInactiveTickMarkColor: blue25,
                                             // overlayColor: Colors.red.withAlpha(32),
@@ -815,14 +845,14 @@ class StickerViewController extends GetxController implements GetxService {
                                   setBorder(index);
                                 },
                                 child: Container(
-                                  height: 80.h,
-                                  width: 60.w,
+                                  height: stickerViewController.isBorderSquare(index)?80.h:60.h,
+                                  width: stickerViewController.isBorderSquare(index)?60.w:180.w,
                                   margin: EdgeInsets.all(8.w),
                                   padding: EdgeInsets.all(8.w),
                                   decoration: BoxDecoration(
                                       color: PrintColors.grey.withOpacity(0.3),
                                       borderRadius: BorderRadius.circular(4.r)),
-                                  child: Image.asset(
+                                  child: Image.network(
                                     stickerViewController.getFile(index),
                                     height: 80.h,
                                     width: 60.w,
@@ -975,8 +1005,7 @@ class StickerViewController extends GetxController implements GetxService {
   }
 
   void setBorder(int index) {
-    selectedBorder.value = borderList[index];
-    isNetworkImage = false;
+    selectedBorder.value = borderList[index].borderImage!;
     Get.back();
     update();
   }
@@ -1065,6 +1094,11 @@ class StickerViewController extends GetxController implements GetxService {
     ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
     Uint8List bytes = data!.buffer.asUint8List();
     print("file size");
+    Directory appDocDir =
+        await path_provider.getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+
+    // Define the file path and name
 
     if (photoPrint) {
       img.Image? originalImage = img.decodePng(bytes);
@@ -1079,8 +1113,30 @@ class StickerViewController extends GetxController implements GetxService {
       //           originalImage.width)
       //       .round(),
       // );
+
+      int originalWidth = originalImage!.width;
+      int originalHeight = originalImage!.height;
+
+      // Calculate the aspect ratio
+      double aspectRatio = originalHeight / originalWidth;
+
+      // Calculate the target height maintaining the aspect ratio
+      int targetHeight = (384 * aspectRatio).round();
       final grayscaleImage = img.grayscale(originalImage!);
       final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
+
+      String filePath = '$appDocPath/bitmap.png';
+
+      // Check if the file exists and delete it if it does
+      File file = File(filePath);
+      if (await file.exists()) {
+        await file.delete();
+        print('Existing file deleted.');
+      }
+
+      // Write the bytes to the file
+      await file.writeAsBytes(grayBytes);
+
       double inMB = bytes.length / 1024 / 1024;
       int quality = 96;
       if (inMB > 2) {
@@ -1095,15 +1151,19 @@ class StickerViewController extends GetxController implements GetxService {
         quality = 15;
       }
 
-      var result = await FlutterImageCompress.compressWithList(
-        grayBytes.buffer.asUint8List(),
-        quality: quality,
-      );
-      img.Image? tempImage =await img.decodeImage(result);
-      capturedSS = Uint8List.fromList(img.encodePng(tempImage!));
-      print(capturedSS.length / 1024 / 1024);
+      String targetPath = await getPath("jpg");
 
+      var result = await FlutterImageCompress.compressAndGetFile(
+          filePath, targetPath,
+          quality: quality, minWidth: 384, minHeight: targetHeight);
+      // img.Image? tempImage =await img.decodeImage(result);
+      capturedSS = [await File(targetPath).readAsBytesSync()];
+      // Uint8List.fromList(img.encodePng(tempImage!));
+      // print(capturedSS.length / 1024 / 1024);
+      ScanPrinterController scanPrinterController = ScanPrinterController();
+      scanPrinterController.copies = 1.0;
       Get.toNamed(RouteHelper.printPreviewPage);
+      update();
     } else {
       String filePath = await getPath("png");
       File file = File(filePath);
@@ -1111,6 +1171,123 @@ class StickerViewController extends GetxController implements GetxService {
       addImageSticker(file);
       Get.back();
     }
+  }
+
+/*
+  Uint8List _convertImageToThermalFormat(img.Image image) {
+    int width = image.width;
+    int height = image.height;
+    List<int> bytes = [];
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        num luminance = img.getLuminance(image.getPixel(x, y));
+        bytes.add(luminance < 128 ? 0 : 1);
+      }
+    }
+
+    return Uint8List.fromList(bytes);
+  }
+*/
+  /* Uint8List _convertImageToThermalFormat(img.Image image) {
+    int width = image.width;
+    int height = image.height;
+    List<int> bytes = [];
+
+    // Add the command for printing the image
+    bytes.addAll([0x1D, 0x76, 0x30, 0x00]); // ESC * command
+
+    // Width and height in dots
+    bytes.addAll([width & 0xFF, (width >> 8) & 0xFF]);
+    bytes.addAll([height & 0xFF, (height >> 8) & 0xFF]);
+
+    // Convert each pixel to monochrome
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x += 8) {
+        int byte = 0;
+        for (int bit = 0; bit < 8; bit++) {
+          if (x + bit < width) {
+            img.Pixel pixel = image.getPixel(x + bit, y);
+            num luminance = img.getLuminance(pixel);
+            if (luminance < 128) {
+              byte |= (1 << (7 - bit));
+            }
+          }
+        }
+        bytes.add(byte);
+      }
+    }
+
+    return Uint8List.fromList(bytes);
+  }
+*/
+
+  /*Uint8List _convertImageToThermalFormat(img.Image image) {
+    int width = image.width;
+    int height = image.height;
+    List<int> bytes = [];
+
+    // Add the command for printing the image
+    bytes.addAll([0x1B, 0x19, 0x01, 0x07]); // ESC * command header
+
+    // Width and height in dots
+    bytes.addAll([width & 0xFF, (width >> 8) & 0xFF]);
+    bytes.addAll([height & 0xFF, (height >> 8) & 0xFF]);
+
+    // Convert each pixel to monochrome
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x += 8) {
+        int byte = 0;
+        for (int bit = 0; bit < 8; bit++) {
+          if (x + bit < width) {
+            img.Pixel pixel = image.getPixel(x + bit, y);
+            num luminance = img.getLuminance(pixel);
+            if (luminance < 128) {
+              byte |= (1 << (7 - bit));
+            }
+          }
+        }
+        bytes.add(byte);
+      }
+    }
+
+    return Uint8List.fromList(bytes);
+  }*/
+
+  Uint8List _convertImageToThermalFormat(img.Image image) {
+    int width = image.width;
+    int height = image.height;
+    int printerWidth = 384; // Width of the thermal printer in pixels
+    List<int> bytes = [];
+
+    // Add the command for printing the image
+    bytes.addAll([0x1B, 0x19, 0x01, 0x07]); // ESC * command header
+
+    // Width and height in dots
+    bytes.addAll([printerWidth & 0xFF, (printerWidth >> 8) & 0xFF]);
+    bytes.addAll([height & 0xFF, (height >> 8) & 0xFF]);
+
+    // Calculate padding for centering
+    int padding = (printerWidth - width) ~/ 2;
+
+    // Convert each pixel to monochrome with padding
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < printerWidth; x += 8) {
+        int byte = 0;
+        for (int bit = 0; bit < 8; bit++) {
+          if (x + bit >= padding && x + bit < padding + width) {
+            img.Pixel pixel = image.getPixel(x + bit - padding, y);
+            int luminance = img.getLuminance(pixel).toInt();
+            if (luminance < 128) {
+              byte |= (1 << (7 - bit));
+            }
+          }
+        }
+        bytes.add(byte);
+      }
+    }
+
+    return Uint8List.fromList(bytes);
   }
 
   void onStyleItemClick(int index) {
@@ -1268,6 +1445,8 @@ class StickerViewController extends GetxController implements GetxService {
   void captureCurrentPage() async {
     Uint8List? bytes = await webViewController!.takeScreenshot();
     setCapturedSS(bytes!);
+    ScanPrinterController scanPrinterController = ScanPrinterController();
+    scanPrinterController.copies = 1.0;
     Get.toNamed(RouteHelper.printPreviewPage);
   }
 
@@ -1318,10 +1497,12 @@ class StickerViewController extends GetxController implements GetxService {
     var bytes = await WebcontentConverter.contentToImage(content: content);
 
     setCapturedSS(bytes);
+    ScanPrinterController scanPrinterController = ScanPrinterController();
+    scanPrinterController.copies = 1.0;
     Get.toNamed(RouteHelper.printPreviewPage);
   }
 
-  Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
+  Future<List<Uint8List>?> saveAsUint8List(ImageQuality imageQuality) async {
     try {
       Uint8List? pngBytes;
       double pixelRatio = 1.0;
@@ -1372,14 +1553,17 @@ class StickerViewController extends GetxController implements GetxService {
       // );
 
       // Converting to grayscale
-      final grayscaleImage = img.grayscale(originalImage);
+      img.Image resizedImage = img.copyResize(originalImage!, width: 384);
+      final grayscaleImage = img.grayscale(resizedImage);
 
       // Updating the captured screenshot variable
       final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
-      capturedSS = grayBytes.buffer
-          .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
+      capturedSS = [grayBytes]; //.buffer
+      // .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
 
       // Navigating to the print preview page
+      ScanPrinterController scanPrinterController = ScanPrinterController();
+      scanPrinterController.copies = 1.0;
       Get.toNamed(RouteHelper.printPreviewPage, arguments: capturedSS);
 
       return capturedSS; // Return the grayscale image bytes
@@ -1400,17 +1584,17 @@ class StickerViewController extends GetxController implements GetxService {
       }
       await Future.delayed(const Duration(milliseconds: 700))
           .then((value) async {
-        RenderRepaintBoundary boundary = stickGlobalKey1.currentContext
+        RenderRepaintBoundary boundary = stickGlobalKey2.currentContext
             ?.findRenderObject() as RenderRepaintBoundary;
         ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
         ByteData? byteData =
             await image.toByteData(format: ui.ImageByteFormat.png);
         pngBytes = byteData?.buffer.asUint8List();
-        final originalImage = img.decodeImage(pngBytes!);
-        final grayscaleImage = img.grayscale(originalImage!);
-        capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
+        // final originalImage = img.decodeImage(pngBytes!);
+        // final grayscaleImage = img.grayscale(originalImage!);
+        capturedSS1 = pngBytes!;
         // capturedSS = pngBytes!;
-        Get.toNamed(RouteHelper.printPreviewPage);
+        // Get.toNamed(RouteHelper.printPreviewPage);
       });
       return pngBytes;
     } catch (e) {
@@ -1418,7 +1602,7 @@ class StickerViewController extends GetxController implements GetxService {
     }
   }
 
-  void setCapturedSS(Uint8List previewImage) {
+  Future<void> setCapturedSS(Uint8List previewImage) async {
     final originalImage = img.decodeImage(previewImage);
     // const int posPrinterWidthPixels = 384;
     // final resizedImage = img.copyResize(
@@ -1428,8 +1612,14 @@ class StickerViewController extends GetxController implements GetxService {
     //       (originalImage.height * posPrinterWidthPixels / originalImage.width)
     //           .round(),
     // );
-    final grayscaleImage = img.grayscale(originalImage!);
-    capturedSS = Uint8List.fromList(img.encodePng(grayscaleImage));
+    img.Image resizedImage = img.copyResize(originalImage!, width: 384);
+    final grayscaleImage = img.grayscale(resizedImage!);
+    // Convert the image to a format suitable for thermal printers
+    // Uint8List thermalImageBytes = await _convertImageToThermalFormat(grayscaleImage);
+
+    capturedSS = [Uint8List.fromList(img.encodePng(grayscaleImage))];
+    // print(capturedSS[0]);
+    // capturedSS = thermalImageBytes;
   }
 
   assetImageToUint8List(String assetPath) async {
@@ -1437,7 +1627,8 @@ class StickerViewController extends GetxController implements GetxService {
 
     List<int> bytes = Uint8List.view(imageData.buffer);
     setCapturedSS(Uint8List.fromList(bytes));
-
+    ScanPrinterController scanPrinterController = ScanPrinterController();
+    scanPrinterController.copies = 1.0;
     Get.toNamed(RouteHelper.printPreviewPage);
   }
 
@@ -1448,6 +1639,8 @@ class StickerViewController extends GetxController implements GetxService {
     Uint8List bytesNetwork = response.bodyBytes;
     setCapturedSS(bytesNetwork.buffer
         .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes));
+    ScanPrinterController scanPrinterController = ScanPrinterController();
+    scanPrinterController.copies = 1.0;
     Get.toNamed(RouteHelper.printPreviewPage);
   }
 
@@ -1505,6 +1698,8 @@ class StickerViewController extends GetxController implements GetxService {
         // Here you will get image object
 
         setCapturedSS(capturedImage);
+        ScanPrinterController scanPrinterController = ScanPrinterController();
+        scanPrinterController.copies = 1.0;
         Get.toNamed(RouteHelper.printPreviewPage);
       });
     } else {
@@ -1534,6 +1729,8 @@ class StickerViewController extends GetxController implements GetxService {
           .then((capturedImage) {
         // Here you will get image object
         setCapturedSS(capturedImage);
+        ScanPrinterController scanPrinterController = ScanPrinterController();
+        scanPrinterController.copies = 1.0;
         Get.toNamed(RouteHelper.printPreviewPage);
       });
     }
@@ -1548,7 +1745,7 @@ class StickerViewController extends GetxController implements GetxService {
           setIconBottomSheet(context);
           labelListIndex = 0;
         },
-        child: SvgPicture.asset(
+        child: SvgPicture.network(
           selectedIcon,
           height: 100,
           fit: BoxFit.fill,

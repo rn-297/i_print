@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:i_print/api_service/models/label_data_class.dart';
 import 'package:i_print/api_service/models/sticky_notes_nodel.dart';
 import 'package:i_print/api_service/models/to_do_list_model.dart';
+import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -19,7 +21,8 @@ class TemplatesController extends GetxController {
   List<TodoList> toDoListImages = [];
   List<StickyNotes> stickyNoteImages = [];
 
-  late TodoList selectedToDoList ;
+  late TodoList selectedToDoList;
+
   List<TextEditingController> toDoListEditingControllers = [];
   String selectedStickyNote = "";
   GlobalKey toDoListGlobalKey = GlobalKey();
@@ -36,6 +39,8 @@ class TemplatesController extends GetxController {
     }
     update();
   }
+
+
 
   void setSelectedToDo(int selected) {
     print(selected);
@@ -131,6 +136,8 @@ class TemplatesController extends GetxController {
       final StickerViewController stickerViewController =
           Get.put(StickerViewController());
       stickerViewController.setCapturedSS(capturedImage);
+      ScanPrinterController scanPrinterController = ScanPrinterController();
+      scanPrinterController.copies = 1.0;
       Get.toNamed(RouteHelper.printPreviewPage);
     });
   }
@@ -157,7 +164,6 @@ class TemplatesController extends GetxController {
         StickerViewController stickerViewController =
             Get.put(StickerViewController());
         stickerViewController.selectedBorder.value = selectedStickyNote;
-        stickerViewController.isNetworkImage=true;
         stickerViewController.stickers.clear();
         stickerViewController.setTextStickerText("Your Text Here");
         stickerViewController.isChangeableHeight = false;
@@ -174,7 +180,7 @@ class TemplatesController extends GetxController {
 
     if (response.statusCode == 200) {
       ToDoListClass toDoListClass =
-      ToDoListClass.fromJson(jsonDecode(response.body));
+          ToDoListClass.fromJson(jsonDecode(response.body));
       toDoListImages = toDoListClass.todoList!;
     }
     // getSubCategoryImagesList(

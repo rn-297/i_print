@@ -10,6 +10,7 @@ import 'package:i_print/api_service/models/subcategory_model.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/router.dart';
 
+import '../api_service/models/label_data_class.dart';
 import '../print_features/sticker_view/sticker_view_controller.dart';
 
 class MaterialController extends GetxController {
@@ -46,9 +47,22 @@ class MaterialController extends GetxController {
       "Robot"
     ]
   ];
-  List selectedLabel = [];
+  LabelImages? selectedLabel;
 
   bool isLoading = true;
+  List<LabelImages> labelImages = [];
+
+  getLabelData() async {
+    var response = await ApiClient.postData(
+        AppConstants.baseUrl + AppConstants.getLabelData, null);
+
+    if (response.statusCode == 200) {
+      LabelDataClass stickyNotesClass =
+          LabelDataClass.fromJson(jsonDecode(response.body));
+      labelImages = stickyNotesClass.images!;
+    }
+    update();
+  }
 
   Future<void> getCategoryList() async {
     isLoading = true;
@@ -83,22 +97,22 @@ class MaterialController extends GetxController {
   }
 
   void setSelectedLabel(int index, BuildContext context) {
-    selectedLabel = labelList[index];
+    selectedLabel = labelImages[index];
     StickerViewController stickerViewController = Get.find();
     stickerViewController.isChangeableHeight = false;
     stickerViewController.stickerViewHeight.value = 150.h;
     stickerViewController.setCurrentPage(AppConstants.label);
-    stickerViewController.selectedBorder.value = selectedLabel[2];
-    stickerViewController.stickerTextController.text=selectedLabel[3];
-    stickerViewController.context=context;
+    stickerViewController.selectedBorder.value = selectedLabel!.borderImageUrl!;
+    stickerViewController.stickerTextController.text = selectedLabel!.text!;
+    stickerViewController.context = context;
     stickerViewController.labelList = [
       InkWell(
         onTap: () {
           stickerViewController.setIconBottomSheet(context);
           stickerViewController.labelListIndex = 0;
         },
-        child: SvgPicture.asset(
-          selectedLabel[1],
+        child: SvgPicture.network(
+          selectedLabel!.icon!,
           height: 100,
           fit: BoxFit.fill,
         ),
@@ -107,11 +121,12 @@ class MaterialController extends GetxController {
           child: InkWell(
         onTap: () {
           stickerViewController.labelListIndex = 2;
-          stickerViewController.stickerTextController.text=selectedLabel[3];
+          stickerViewController.stickerTextController.text =
+              selectedLabel!.text!;
           stickerViewController.showTextEditBottomSheet(context);
         },
         child: Text(
-          selectedLabel[3],
+          selectedLabel!.text!,
           textAlign: stickerViewController.labelAlign,
           style: TextStyle(
             fontSize: 30.sp,

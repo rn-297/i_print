@@ -4,9 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
-  flutter_pos_printer_platform_image_3_sdt
   flutter_thermal_printer
-  network_info_plus
+  pdfx
   permission_handler_windows
   url_launcher_windows
 )

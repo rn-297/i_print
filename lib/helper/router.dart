@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:i_print/controller/material_controller.dart';
 import 'package:i_print/controller/templates_controller.dart';
 import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/print_features/scan_printer/scan_printer.dart';
@@ -6,6 +7,7 @@ import 'package:i_print/print_features/sticker_view/icon_tab/drawing_board/drawi
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/ImageEditorPage.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/image_crop_page.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
+import 'package:i_print/views/bottom_navigator/print_record/print_record_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_edit_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/sticky_note_edit_page.dart';
@@ -24,6 +26,7 @@ import '../views/splash_screen/splash_screen.dart';
 
 abstract class RouteHelper {
   static const String initial = '/';
+  static const String splash = '/i_print_splash';
 
   static const String navigator = '/i_print_navigator';
   static const String graphicEditing = '/i_print_graphic_editing';
@@ -52,9 +55,11 @@ abstract class RouteHelper {
   static const String stickyNoteEditPage = '/i_print_sticky_note_edit';
   static const String toDoListEditPage = '/i_print_to_do_list_edit';
   static const String labelEditPage = '/i_print_label_page_edit';
+  static const String printRecordPage = '/i_print_print_record';
 
   static List<GetPage> route = [
     GetPage(name: initial, page: () => const SplashScreen()),
+    GetPage(name: splash, page: () => const SplashScreen()),
     GetPage(name: navigator, page: () => const NavigatorPage()),
     GetPage(name: graphicEditing, page: () => const GraphicEditingPage()),
     GetPage(name: drawingBoard, page: () => const DrawingPage()),
@@ -81,6 +86,7 @@ abstract class RouteHelper {
     GetPage(name: stickyNoteEditPage, page: () => const StickyNoteEditPage()),
     GetPage(name: toDoListEditPage, page: () => const ToDoListEditPage()),
     GetPage(name: labelEditPage, page: () => const LabelEditPage()),
+    GetPage(name: printRecordPage, page: () => const PrintRecordPage()),
   ];
 
   static void goToNextPage(String label) {
@@ -91,7 +97,7 @@ abstract class RouteHelper {
         break;
       case AppConstants.printRecord:
         print(label);
-
+        Get.toNamed(printRecordPage);
         break;
       case AppConstants.aboutUs:
         print(label);
@@ -99,11 +105,14 @@ abstract class RouteHelper {
 
       case AppConstants.photoPrinting:
         StickerViewController controller = Get.put(StickerViewController());
+        controller.currentPage == AppConstants.photoPrinting;
         controller.selectImage();
         print(label);
         break;
       case AppConstants.graphicEditing:
         StickerViewController controller = Get.put(StickerViewController());
+        controller.stickers.value=[];
+        controller.selectedBorder.value="";
         controller.setCurrentPage(AppConstants.graphicEditing);
         Get.toNamed(graphicEditing);
         print(label);
@@ -168,6 +177,7 @@ abstract class RouteHelper {
         TemplatesController templatesController =
             Get.put(TemplatesController());
         templatesController.getStickyNotes();
+
         Get.toNamed(stickyNotePage);
         print(label);
         break;
@@ -180,7 +190,8 @@ abstract class RouteHelper {
         print("11$label");
         break;
       case AppConstants.label:
-
+        MaterialController materialController = Get.put(MaterialController());
+        materialController.getLabelData();
         Get.toNamed(labelPage);
         print(label);
         break;

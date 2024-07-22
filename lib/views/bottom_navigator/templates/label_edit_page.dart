@@ -22,7 +22,7 @@ class LabelEditPage extends StatelessWidget {
                 onTap: () {
                   controller.selectedAssetId.value = "0";
 
-                  controller.saveAsUint8List(ImageQuality.low);
+                  controller.saveAsUint8List(ImageQuality.medium);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(4),
@@ -63,7 +63,7 @@ class LabelEditPage extends StatelessWidget {
               decoration: BoxDecoration(
                   image: DecorationImage(
 
-                    image: AssetImage(controller.selectedBorder.value),
+                    image: NetworkImage(controller.selectedBorder.value),
                     fit: BoxFit.fill,
 
                   )),

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 import 'package:i_print/controller/material_controller.dart';
-import 'package:shimmer/shimmer.dart';
 
 class NestedTabBar extends StatefulWidget {
   const NestedTabBar({super.key});
@@ -61,41 +60,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       .categoriesList[materialController.tabController.index]
                       .subCategories!
                       .map((tab) {
-                    return materialController.isLoading
-                        ? GridView.builder(
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemCount: 4,
-                            itemBuilder: (_, index) => Container(
-                                padding: EdgeInsets.all(8.h),
-                                margin: EdgeInsets.all(4.h),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 2)),
-                                child: Shimmer.fromColors(
-                                    baseColor: Colors.grey.shade300,
-                                    highlightColor: Colors.grey,
-                                    enabled: true,
-                                    child: const SingleChildScrollView(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-
-                                          SizedBox(height: 16.0),
-
-                                          SizedBox(height: 16.0),
-                                          SizedBox(height: 16.0),
-
-                                          SizedBox(height: 16.0),
-                                          SizedBox(height: 16.0),
-
-                                        ],
-                                      ),
-                                    )),))
-                        : GridView.builder(
+                    return  GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2),

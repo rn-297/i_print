@@ -24,16 +24,26 @@ class PrintPreviewPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-                child: Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-                    child: SingleChildScrollView(
-                        child: Image.memory(
-
-                      controller.capturedSS,
-                      fit: BoxFit.fitWidth,
-                          width: Get.size.width,
-                    )))),
+              child: Container(
+                  width: 384.w,
+                  margin:
+                      EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.capturedSS.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            Image.memory(
+                              controller.capturedSS[index],
+                              fit: BoxFit.fitWidth,
+                              width: Get.size.width,
+                            ),
+                            SizedBox(height: 16.h,)
+                          ],
+                        );
+                      })),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -45,10 +55,10 @@ class PrintPreviewPage extends StatelessWidget {
                       initVal: 1.0,
                       minVal: 1.0,
                       steps: 1.0,
-      decoration: const QtyDecorationProps(
-      isBordered: false,
-      borderShape: BorderShapeBtn.circle,
-      width: 12),
+                      decoration: const QtyDecorationProps(
+                          isBordered: false,
+                          borderShape: BorderShapeBtn.circle,
+                          width: 12),
                       qtyFormProps: const QtyFormProps(enableTyping: false),
                       onQtyChanged: (val) {
                         print(val);
@@ -59,10 +69,11 @@ class PrintPreviewPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () async {
-                    // await scanPrinterController.getSelectedDeviceState();
+                    await scanPrinterController.getSelectedDeviceState();
                     print(scanPrinterController.isDeviceConnected);
                     if (scanPrinterController.isDeviceConnected) {
-                      scanPrinterController.selectPrinter(scanPrinterController.selectedPrinter!);
+                      scanPrinterController.selectPrinter(
+                          scanPrinterController.selectedPrinter!, context);
                     } else {
                       Get.toNamed(RouteHelper.printScanningPage);
                     }

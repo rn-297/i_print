@@ -10,6 +10,7 @@ import 'package:i_print/helper/print_constants.dart';
 import 'package:i_print/helper/router.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 
+import '../../controller/scan_controller.dart';
 import '../../helper/print_images.dart';
 
 class TextExtractionPage extends StatelessWidget {
@@ -34,11 +35,14 @@ class TextExtractionPage extends StatelessWidget {
 
                   if (pngBytes != null) {
                     final Uint8List pngBytes1 = pngBytes.buffer.asUint8List();
-                    StickerViewController stickerViewController=Get.put(StickerViewController());
+                    StickerViewController stickerViewController =
+                        Get.put(StickerViewController());
                     stickerViewController.setCapturedSS(pngBytes1);
+                    ScanPrinterController scanPrinterController =
+                        ScanPrinterController();
+                    scanPrinterController.copies = 1.0;
                     Get.toNamed(RouteHelper.printPreviewPage);
                   }
-
                 }
               },
               child: SvgPicture.asset(
@@ -56,19 +60,20 @@ class TextExtractionPage extends StatelessWidget {
             Expanded(
               child: controller.extractingText
                   ? const Center(child: CircularProgressIndicator())
-                  : RepaintBoundary(
+                  : SingleChildScrollView(
+                    child: RepaintBoundary(
                       key: _globalKey,
-                      child: SingleChildScrollView(
-                        child: Padding(
+                      child: Container(
                           padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                              decoration:
-                                  const InputDecoration(border: InputBorder.none),
+                          color: Colors.white,
 
+                          child: TextField(
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none),
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               style: TextStyle(
-                                fontSize: 20.sp,
+                                fontSize: 25.sp,
                                 fontWeight: controller.extractedTextFontWeight,
                                 fontStyle: controller.extractedTextFontStyle,
                                 decoration:
@@ -77,8 +82,8 @@ class TextExtractionPage extends StatelessWidget {
                               textAlign: controller.extractedTextTextAlign,
                               controller: controller.extractedTextController),
                         ),
-                      ),
                     ),
+                  ),
             ),
             SizedBox(
               height: 48,

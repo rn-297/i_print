@@ -39,7 +39,7 @@
     <uses-feature android:name="android.hardware.location.network"/>
 
     <application
-        android:label="i_print"
+        android:label="PRINT INDIA"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:enableOnBackInvokedCallback="true"

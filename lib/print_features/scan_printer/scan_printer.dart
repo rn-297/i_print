@@ -21,6 +21,7 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
 
     return GetBuilder<ScanPrinterController>(builder: (scanController) {
       return Scaffold(
+        key: scanPrinterController.scanGlobKey,
           appBar: AppBar(
             title: const Text("Printers"),
             actions: [
@@ -52,7 +53,7 @@ class _ScanPrinterPageState extends State<ScanPrinterPage> {
                     return InkWell(
                       onTap: () {
                         scanController
-                            .selectPrinter(scanController.printers[index]);
+                            .selectPrinter(scanController.printers[index],context);
                         // Get.find<ScanPrinterController>(tag: 'scanController')
                         //     .selectPrinter(scanController.devices[index]);
                         // scanController.printImage();

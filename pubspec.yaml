@@ -42,7 +42,7 @@ dependencies:
   barcode: ^2.2.7
   path_provider: ^2.1.3
   permission_handler: ^11.3.1
-  image_editor: ^1.5.0
+#  image_editor: ^1.5.0
   crop_image: ^1.0.12
   image_picker: ^1.1.0
   flutter_drawing_board: ^0.7.0+2
@@ -58,20 +58,26 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   url_launcher: ^6.2.6
-  file_picker: ^8.0.3
-  shimmer: ^3.0.0
+#  file_picker: ^8.0.3
+#  shimmer: ^3.0.0
   adstringo_plugin:
     path: ./adstringo_plugin
 #  esc_pos_bluetooth: ^0.4.1
 #  blue_thermal_printer: ^1.2.3
   esc_pos_utils_plus: ^2.0.3
   input_quantity: ^2.3.4
-  flutter_pos_printer_platform_image_3_sdt: ^1.1.3
+#  flutter_pos_printer_platform_image_3_sdt: ^1.1.3
 #  fp_bt_printer: ^0.0.3
 #  esc_pos_bluetooth_updated: ^0.5.0
   flutter_thermal_printer: ^0.0.13
   flutter_image_compress: ^2.3.0
-  device_info_plus: ^10.1.0
+  device_info_plus: ^9.1.2
+  intl: ^0.19.0
+  pdfx:
+    git:
+      url: 'https://github.com/ScerIO/packages.flutter'
+      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'
+      path: packages/pdfx
 
 
 
@@ -103,12 +109,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/svg/
-      - assets/svg/border/
-      - assets/svg/icon/
-      - assets/models/
       - assets/images/
-      - assets/images/to_do_list/
-      - assets/images/lable_border/
 #      - assets/images/sticky_note/
 
   # An image asset can refer to one or more resolution-specific "variants", see

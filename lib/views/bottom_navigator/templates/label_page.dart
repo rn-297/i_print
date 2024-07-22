@@ -16,7 +16,7 @@ class LabelPage extends StatelessWidget {
           body: Padding(
             padding: EdgeInsets.all(24.h),
             child: ListView.builder(
-                itemCount: controller.labelList.length,
+                itemCount: controller.labelImages.length,
                 itemBuilder: (context, index) {
                   return Container(
                       margin: EdgeInsets.only(bottom: 16.h),
@@ -24,7 +24,7 @@ class LabelPage extends StatelessWidget {
                           onTap: (){
                             controller.setSelectedLabel(index,context);
                           },
-                          child: Image.asset(controller.labelList[index][0])));
+                          child: Image.network(controller.labelImages[index].url!)));
                 }),
           ));
     });

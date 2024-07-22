@@ -21,7 +21,7 @@ class StickyNoteEditPage extends StatelessWidget {
           onTap: () {
             stickerViewController.selectedAssetId.value = "0";
 
-            stickerViewController.saveAsUint8List(ImageQuality.high);
+            stickerViewController.saveAsUint8List(ImageQuality.medium);
           },
           child: Container(
             padding: const EdgeInsets.all(4),

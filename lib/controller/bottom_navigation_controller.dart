@@ -25,7 +25,9 @@ class BottomNavigationController extends GetxController implements GetxService{
 
  requestPermission();
     Get.put(TemplatesController());
-    Get.put(StickerViewController());
+    StickerViewController stickerViewController=Get.put(StickerViewController());
+    stickerViewController.getIconData();
+    stickerViewController.getBorderData();
     MaterialController materialController=Get.put( MaterialController());
     materialController.getCategoryList();
     Get.put(ScanPrinterController());
