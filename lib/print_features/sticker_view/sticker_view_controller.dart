@@ -5,10 +5,12 @@ import 'dart:ui';
 
 import 'package:barcode/barcode.dart';
 import 'package:crop_image/crop_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+import 'package:flutter_file_view/flutter_file_view.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,8 +29,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:screenshot/screenshot.dart';
 import 'package:webcontent_converter/webcontent_converter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../api_service/api_service.dart';
 import '../../controller/scan_controller.dart';
+import '../../views/toolbox/document_print/pdf_action.dart';
 import 'sticker_view.dart';
 import 'package:image/image.dart' as img;
 
@@ -105,7 +109,7 @@ class StickerViewController extends GetxController implements GetxService {
   InAppWebViewController? webViewController;
   ScreenshotController screenshotController = ScreenshotController();
   late List<Uint8List> capturedSS;
-  late Uint8List capturedSS1;
+  late List<int> capturedSS1;
   final GlobalKey webScreen = GlobalKey();
 
   //Banner print
@@ -845,8 +849,14 @@ class StickerViewController extends GetxController implements GetxService {
                                   setBorder(index);
                                 },
                                 child: Container(
-                                  height: stickerViewController.isBorderSquare(index)?80.h:60.h,
-                                  width: stickerViewController.isBorderSquare(index)?60.w:180.w,
+                                  height: stickerViewController
+                                          .isBorderSquare(index)
+                                      ? 80.h
+                                      : 60.h,
+                                  width: stickerViewController
+                                          .isBorderSquare(index)
+                                      ? 60.w
+                                      : 180.w,
                                   margin: EdgeInsets.all(8.w),
                                   padding: EdgeInsets.all(8.w),
                                   decoration: BoxDecoration(
@@ -1090,13 +1100,65 @@ class StickerViewController extends GetxController implements GetxService {
     update();
   }
 
-  void saveBitmap(ui.Image bitmap) async {
-    ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List bytes = data!.buffer.asUint8List();
-    print("file size");
+  Future<Uint8List> getResizedBytesData(img.Image originalImage) async {
     Directory appDocDir =
         await path_provider.getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
+
+    int originalWidth = originalImage!.width;
+    int originalHeight = originalImage!.height;
+
+    // Calculate the aspect ratio
+    double aspectRatio = originalHeight / originalWidth;
+
+    // Calculate the target height maintaining the aspect ratio
+    int targetHeight = (384 * aspectRatio).round();
+    final grayscaleImage = img.grayscale(originalImage!);
+    final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
+
+    String filePath = '$appDocPath/bitmap.png';
+
+    // Check if the file exists and delete it if it does
+    File file = File(filePath);
+    if (await file.exists()) {
+      await file.delete();
+      print('Existing file deleted.');
+    }
+
+    // Write the bytes to the file
+    await file.writeAsBytes(grayBytes);
+
+    double inMB = file.lengthSync() / 1024 / 1024;
+    int quality = 96;
+    if (inMB > 2) {
+      quality = 50;
+    } else if (inMB > 5) {
+      quality = 40;
+    } else if (inMB > 10) {
+      quality = 30;
+    } else if (inMB > 15) {
+      quality = 20;
+    } else if (inMB > 20) {
+      quality = 15;
+    }
+
+    String targetPath = await getPath("jpg");
+
+    var result = await FlutterImageCompress.compressAndGetFile(
+        filePath, targetPath,
+        quality: quality, minWidth: 384, minHeight: targetHeight);
+    Uint8List data = await result!.readAsBytes();
+    File file1 = File(targetPath);
+    if (await file1.exists()) {
+      await file1.delete();
+      print('Existing file deleted.');
+    }
+    return data;
+  }
+
+  void saveBitmap(ui.Image bitmap) async {
+    ByteData? data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List bytes = data!.buffer.asUint8List();
 
     // Define the file path and name
 
@@ -1114,50 +1176,9 @@ class StickerViewController extends GetxController implements GetxService {
       //       .round(),
       // );
 
-      int originalWidth = originalImage!.width;
-      int originalHeight = originalImage!.height;
-
-      // Calculate the aspect ratio
-      double aspectRatio = originalHeight / originalWidth;
-
-      // Calculate the target height maintaining the aspect ratio
-      int targetHeight = (384 * aspectRatio).round();
-      final grayscaleImage = img.grayscale(originalImage!);
-      final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
-
-      String filePath = '$appDocPath/bitmap.png';
-
-      // Check if the file exists and delete it if it does
-      File file = File(filePath);
-      if (await file.exists()) {
-        await file.delete();
-        print('Existing file deleted.');
-      }
-
-      // Write the bytes to the file
-      await file.writeAsBytes(grayBytes);
-
-      double inMB = bytes.length / 1024 / 1024;
-      int quality = 96;
-      if (inMB > 2) {
-        quality = 50;
-      } else if (inMB > 5) {
-        quality = 40;
-      } else if (inMB > 10) {
-        quality = 30;
-      } else if (inMB > 15) {
-        quality = 20;
-      } else if (inMB > 20) {
-        quality = 15;
-      }
-
-      String targetPath = await getPath("jpg");
-
-      var result = await FlutterImageCompress.compressAndGetFile(
-          filePath, targetPath,
-          quality: quality, minWidth: 384, minHeight: targetHeight);
       // img.Image? tempImage =await img.decodeImage(result);
-      capturedSS = [await File(targetPath).readAsBytesSync()];
+      Uint8List tempData = await getResizedBytesData(originalImage!);
+      capturedSS = [tempData];
       // Uint8List.fromList(img.encodePng(tempImage!));
       // print(capturedSS.length / 1024 / 1024);
       ScanPrinterController scanPrinterController = ScanPrinterController();
@@ -1541,24 +1562,9 @@ class StickerViewController extends GetxController implements GetxService {
       if (originalImage == null) {
         throw Exception("Failed to decode image");
       }
+      Uint8List tempData = await getResizedBytesData(originalImage);
 
-      // Resize the image to fit an 80mm POS printer while maintaining the aspect ratio
-      // const int posPrinterWidthPixels = 384; // assuming 203 DPI and 80mm width
-      // final resizedImage = img.copyResize(
-      //   originalImage,
-      //   width: posPrinterWidthPixels,
-      //   height:
-      //       (originalImage.height * posPrinterWidthPixels / originalImage.width)
-      //           .round(),
-      // );
-
-      // Converting to grayscale
-      img.Image resizedImage = img.copyResize(originalImage!, width: 384);
-      final grayscaleImage = img.grayscale(resizedImage);
-
-      // Updating the captured screenshot variable
-      final grayBytes = Uint8List.fromList(img.encodePng(grayscaleImage));
-      capturedSS = [grayBytes]; //.buffer
+      capturedSS = [tempData]; //.buffer
       // .asUint8List(grayBytes.offsetInBytes, grayBytes.lengthInBytes);
 
       // Navigating to the print preview page
@@ -1604,20 +1610,10 @@ class StickerViewController extends GetxController implements GetxService {
 
   Future<void> setCapturedSS(Uint8List previewImage) async {
     final originalImage = img.decodeImage(previewImage);
-    // const int posPrinterWidthPixels = 384;
-    // final resizedImage = img.copyResize(
-    //   originalImage!,
-    //   width: posPrinterWidthPixels,
-    //   height:
-    //       (originalImage.height * posPrinterWidthPixels / originalImage.width)
-    //           .round(),
-    // );
-    img.Image resizedImage = img.copyResize(originalImage!, width: 384);
-    final grayscaleImage = img.grayscale(resizedImage!);
-    // Convert the image to a format suitable for thermal printers
-    // Uint8List thermalImageBytes = await _convertImageToThermalFormat(grayscaleImage);
+    Uint8List tempData = await getResizedBytesData(originalImage!);
 
-    capturedSS = [Uint8List.fromList(img.encodePng(grayscaleImage))];
+    capturedSS = [tempData];
+    update();
     // print(capturedSS[0]);
     // capturedSS = thermalImageBytes;
   }
@@ -1737,6 +1733,47 @@ class StickerViewController extends GetxController implements GetxService {
     // capturedSS = byteData!.buffer.asUint8List();
   }
 
+  Future<void> docxToImage(BuildContext context, String docPath) async {
+    final FlutterView? view = View.maybeOf(context);
+    late WebViewController webController;
+    late String base64Data;
+    base64Data = base64.encode(File(docPath).readAsBytesSync());
+    webController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
+    final url =
+        'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,$base64Data';
+    await webController.loadRequest(Uri.parse(url));
+    final Size? viewSize =
+        view == null ? null : view.physicalSize / view.devicePixelRatio;
+    final Size? targetSizeVertical =
+        viewSize == null ? null : Size(viewSize.width, 9999);
+    screenshotController
+        .captureFromWidget(
+            targetSize: targetSizeVertical,
+            Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Expanded(
+                      child: WebViewWidget(
+                    controller: webController,
+                  )),
+                ],
+              ),
+            ),
+            context: context)
+        .then((capturedImage) {
+      // Here you will get image object
+      print(capturedImage);
+      setCapturedSS(capturedImage);
+      ScanPrinterController scanPrinterController = ScanPrinterController();
+      scanPrinterController.copies = 1.0;
+      Get.toNamed(RouteHelper.printPreviewPage);
+    });
+
+    // capturedSS = byteData!.buffer.asUint8List();
+  }
+
   void setLabelIcon(String icon) {
     selectedIcon = icon;
     labelList = [
@@ -1806,6 +1843,26 @@ class StickerViewController extends GetxController implements GetxService {
       ))
     ];
     update();
+  }
+
+  Future<void> setSelectedDocxFile(String wordFile) async {
+    List<int> data = await File(wordFile).readAsBytesSync();
+    capturedSS1 = data;
+  }
+
+  pickPdfFromGallery() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowMultiple: false,
+      allowCompression: true,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      capturedSS =
+          await PdfFileAction.convertPdfImagesToUint8List(result.paths[0]!);
+      Get.toNamed(RouteHelper.printPreviewPage);
+
+    }
   }
 }
 

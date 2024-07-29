@@ -23,15 +23,15 @@ class PdfFilesPage extends StatelessWidget {
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () async {
-                // StickerViewController controller =
-                //     Get.put(StickerViewController());
-                // controller.capturedSS =
-                //     await PdfFileAction.convertPdfImagesToUint8List(
-                //         documentController.pdfFiles[index]);
-                // ScanPrinterController scanPrinterController =
-                //     Get.put(ScanPrinterController());
-                // scanPrinterController.copies = 1.0;
-                // Get.toNamed(RouteHelper.printPreviewPage);
+                StickerViewController controller =
+                    Get.put(StickerViewController());
+                controller.capturedSS =
+                    await PdfFileAction.convertPdfImagesToUint8List(
+                        documentController.pdfFiles[index]);
+                ScanPrinterController scanPrinterController =
+                    Get.put(ScanPrinterController());
+                scanPrinterController.copies = 1.0;
+                Get.toNamed(RouteHelper.printPreviewPage);
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 24.h, vertical: 8.h),

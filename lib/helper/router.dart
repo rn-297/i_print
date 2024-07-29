@@ -7,7 +7,8 @@ import 'package:i_print/print_features/sticker_view/icon_tab/drawing_board/drawi
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/ImageEditorPage.dart';
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/image_crop_page.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
-import 'package:i_print/views/bottom_navigator/print_record/print_record_page.dart';
+import 'package:i_print/views/bottom_navigator/my_section/about_us/about_us.dart';
+import 'package:i_print/views/bottom_navigator/my_section/about_us/user_agreement.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_edit_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/sticky_note_edit_page.dart';
@@ -16,12 +17,14 @@ import 'package:i_print/views/bottom_navigator/templates/to_do_list_edit.dart';
 import 'package:i_print/views/bottom_navigator/templates/to_do_list_page.dart';
 import 'package:i_print/views/graphic_editing/graphiic_editing.dart';
 import 'package:i_print/views/print_preview/print_preview_page.dart';
+import 'package:i_print/views/task/task.dart';
 import 'package:i_print/views/toolbox/banner_print_page.dart';
 import 'package:i_print/views/toolbox/document_print/document_print_page.dart';
 import 'package:i_print/views/toolbox/print_web_page.dart';
 import 'package:i_print/views/toolbox/text_extraction_page.dart';
 
 import '../views/bottom_navigator/bottom_navigator_page.dart';
+import '../views/bottom_navigator/my_section/print_record_page.dart';
 import '../views/splash_screen/splash_screen.dart';
 
 abstract class RouteHelper {
@@ -56,6 +59,10 @@ abstract class RouteHelper {
   static const String toDoListEditPage = '/i_print_to_do_list_edit';
   static const String labelEditPage = '/i_print_label_page_edit';
   static const String printRecordPage = '/i_print_print_record';
+  static const String taskPage = '/i_print_task';
+  static const String aboutUsPage = '/i_print_about_us';
+  static const String userAgreementPage = '/i_print_user_agreement';
+  static const String privacyPolicyPage = '/i_print_privacy_policy_page';
 
   static List<GetPage> route = [
     GetPage(name: initial, page: () => const SplashScreen()),
@@ -87,6 +94,10 @@ abstract class RouteHelper {
     GetPage(name: toDoListEditPage, page: () => const ToDoListEditPage()),
     GetPage(name: labelEditPage, page: () => const LabelEditPage()),
     GetPage(name: printRecordPage, page: () => const PrintRecordPage()),
+    GetPage(name: taskPage, page: () => const TaskPage()),
+    GetPage(name: aboutUsPage, page: () => const AboutUsPage()),
+    GetPage(name: userAgreementPage, page: () => const UserAgreementPage()),
+    GetPage(name: privacyPolicyPage, page: () => const TaskPage()),
   ];
 
   static void goToNextPage(String label) {
@@ -100,19 +111,20 @@ abstract class RouteHelper {
         Get.toNamed(printRecordPage);
         break;
       case AppConstants.aboutUs:
+        Get.toNamed(aboutUsPage);
         print(label);
         break;
 
       case AppConstants.photoPrinting:
         StickerViewController controller = Get.put(StickerViewController());
-        controller.currentPage == AppConstants.photoPrinting;
+        controller.setCurrentPage(AppConstants.photoPrinting);
         controller.selectImage();
         print(label);
         break;
       case AppConstants.graphicEditing:
         StickerViewController controller = Get.put(StickerViewController());
-        controller.stickers.value=[];
-        controller.selectedBorder.value="";
+        controller.stickers.value = [];
+        controller.selectedBorder.value = "";
         controller.setCurrentPage(AppConstants.graphicEditing);
         Get.toNamed(graphicEditing);
         print(label);
@@ -160,7 +172,10 @@ abstract class RouteHelper {
         print(label);
         break;
       case AppConstants.documentPrint:
-        Get.toNamed(documentPrintPage);
+        // Get.toNamed(documentPrintPage);
+        StickerViewController stickerViewController =
+            Get.put(StickerViewController());
+        stickerViewController.pickPdfFromGallery();
         print(label);
         break;
       case AppConstants.printWebPages:

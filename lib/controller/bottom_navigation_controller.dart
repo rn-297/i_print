@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:i_print/controller/about_us_controller.dart';
 import 'package:i_print/controller/material_controller.dart';
 import 'package:i_print/controller/scan_controller.dart';
 import 'package:i_print/controller/templates_controller.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 import 'package:i_print/views/bottom_navigator/materials/material_page.dart';
-import 'package:i_print/views/bottom_navigator/my_page.dart';
+import 'package:i_print/views/bottom_navigator/my_section/my_page.dart';
 import 'package:i_print/views/bottom_navigator/print_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/templates_page.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,6 +26,7 @@ class BottomNavigationController extends GetxController implements GetxService{
 
  requestPermission();
     Get.put(TemplatesController());
+    Get.put(AboutUsController());
     StickerViewController stickerViewController=Get.put(StickerViewController());
     stickerViewController.getIconData();
     stickerViewController.getBorderData();

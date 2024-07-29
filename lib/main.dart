@@ -10,6 +10,7 @@ import 'package:i_print/local_db/api_key/api_key.dart';
 import 'package:i_print/local_db/print_record/print_record_table.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 
+import 'controller/about_us_controller.dart';
 import 'controller/document_controller.dart';
 import 'controller/templates_controller.dart';
 import 'local_db/print_record/print_record_controller.dart';
@@ -35,6 +36,7 @@ class AppBindings implements Bindings {
     Get.lazyPut(() => DocumentController());
     Get.lazyPut(() => MaterialController());
     Get.lazyPut(() => PrintRecordController());
+    Get.lazyPut(() => AboutUsController());
   }
 }
 

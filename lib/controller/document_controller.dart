@@ -1,4 +1,4 @@
-import 'package:adstringo_plugin/adstringo_plugin_method_channel.dart';
+// import 'package:adstringo_plugin/adstringo_plugin_method_channel.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -33,12 +33,12 @@ class DocumentController extends GetxController {
       // print(pdfFiles);
       // allFiles.value = pdfFiles;
 
-      final imagePickerPlugin = MethodChannelAdstringoPlugin();
+      // final imagePickerPlugin = MethodChannelAdstringoPlugin();
 
 
-      var data = await imagePickerPlugin.getAllFile();
-      print(data);
-      allFiles.value = data;
+      // var data = await imagePickerPlugin.getAllFile();
+      // print(data);
+      // allFiles.value = data;
       update();
 
 
@@ -57,12 +57,12 @@ class DocumentController extends GetxController {
     // );
     // wordFiles.value=result!.files;
 
-    final imagePickerPlugin = MethodChannelAdstringoPlugin();
-
-
-    var data = await imagePickerPlugin.getWordFile();
-    print(data);
-    wordFiles.value = data;
+    // final imagePickerPlugin = MethodChannelAdstringoPlugin();
+    //
+    //
+    // var data = await imagePickerPlugin.getWordFile();
+    // print(data);
+    // wordFiles.value = data;
     update();
   }
 
@@ -72,11 +72,11 @@ class DocumentController extends GetxController {
     //   allowedExtensions: [ 'pdf', ],
     // );
     // pdfFiles.value=result!.files;
-    final imagePickerPlugin = MethodChannelAdstringoPlugin();
-
-
-    var data = await imagePickerPlugin.getPdfFile();
-    print(data);
-    pdfFiles.value = data;
+    // final imagePickerPlugin = MethodChannelAdstringoPlugin();
+    //
+    //
+    // var data = await imagePickerPlugin.getPdfFile();
+    // print(data);
+    // pdfFiles.value = data;
   }
 }

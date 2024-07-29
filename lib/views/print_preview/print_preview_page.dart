@@ -15,6 +15,7 @@ class PrintPreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ScanPrinterController scanPrinterController =
         Get.put(ScanPrinterController());
+    scanPrinterController.copies = 1;
     return GetBuilder<StickerViewController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
@@ -39,7 +40,9 @@ class PrintPreviewPage extends StatelessWidget {
                               fit: BoxFit.fitWidth,
                               width: Get.size.width,
                             ),
-                            SizedBox(height: 16.h,)
+                            SizedBox(
+                              height: 16.h,
+                            )
                           ],
                         );
                       })),

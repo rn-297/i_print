@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_pos_printer_platform_image_3_sdt/flutter_pos_printer_platform_image_3_sdt.dart';
+import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart'as pos;
 
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart' as bt;
 import 'package:flutter_thermal_printer/utils/printer.dart' as bt1;
@@ -108,9 +109,9 @@ class ScanPrinterController extends GetxController {
     bytes += ticket.cut();*/
 
     // Xprinter XP-N160I
-    final profile = await CapabilityProfile.load(name: 'XP-N160I');
+    final profile = await pos.CapabilityProfile.load(name: 'XP-N160I');
     // PaperSize.mm80 or PaperSize.mm58
-    final generator = Generator(PaperSize.mm80, profile);
+    final generator = pos.Generator(pos.PaperSize.mm80, profile);
     List<int> bytes = [];
     for (int i = 0; i < stickerViewController.capturedSS.length; i++) {
       final img.Image image =
@@ -151,7 +152,8 @@ class ScanPrinterController extends GetxController {
       //   // _flutterThermalPrinterPlugin.connect(selectedPrinter!);
       // }
 
-      bytes += generator.imageRaster(image, imageFn: PosImageFn.bitImageRaster);
+
+      bytes += await generator.imageRaster(image, /*imageFn: pos.PosImageFn.graphics*/);
       bytes += generator.emptyLines(3);
     }
     // bytes += generator.cut();
