@@ -8,6 +8,7 @@ import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/ImageE
 import 'package:i_print/print_features/sticker_view/icon_tab/image_editor/image_crop_page.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 import 'package:i_print/views/bottom_navigator/my_section/about_us/about_us.dart';
+import 'package:i_print/views/bottom_navigator/my_section/about_us/privacy_policy.dart';
 import 'package:i_print/views/bottom_navigator/my_section/about_us/user_agreement.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_edit_page.dart';
 import 'package:i_print/views/bottom_navigator/templates/label_page.dart';
@@ -97,7 +98,7 @@ abstract class RouteHelper {
     GetPage(name: taskPage, page: () => const TaskPage()),
     GetPage(name: aboutUsPage, page: () => const AboutUsPage()),
     GetPage(name: userAgreementPage, page: () => const UserAgreementPage()),
-    GetPage(name: privacyPolicyPage, page: () => const TaskPage()),
+    GetPage(name: privacyPolicyPage, page: () => const PrivacyPolicyPage()),
   ];
 
   static void goToNextPage(String label) {

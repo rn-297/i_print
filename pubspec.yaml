@@ -114,7 +114,6 @@ flutter:
   assets:
       - assets/svg/
       - assets/images/
-      - assets/docs/
 #      - assets/images/sticky_note/
 
   # An image asset can refer to one or more resolution-specific "variants", see
