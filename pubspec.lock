@@ -382,14 +382,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  flutter_file_view:
-    dependency: "direct main"
-    description:
-      name: flutter_file_view
-      sha256: "91d721da8e21ae0c3e063b7f6b2a41e3914e5286e2173b16a8cfe6492b6ea612"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.1"
   flutter_image_compress:
     dependency: "direct main"
     description:
