@@ -44,6 +44,7 @@ android {
         versionName = flutterVersionName
     }
 
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -52,6 +53,13 @@ android {
         }
     }
 }
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    // Other dependencies...
+}
+
 
 flutter {
     source = "../.."

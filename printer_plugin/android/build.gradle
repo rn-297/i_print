@@ -9,6 +9,7 @@ buildscript {
 
     dependencies {
         classpath("com.android.tools.build:gradle:7.3.0")
+
     }
 }
 
@@ -16,6 +17,9 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs project(':printer_plugin').file('libs')
+        }
     }
 }
 
@@ -40,7 +44,7 @@ android {
     dependencies {
         testImplementation("junit:junit:4.13.2")
         testImplementation("org.mockito:mockito-core:5.0.0")
-        implementation files('libs/sdk2.aar')
+
     }
 
     testOptions {
@@ -52,4 +56,19 @@ android {
             }
         }
     }
+
+
+
 }
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation(name: 'sdk2', ext: 'aar')
+}
+
+

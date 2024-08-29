@@ -1,0 +1,3 @@
+<declare-styleable name="ThemeOverlay">
+    <attr name="colorOnSecondary" format="color" />
+</declare-styleable>
