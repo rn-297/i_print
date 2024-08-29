@@ -18,6 +18,7 @@ import 'package:i_print/local_db/print_record/print_record_table.dart';
 import 'package:i_print/print_features/sticker_view/sticker_view_controller.dart';
 import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:printer_plugin/printer_plugin.dart';
 
 class ScanPrinterController extends GetxController {
   // List<PrinterBluetooth> bluetoothPrinter = [];
@@ -26,6 +27,8 @@ class ScanPrinterController extends GetxController {
   final StickerViewController stickerViewController =
       Get.put(StickerViewController());
   final GlobalKey scanGlobKey = GlobalKey();
+  final _printerPlugin = PrinterPlugin();
+
 
   final _flutterThermalPrinterPlugin = bt.FlutterThermalPrinter.instance;
 
@@ -543,21 +546,24 @@ class ScanPrinterController extends GetxController {
         print("result cut $result");
 */
       }
-      await _flutterThermalPrinterPlugin.printData(
-        selectedPrinter!,
-        bytes,
-        longData: true,
-      );
-      PrintRecordController printRecordController =
-          Get.put(PrintRecordController());
-      int id = await printRecordController.getNextId();
-      PrintRecordModel record = PrintRecordModel(
-          id, stickerViewController.capturedSS, DateTime.now(), copies.round());
-      printRecordController.addPrintRecord(record);
-      isPrinting = true;
-      Future.delayed(Duration(seconds: 20), () {
-        isPrinting = false;
-      });
+      // await _flutterThermalPrinterPlugin.printData(
+      //   selectedPrinter!,
+      //   bytes,
+      //   longData: true,
+      // );
+      // PrintRecordController printRecordController =
+      //     Get.put(PrintRecordController());
+      // int id = await printRecordController.getNextId();
+      // PrintRecordModel record = PrintRecordModel(
+      //     id, stickerViewController.capturedSS, DateTime.now(), copies.round());
+      // printRecordController.addPrintRecord(record);
+      // isPrinting = true;
+      // Future.delayed(Duration(seconds: 20), () {
+      //   isPrinting = false;
+      // });
+      final ByteData bytes1 = await rootBundle.load('assets/img.jpg');
+      final Uint8List list = bytes1.buffer.asUint8List();
+      _printerPlugin.printPhoto(list);
     }
     // bluetooth.printNewLine();
     // bluetooth.printNewLine();

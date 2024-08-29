@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryVariant">#FF3700B3</color> <!-- Use the same value as in your styles.xml -->
-    <color name="primaryColor">#6200EE</color>
-    <color name="primaryDarkColor">#3700B3</color>
-    <color name="primaryTextColor">#FFFFFF</color>
-    <color name="secondaryColor">#03DAC6</color>
-    <color name="secondaryDarkColor">#018786</color>
-    <color name="secondaryTextColor">#000000</color>
+    <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
+    <style name="LaunchTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+    </style>
+
 </resources>
